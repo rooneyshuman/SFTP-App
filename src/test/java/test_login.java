@@ -1,4 +1,6 @@
 import org.junit.Test;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class test_login {
 
@@ -11,6 +13,5 @@ public class test_login {
     @Test
     public void connectionShouldFail(){
         login login_class = new login();
-
     }
 }
