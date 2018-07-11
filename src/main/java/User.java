@@ -90,7 +90,7 @@ public class User {
       System.out.println("That was not a valid Host Name.");
       System.out.println("Valid host names are no longer than 255 alpha numeric characters and \n" +
           "dashes. Each segment of the host name cannot be longer than 63 characters.");
-      username = scanner.next();
+      hostname = scanner.next();
     }
     return hostname;
   }

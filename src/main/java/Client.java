@@ -4,7 +4,7 @@ import com.jcraft.jsch.*;
 public class Client {
 
   public void Sftp() {
-    JSch jsch = new JSch();
+    var jsch = new JSch();
     int option;
 
     var menu = new Menu();
