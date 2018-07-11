@@ -4,45 +4,43 @@ import java.util.regex.Pattern;
 
 public class User {
 
-  String password;
-  String userName;
-  String hostName;
-  Scanner scanner = new Scanner(System.in);
-  String error = "Error";
+  private String password;
+  private String username;
+  private String hostname;
+  private Scanner scanner = new Scanner(System.in);
 
+  /**
+   * Default constructor initializes all fields to null
+   */
   public User() {
     password = null;
-    hostName = null;
-    userName = null;
+    hostname = null;
+    username = null;
   }
 
-  public boolean promptPassword() {
+  /**
+   * P
+   * @return
+   */
+  public String getPassword() {
     System.out.println("Enter your password:");
     password = scanner.next();
     while (password == null || password.isEmpty()) {
       System.out.println("You did not enter a password. Enter your password:");
       password = scanner.next();
     }
-    return true;
+    return password;
   }
 
-  public String getPassword() {
-    if (promptPassword()) {
-      return password;
-    } else {
-      return error;
-    }
-  }
-
-  public boolean promptUsername() {
+  public String getUsername() {
     System.out.println("Enter your username:");
-    userName = scanner.next();
-    while (userName == null || userName.isEmpty() || !verifyUsername(userName)) {
+    username = scanner.next();
+    while (username == null || username.isEmpty() || !verifyUsername(username)) {
       System.out.println("That was not a valid username.  Please enter 8-20 alpha numeric " +
           "characters.");
-      userName = scanner.next();
+      username = scanner.next();
     }
-    return true;
+    return username;
   }
 
   public boolean verifyUsername(String toVerify) {
@@ -52,29 +50,26 @@ public class User {
     return matcher.matches();
   }
 
-  public String getUsername() {
-    if (promptUsername()) {
-      return userName;
-    } else {
-      return error;
-    }
-  }
-
-  public boolean promptHostname() {
-    System.out.println("Enter your hostname:");
-    hostName = scanner.next();
-    if (hostName == null || hostName.isEmpty()) {
-      return false;
-    }
-    return true;
-  }
-
   public String getHostname() {
-    if (promptHostname()) {
-      return hostName;
-    } else {
-      return error;
+    System.out.println("Enter your hostname:");
+    hostname = scanner.next();
+    while (hostname == null || hostname.isEmpty() || !verifyHostName(hostname)) {
+      System.out.println("That was not a valid Host Name.");
+      System.out.println("Valid host names are no longer than 255 alpha numeric characters and \n" +
+          "dashes. Each segment of the host name cannot be longer than 63 characters.");
+      username = scanner.next();
     }
+    return hostname;
   }
-}
 
+  public boolean verifyHostName(String toVerify) {
+    if (toVerify.length() > 255)
+      return false;
+    String userNamePattern = "^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])(\\." +
+        "([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9]))*$";
+    Pattern pattern = Pattern.compile(userNamePattern);
+    Matcher matcher = pattern.matcher(toVerify);
+    return matcher.matches();
+  }
+
+}
