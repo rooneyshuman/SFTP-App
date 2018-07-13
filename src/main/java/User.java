@@ -56,11 +56,11 @@ class User {
   String getUsername() {
     System.out.println("Enter your username:");
     username = scanner.next();
-    username = ""; //for testing
+    //username = ""; //for testing
     if (username == null || username.isEmpty() || !verifyUsername(username)) {
       System.err.println("That was not a valid username.  Please enter 8-20 alpha numeric " +
           "characters.");
-      //username = scanner.next(); //comment out for testing
+      username = scanner.next(); //comment out for testing
     }
     return username;
   }
