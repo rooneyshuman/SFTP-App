@@ -33,9 +33,9 @@ In order to run the SFTP client on your local computer you must add the pre-requ
 
 ## Built With
 
-* [jdk-10.0.1.jdk](http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html)
-* [jsch-0.1.54](http://www.jcraft.com/jsch/)
-* [junit:4.12](https://github.com/junit-team/junit4/blob/master/doc/ReleaseNotes4.12.md)
+* [Java SE 10](http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html)
+* [JSch](http://www.jcraft.com/jsch/)
+* [JUnit](https://github.com/junit-team/junit4/blob/master/doc/ReleaseNotes4.12.md)
 
 ## Authors
 * **Belen**
