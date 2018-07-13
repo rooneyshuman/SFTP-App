@@ -70,6 +70,7 @@ class Client {
               case 10: //exit
                 System.out.println("Closing connection...");
                 cSftp.exit();
+                session.disconnect();
                 break;
 
               default:
@@ -85,7 +86,6 @@ class Client {
       }
     } while (option != 2);
     System.out.println("Goodbye");
-    System.exit(0);
   }
 
   public static void main(String[] args) {
