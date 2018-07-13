@@ -101,4 +101,8 @@ public class UserTest {
     assertThat(valid, equalTo(false));
   }
 
+  /*@Test
+  public void getUsernamePrintsErrorEmpty() {
+
+  }*/
 }

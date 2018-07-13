@@ -87,5 +87,10 @@ class Client {
     System.out.println("Goodbye");
     System.exit(0);
   }
+
+  public static void main(String[] args) {
+    var connection = new Client();
+    connection.Sftp();
+  }
 }
 
