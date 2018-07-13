@@ -12,15 +12,15 @@ public class User {
   /**
    * Field for password string
    */
-  private String password;
+  String password;
   /**
    * Field for username string
    */
-  private String username;
+  String username;
   /**
    * Field for host name string
    */
-  private String hostname;
+  String hostname;
   /**
    * Field for an IO scanner used for input
    */

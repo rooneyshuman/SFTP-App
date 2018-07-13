@@ -5,13 +5,13 @@ import org.junit.Test;
 
 public class UserTest {
   User user = new User();
-  /*
+
   @Test
   public void userStartsNull() {
     assertThat(user.password, equalTo(null));
-    assertThat(user.hostName, equalTo(null));
-    assertThat(user.userName, equalTo(null));
-  }*/
+    assertThat(user.hostname, equalTo(null));
+    assertThat(user.username, equalTo(null));
+  }
 
   @Test
   public void verifyHostNameDoesntAllowAt () {
