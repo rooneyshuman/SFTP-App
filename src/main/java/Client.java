@@ -1,9 +1,9 @@
 import com.jcraft.jsch.*;
 
 
-public class Client {
+class Client {
 
-  public void Sftp() {
+  void Sftp() {
     var jsch = new JSch();
     int option;
 

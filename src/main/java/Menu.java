@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class Menu {
+class Menu {
 
   private Scanner sc = new Scanner(System.in);
   private int option;
@@ -9,7 +9,7 @@ public class Menu {
    * This is the main menu.  Method displays all options and prompts for a choice
    * @return an int with a valid option number
    */
-  public int mainMenu() {
+  int mainMenu() {
     option = 0;
     while (option != 1 && option != 2) {
       System.out.println("1. Establish Connection");
@@ -34,7 +34,7 @@ public class Menu {
    * prompts for a choice
    * @return an int with a valid option number
    */
-  public int workingMenu() {
+  int workingMenu() {
     option = 0;
     while (option < 1 || option > 10) {
       System.out.println("1.  List Directories");

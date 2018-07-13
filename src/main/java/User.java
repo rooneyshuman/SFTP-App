@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
  *
  * @see {@link Client}
  */
-public class User {
+class User {
 
   /**
    * Field for password string
@@ -29,7 +29,7 @@ public class User {
   /**
    * Default constructor initializes all fields to null
    */
-  public User() {
+  User() {
     password = null;
     hostname = null;
     username = null;
@@ -39,7 +39,7 @@ public class User {
    * Prompts the user for a valid password
    * @return  The password input
    */
-  public String getPassword() {
+  String getPassword() {
     System.out.println("Enter your password:");
     password = scanner.next();
     while (password == null || password.isEmpty()) {
@@ -53,7 +53,7 @@ public class User {
    * Prompts the user for a valid username. Usernames must be alpha numeric of size 8-20
    * @return  The username input
    */
-  public String getUsername() {
+  String getUsername() {
     System.out.println("Enter your username:");
     username = scanner.next();
     while (username == null || username.isEmpty() || !verifyUsername(username)) {
@@ -70,8 +70,8 @@ public class User {
    * @return  <code>true</code> if the string is a valid username
    *          <code>false</code> otherwise
    */
-  public boolean verifyUsername(String toVerify) {
-    String userNamePattern = "^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
+  boolean verifyUsername(String toVerify) {
+    String userNamePattern = "^(?=.{2,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
     Pattern pattern = Pattern.compile(userNamePattern);
     Matcher matcher = pattern.matcher(toVerify);
     return matcher.matches();
@@ -83,7 +83,7 @@ public class User {
    * They must end and start with alpha numeric characters.
    * @return  The host name input
    */
-  public String getHostname() {
+  String getHostname() {
     System.out.println("Enter your hostname:");
     hostname = scanner.next();
     while (hostname == null || hostname.isEmpty() || !verifyHostName(hostname)) {
@@ -101,7 +101,7 @@ public class User {
    * @return  <code>true</code> if the string is a valid host name
    *          <code>false</code> otherwise
    */
-  public boolean verifyHostName(String toVerify) {
+  boolean verifyHostName(String toVerify) {
     if (toVerify.length() > 255)
       return false;
     String userNamePattern = "^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])(\\." +
