@@ -43,6 +43,7 @@ In order to run the SFTP client on your local computer you must add the pre-requ
 * **Carissa** 
 * **Dante** 
 * **Mack**
+* **Marcus** 
 
 ## License
 
