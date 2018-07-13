@@ -15,7 +15,7 @@ public class Menu {
 
     /**
      * This is a working menu once a connection is established.  Method displays all options, prompts
-     * for a choice and returns that choice as an int.
+     * for a choice and returns that choice as an integer.
      *
      * @return an int with a valid option number
      */
