@@ -1,11 +1,9 @@
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
+import com.jcraft.jsch.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Vector;
 
 
 class Client {
@@ -45,9 +43,25 @@ class Client {
             switch (option) {
               case 1: //list directories: local and remote option
                 option = menu.displayFilesMenu();
+                //List remote directories
                 if (option == 1) {
-                  System.out.println("Listing remote directories...");
+                  System.out.println("Listing remote directories and files...");
+                  String path = ".";
+                  try {
+                    Vector remoteDir = cSftp.ls(path);
+                    if (remoteDir != null) {
+                      for (int i = 0; i < remoteDir.size(); ++i) {
+                        Object dirEntry = remoteDir.elementAt(i);
+                        if (dirEntry instanceof ChannelSftp.LsEntry) {
+                          System.out.println(((ChannelSftp.LsEntry) dirEntry).getFilename());
+                        }
+                      }
+                    }
+                  }
+                  catch(SftpException e){ System.out.println(e.toString()); }
                 }
+
+                //List local directories
                 if (option == 2) {
                   System.out.println("Listing local directories and files...");
                   File currentDir = new File(".");
