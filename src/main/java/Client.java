@@ -5,11 +5,12 @@ import com.jcraft.jsch.Session;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 
 
 class Client {
 
-  void Sftp() {
+  private void Sftp() {
     var jsch = new JSch();
     int option;
     var menu = new Menu();
@@ -24,12 +25,17 @@ class Client {
           String hostname = user.getHostname();
           Session session = jsch.getSession(username, hostname, 22);
           session.setPassword(password);
-          session.setConfig("StrictHostKeyChecking", "no");
+
+          Properties config = new Properties();
+          config.put("StrictHostKeyChecking", "no");
+          session.setConfig(config);
+
           System.out.println("Establishing Connection...");
-          session.connect();
+          session.connect(10000);
 
           Channel channel = session.openChannel("sftp");
-          channel.connect();
+          channel.setInputStream(null);
+          channel.connect(10000);
           ChannelSftp cSftp = (ChannelSftp) channel;
 
           System.out.println("Successful SFTP connection");
