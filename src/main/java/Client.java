@@ -1,4 +1,10 @@
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+
+import java.io.File;
+import java.io.IOException;
 
 
 class Client {
@@ -31,8 +37,16 @@ class Client {
           do {
             option = menu.workingMenu();
             switch (option) {
-              case 1: //list directories: local and remote options
-                System.out.println("Listing directories...");
+              case 1: //list directories: local and remote option
+                option = menu.displayFilesMenu();
+                if (option == 1) {
+                  System.out.println("Listing remote directories...");
+                }
+                if (option == 2) {
+                  System.out.println("Listing local directories and files...");
+                  File currentDir = new File(".");
+                  displayLocalFiles(currentDir);
+                }
                 break;
 
               case 2: //get file/files: which files, put where
@@ -91,6 +105,25 @@ class Client {
   public static void main(String[] args) {
     var connection = new Client();
     connection.Sftp();
+  }
+
+  /**
+   * Lists all directories and files on the user's local machine (from the current directory).
+   */
+  public static void displayLocalFiles(File dir) {
+    try {
+      File[] files = dir.listFiles();
+      for (File file : files) {
+        if (file.isDirectory()) {
+          System.out.println("Directory: " + file.getCanonicalPath());
+          displayLocalFiles(file);
+        } else {
+          System.out.println("     File: " + file.getCanonicalPath());
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }
 
