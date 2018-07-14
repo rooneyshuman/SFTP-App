@@ -1,5 +1,7 @@
 import com.jcraft.jsch.*;
 
+import java.net.UnknownHostException;
+
 
 class Client {
 
@@ -78,10 +80,11 @@ class Client {
                 break;
             }
           } while (option != 10);
-        } catch (Exception e) {
-          System.err.println("Client error");
-          e.printStackTrace();
-          System.exit(1);
+        } catch (JSchException e) {
+          if(e.getCause() instanceof UnknownHostException)
+            System.out.println("Unknown host name");
+          if(e.getMessage().equals("Auth fail"))
+            System.out.println("Authentication failed");
         }
       }
     } while (option != 2);
