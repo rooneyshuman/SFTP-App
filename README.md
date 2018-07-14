@@ -29,7 +29,7 @@ All unit tests were created in the **test** folder.
 
 In order to run the SFTP client on your local computer you must add the pre-requisites and do the following:
 
-1. Right-click Main.java -> Run 'Main'
+1. Right-click Client.java -> Run 'Client.main()'
 
 ## Built With
 
