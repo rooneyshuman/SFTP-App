@@ -1,4 +1,3 @@
-import com.jcraft.jsch.*;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
@@ -111,7 +110,7 @@ class Client {
   /**
    * Lists all directories and files on the user's local machine (from the current directory).
    */
-  public static void displayLocalFiles(File dir) {
+  public static int displayLocalFiles(File dir) {
     try {
       File[] files = dir.listFiles();
       for (File file : files) {
@@ -122,8 +121,10 @@ class Client {
           System.out.println("     File: " + file.getCanonicalPath());
         }
       }
+      return 1;
     } catch (IOException e) {
       e.printStackTrace();
+      return -1;
     }
   }
 }
