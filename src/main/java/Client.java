@@ -13,9 +13,9 @@ class Client {
     int option;
     var menu = new Menu();
 
-    do{
+    do {
       option = menu.mainMenu();
-      if (option ==1) {
+      if (option == 1) {
         try {
           var user = new User();
           String username = user.getUsername();
@@ -46,19 +46,7 @@ class Client {
                 //List remote directories
                 if (option == 1) {
                   System.out.println("Listing remote directories and files...");
-                  String path = ".";
-                  try {
-                    Vector remoteDir = cSftp.ls(path);
-                    if (remoteDir != null) {
-                      for (int i = 0; i < remoteDir.size(); ++i) {
-                        Object dirEntry = remoteDir.elementAt(i);
-                        if (dirEntry instanceof ChannelSftp.LsEntry) {
-                          System.out.println(((ChannelSftp.LsEntry) dirEntry).getFilename());
-                        }
-                      }
-                    }
-                  }
-                  catch(SftpException e){ System.out.println(e.toString()); }
+                  displayRemoteFiles(cSftp);
                 }
 
                 //List local directories
@@ -144,6 +132,25 @@ class Client {
       return 1;
     } catch (IOException e) {
       e.printStackTrace();
+      return -1;
+    }
+  }
+
+  private static int displayRemoteFiles(ChannelSftp cSftp) {
+    try {
+      String path = ".";
+      Vector remoteDir = cSftp.ls(path);
+      if (remoteDir != null) {
+        for (int i = 0; i < remoteDir.size(); ++i) {
+          Object dirEntry = remoteDir.elementAt(i);
+          if (dirEntry instanceof ChannelSftp.LsEntry) {
+            System.out.println(((ChannelSftp.LsEntry) dirEntry).getFilename());
+          }
+        }
+      }
+      return 1;
+    } catch (SftpException e) {
+      System.err.println(e.toString());
       return -1;
     }
   }
