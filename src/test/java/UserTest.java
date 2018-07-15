@@ -45,7 +45,7 @@ public class UserTest {
 
   @Test
   public void verifyUsernameCatchesShortName() {
-    boolean valid = user.verifyUsername("notVal");
+    boolean valid = user.verifyUsername("n");
     assertThat(valid, equalTo(false));
   }
 

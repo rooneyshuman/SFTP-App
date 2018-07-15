@@ -187,7 +187,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Client">
+  <component name="RunManager" selected="JUnit.UserTest">
     <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client" />
       <module name="AGILE" />
@@ -299,9 +299,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.UserTest" />
         <item itemvalue="Application.Client" />
         <item itemvalue="Application.Main" />
-        <item itemvalue="JUnit.UserTest" />
         <item itemvalue="JUnit.MenuTest.menuReturnsValidInput" />
         <item itemvalue="JUnit.UserTest.verifyUserNameDoesntAllowLeadingPeriodOrUnderscore" />
       </list>
