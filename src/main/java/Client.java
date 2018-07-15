@@ -1,5 +1,6 @@
 import com.jcraft.jsch.*;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 
 
@@ -80,11 +81,15 @@ class Client {
                 break;
             }
           } while (option != 10);
-        } catch (JSchException e) {
+        } catch (Exception e) {
           if(e.getCause() instanceof UnknownHostException)
             System.out.println("Unknown host name");
-          if(e.getMessage().equals("Auth fail"))
+          else if(e.getMessage().equals("Auth fail"))
             System.out.println("Authentication failed");
+          else if(e.getCause() instanceof IOException)
+            System.out.println("IOException detected");
+          else
+            e.printStackTrace();
         }
       }
     } while (option != 2);
