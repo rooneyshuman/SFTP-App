@@ -17,12 +17,11 @@ class Menu {
       System.out.println("2. Exit");
       System.out.println("Enter an above option number");
       if (!sc.hasNextInt()) {
-        System.out.println("You did not Enter a valid option");
+        System.out.println("You did not enter a valid option");
         sc.next();
         continue;
       }
       option = sc.nextInt();
-      System.out.println(option);
       if (option != 1 && option != 2) {
         System.out.println("A valid option was not entered.");
       }
@@ -51,7 +50,7 @@ class Menu {
       System.out.println("10. Close Connection");
       System.out.println("Enter an above option number");
       if (!sc.hasNextInt()) {
-        System.out.println("You did not Enter a valid option");
+        System.out.println("You did not enter a valid option");
         sc.next();
         continue;
       }
