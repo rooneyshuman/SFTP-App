@@ -7,7 +7,7 @@ import java.util.Vector;
 
 
 class Client {
-  static final int TIMEOUT = 10000;
+  private static final int TIMEOUT = 10000;
 
   private void Sftp() {
     var jsch = new JSch();
