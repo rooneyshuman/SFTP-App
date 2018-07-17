@@ -17,7 +17,7 @@ class Menu {
       System.out.println("2. Exit");
       System.out.println("Enter an above option number");
       if (!sc.hasNextInt()) {
-        System.out.println("You did not Enter a valid option");
+        System.out.println("You did not enter a valid option");
         sc.next();
         continue;
       }
