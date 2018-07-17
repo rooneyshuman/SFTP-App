@@ -137,6 +137,9 @@ class Client {
     }
   }
 
+  /**
+   * Lists all directories and files on the user's remote machine.
+   */
   private static int displayRemoteFiles(ChannelSftp cSftp) {
     try {
       String path = ".";
