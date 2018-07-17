@@ -7,6 +7,7 @@ import java.util.Vector;
 
 
 class Client {
+  static final int timeout = 10000;
 
   private void Sftp() {
     var jsch = new JSch();
@@ -29,11 +30,11 @@ class Client {
           session.setConfig(config);
 
           System.out.println("Establishing Connection...");
-          session.connect(10000);
+          session.connect(timeout);
 
           Channel channel = session.openChannel("sftp");
           channel.setInputStream(null);
-          channel.connect(10000);
+          channel.connect(timeout);
           ChannelSftp cSftp = (ChannelSftp) channel;
 
           System.out.println("Successful SFTP connection");
