@@ -46,8 +46,12 @@ class Client {
                 option = menu.displayFilesMenu();
                 //List remote directories
                 if (option == 1) {
-                  System.out.println("Listing remote directories and files...");
-                  displayRemoteFiles(cSftp);
+                  try {
+                    System.out.println("Listing remote directories and files...");
+                    displayRemoteFiles(cSftp);
+                  } catch (SftpException e) {
+                    System.out.println("Error displaying remote files");
+                  }
                 }
 
                 //List local directories
@@ -56,6 +60,8 @@ class Client {
                   File currentDir = new File(".");
                   displayLocalFiles(currentDir);
                 }
+
+
                 break;
 
               case 2: //get file/files: which files, put where
@@ -140,23 +146,20 @@ class Client {
   /**
    * Lists all directories and files on the user's remote machine.
    */
-  private static int displayRemoteFiles(ChannelSftp cSftp) {
-    try {
-      String path = ".";
-      Vector remoteDir = cSftp.ls(path);
-      if (remoteDir != null) {
-        for (int i = 0; i < remoteDir.size(); ++i) {
-          Object dirEntry = remoteDir.elementAt(i);
-          if (dirEntry instanceof ChannelSftp.LsEntry) {
-            System.out.println(((ChannelSftp.LsEntry) dirEntry).getFilename());
-          }
+  private static void displayRemoteFiles(ChannelSftp cSftp) throws SftpException {
+    String path = ".";
+    Vector remoteDir = cSftp.ls(path);
+    if (remoteDir != null) {
+      for (int i = 0; i < remoteDir.size(); ++i) {
+        Object dirEntry = remoteDir.elementAt(i);
+        if (dirEntry instanceof ChannelSftp.LsEntry) {
+          System.out.println(((ChannelSftp.LsEntry) dirEntry).getFilename());
         }
       }
-      return 1;
-    } catch (SftpException e) {
-      System.err.println(e.toString());
-      return -1;
     }
   }
+
+
 }
+
 
