@@ -5,10 +5,11 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Vector;
+import static java.lang.System.out;
 
 
 class Client {
-  Scanner scanner = new Scanner(System.in);
+  private Scanner scanner = new Scanner(System.in);
   private static final int TIMEOUT = 10000;
   private User user;
   private JSch jsch;
@@ -44,7 +45,7 @@ class Client {
     config.put("StrictHostKeyChecking", "no");
     session.setConfig(config);
 
-    System.out.println("Establishing Connection...");
+    out.println("Establishing Connection...");
     session.connect(TIMEOUT);
 
     Channel channel = session.openChannel("sftp");
@@ -52,7 +53,7 @@ class Client {
     channel.connect(TIMEOUT);
     cSftp = (ChannelSftp) channel;
 
-    System.out.println("Successful SFTP connection");
+    out.println("Successful SFTP connection");
   }
 
   /**
@@ -72,10 +73,10 @@ class Client {
       if(files != null) {
         for (File file : files) {
           if (file.isDirectory()) {
-            System.out.println("Directory: " + file.getCanonicalPath());
+            out.println("Directory: " + file.getCanonicalPath());
             displayLocalFiles(file);
           } else {
-            System.out.println("     File: " + file.getCanonicalPath());
+            out.println("     File: " + file.getCanonicalPath());
           }
         }
       }
@@ -96,7 +97,7 @@ class Client {
       for (int i = 0; i < remoteDir.size(); ++i) {
         Object dirEntry = remoteDir.elementAt(i);
         if (dirEntry instanceof ChannelSftp.LsEntry) {
-          System.out.println(((ChannelSftp.LsEntry) dirEntry).getFilename());
+          out.println(((ChannelSftp.LsEntry) dirEntry).getFilename());
         }
       }
     }
@@ -106,7 +107,7 @@ class Client {
    * Create a directory on the user's remote machine.
    */
   public void createRemoteDir () throws SftpException {
-    System.out.println("Enter the name of the new directory: ");
+    out.println("Enter the name of the new directory: ");
     String newDir = scanner.next();
     cSftp.mkdir(newDir);
   }
