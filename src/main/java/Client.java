@@ -29,7 +29,7 @@ class Client {
   /**
    * Prompts for connection information
    */
-  public void promptConnectionInfo() {
+  void promptConnectionInfo() {
     user.getUsername();
     user.getPassword();
     user.getHostname();
@@ -38,7 +38,7 @@ class Client {
   /**
    * Initiates connection
    */
-  public void connect() throws JSchException {
+  void connect() throws JSchException {
     session = jsch.getSession(user.username, user.hostname, 22);
     session.setPassword(user.password);
     Properties config = new Properties();
@@ -59,7 +59,7 @@ class Client {
   /**
    * Terminates connection
    */
-  public void disconnect() {
+  void disconnect() {
     cSftp.exit();
     session.disconnect();
   }
@@ -67,14 +67,13 @@ class Client {
   /**
    * Lists all directories and files on the user's local machine (from the current directory).
    */
-  public int displayLocalFiles(File dir) {
+  int displayLocalFiles(File dir) {
     try {
       File[] files = dir.listFiles();
       if(files != null) {
         for (File file : files) {
           if (file.isDirectory()) {
             out.println("Directory: " + file.getCanonicalPath());
-            displayLocalFiles(file);
           } else {
             out.println("     File: " + file.getCanonicalPath());
           }
@@ -90,7 +89,7 @@ class Client {
   /**
    * Lists all directories and files on the user's remote machine.
    */
-  public void displayRemoteFiles() throws SftpException {
+  void displayRemoteFiles() throws SftpException {
     String path = ".";
     Vector remoteDir = cSftp.ls(path);
     if (remoteDir != null) {
@@ -106,7 +105,7 @@ class Client {
   /**
    * Create a directory on the user's remote machine.
    */
-  public void createRemoteDir () throws SftpException {
+  void createRemoteDir () throws SftpException {
     out.println("Enter the name of the new directory: ");
     String newDir = scanner.next();
     cSftp.mkdir(newDir);
