@@ -6,12 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Agile" />
         <module name="AGILE" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Agile" target="1.10" />
       <module name="AGILE" target="1.10" />
     </bytecodeTargetLevel>
   </component>
