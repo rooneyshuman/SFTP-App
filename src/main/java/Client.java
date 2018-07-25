@@ -7,9 +7,6 @@ import java.util.Vector;
 
 import static java.lang.System.out;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-
 
 class Client {
   private Scanner scanner = new Scanner(System.in);
@@ -70,7 +67,8 @@ class Client {
   /**
    * Lists all directories and files on the user's local machine (from the current directory).
    */
-  int displayLocalFiles(File dir) {
+  int displayLocalFiles() {
+    File dir = new File(cSftp.lpwd());
     printLocalWorkingDir();
     File[] files = dir.listFiles();
     if(files != null) {
@@ -93,8 +91,7 @@ class Client {
    */
   void displayRemoteFiles() throws SftpException {
     printRemoteWorkingDir();
-    String path = ".";
-    Vector remoteDir = cSftp.ls(path);
+    Vector remoteDir = cSftp.ls(cSftp.pwd());
     if (remoteDir != null) {
       int count = 0;
       for (int i = 0; i < remoteDir.size(); ++i) {

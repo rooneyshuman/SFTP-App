@@ -1,5 +1,5 @@
 import com.jcraft.jsch.SftpException;
-import java.io.File;
+
 import static java.lang.System.out;
 
 public class Main {
@@ -33,8 +33,7 @@ public class Main {
                 //List local directories
                 if (option == 2) {
                   out.println("Listing local directories and files...");
-                  File currentDir = new File(".");
-                  client.displayLocalFiles(currentDir);
+                  client.displayLocalFiles();
                 }
 
 
