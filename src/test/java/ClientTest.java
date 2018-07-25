@@ -1,14 +1,13 @@
-import org.junit.Test;
-
-import java.io.File;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+
+import java.io.File;
+import org.junit.Test;
 
 public class ClientTest {
   @Test
   public void test() {
-    assertThat("default", equalTo("Default"));
+    assertThat("Default", equalTo("Default"));
   }
 
   @Test

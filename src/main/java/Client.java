@@ -1,14 +1,16 @@
-import com.jcraft.jsch.*;
+import static java.lang.System.out;
 
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import java.io.File;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Vector;
 
-import static java.lang.System.out;
-
-import java.io.IOException;
-import java.net.UnknownHostException;
 
 
 class Client {
@@ -91,7 +93,7 @@ class Client {
   /**
    * Lists all directories and files on the user's remote machine.
    */
-  void displayRemoteFiles() throws SftpException {
+  private void displayRemoteFiles() throws SftpException {
     printRemoteWorkingDir();
     String path = ".";
     Vector remoteDir = cSftp.ls(path);
@@ -114,7 +116,7 @@ class Client {
   /**
    * Create a directory on the user's remote machine.
    */
-  void createRemoteDir () throws SftpException {
+  private void createRemoteDir () throws SftpException {
     out.println("Enter the name of the new directory: ");
     String newDir = scanner.next();
     cSftp.mkdir(newDir);
@@ -123,7 +125,7 @@ class Client {
   /**
    * Print current working local path
    */
-  void printLocalWorkingDir() {
+  private void printLocalWorkingDir() {
     String lpwd = cSftp.lpwd();
     out.println("This is your current local working directory: " + lpwd + "\n");
   }
@@ -131,7 +133,7 @@ class Client {
   /**
    * Print current working remote path
    */
-  void printRemoteWorkingDir() throws SftpException {
+  private void printRemoteWorkingDir() throws SftpException {
     String pwd = cSftp.pwd();
     out.println("This is your current remote working directory: " + pwd + "\n");
   }
@@ -150,8 +152,221 @@ class Client {
     out.println("This is your new current local working directory: " + lpwd + "\n");
   }
 
+  /**
+   * Switch statement that controls local and remote rename options based on localOrRemote() menu
+   * @throws SftpException  from JSCH
+   */
+  void rename() throws SftpException {
+    var menu = new Menu();
+    int opt;
+    do {
+      opt = menu.localOrRemoteMenu("Rename");
+      switch (opt) {
+        case 1:
+          System.out.println("View local directory");
+          printLocalWorkingDir();
+          break;
+        case 2:
+          System.out.println("View remote directory");
+          printRemoteWorkingDir();
+          break;
+        case 3:
+          System.out.println("Changed local directory");
+          changeLocalWorkingDir();
+          break;
+        case 4:
+          System.out.println("Changed remote directory");
+          //change remote directory
+          break;
+        case 5:
+          System.out.println("Rename local directory/file...");
+          break;
+        case 6:
+          System.out.println("Rename remote directory/file...");
+          break;
+        case 7:
+          break;
+        default:
+          System.err.println("You did not enter a valid option");
+          break;
+      }
+    } while (opt != 7);
+  }
 
+  /**
+   * Switch Statement that controls local and remote permission options based on localOrRemote() menu
+   * @throws SftpException  from JSCH
+   */
+  void changePermission() throws SftpException {
+    var menu = new Menu();
+    int opt;
+    do {
+      opt = menu.localOrRemoteMenu("Change permissions");
+      switch (opt) {
+        case 1:
+          System.out.println("View local directory");
+          printLocalWorkingDir();
+          break;
+        case 2:
+          System.out.println("View remote directory");
+          printRemoteWorkingDir();
+          break;
+        case 3:
+          System.out.println("Changed local directory");
+          changeLocalWorkingDir();
+          break;
+        case 4:
+          System.out.println("Changed remote directory");
+          //change remote directory
+          break;
+        case 5:
+          System.out.println("Change permissions local directory...");
+          break;
+        case 6:
+          System.out.println("Change permissions remote directory...");
+          break;
+        case 7:
+          break;
+        default:
+          System.err.println("You did not enter a valid option");
+          break;
+      }
+    } while (opt != 7);
+  }
+
+  /**
+   * Switch Statement that controls local and remote delete options based on localOrRemote() menu
+   * @throws SftpException  from JSCH
+   */
+  void delete() throws SftpException {
+    var menu = new Menu();
+    int opt;
+    do {
+      opt = menu.localOrRemoteMenu("Delete");
+      switch (opt) {
+        case 1:
+          System.out.println("View local directory");
+          printLocalWorkingDir();
+          break;
+        case 2:
+          System.out.println("View remote directory");
+          printRemoteWorkingDir();
+          break;
+        case 3:
+          System.out.println("Changed local directory");
+          changeLocalWorkingDir();
+          break;
+        case 4:
+          System.out.println("Changed remote directory");
+          //change remote dir
+          break;
+        case 5:
+          System.out.println("Delete local directory/file...");
+          break;
+        case 6:
+          System.out.println("Delete remote directory/file...");
+          break;
+        case 7:
+          break;
+        default:
+          System.err.println("You did not enter a valid option");
+          break;
+      }
+    } while (opt != 7);
+  }
+
+  /**
+   * Switch Statement that controls local and remote create dir options based on localOrRemote() menu
+   * @throws SftpException  from JSCH
+   */
+  void createDirectory() throws SftpException {
+    var menu = new Menu();
+    int opt;
+    do {
+      opt = menu.localOrRemoteMenu("Create");
+      switch (opt) {
+        case 1:
+          System.out.println("View local directory");
+          printLocalWorkingDir();
+          break;
+        case 2:
+          System.out.println("View remote directory");
+          printRemoteWorkingDir();
+          break;
+        case 3:
+          System.out.println("Changed local directory");
+          changeLocalWorkingDir();
+          break;
+        case 4:
+          System.out.println("Changed remote directory");
+          //change remote directory
+          break;
+        case 5:
+          System.out.println("Create local directory...");
+          break;
+        case 6:
+          try {
+            createRemoteDir();
+          } catch (SftpException e) {
+            System.err.println("Error creating new directory");
+          }
+          out.println("Your directory has been created");
+          break;
+        case 7:
+          break;
+        default:
+          System.err.println("You did not enter a valid option");
+          break;
+      }
+    } while (opt != 7);
+  }
+
+  /**
+   * Switch Statement that controls local and remote list options based on localOrRemote() menu
+   * @throws SftpException  from JSCH
+   */
+  void listDirectories() throws SftpException {
+    var menu = new Menu();
+    int opt;
+    do {
+      opt = menu.localOrRemoteMenu("List");
+      switch (opt) {
+        case 1:
+          System.out.println("View local directory");
+          printLocalWorkingDir();
+          break;
+        case 2:
+          System.out.println("View remote directory");
+          printRemoteWorkingDir();
+          break;
+        case 3:
+          System.out.println("Changed local directory");
+          changeLocalWorkingDir();
+          break;
+        case 4:
+          System.out.println("Changed remote directory");
+          //change remote directory
+          break;
+        case 5:
+          System.out.println("Listing local directories and files...");
+          File currentDir = new File(".");
+          displayLocalFiles(currentDir);
+          break;
+        case 6:
+          try {
+            out.println("Listing remote directories and files...");
+            displayRemoteFiles();
+          } catch (SftpException e) {
+            System.err.println("Error displaying remote files");
+          }
+          break;
+        case 7:
+          break;
+        default:
+          System.err.println("You did not enter a valid option");
+          break;
+      }
+    } while (opt != 7);
+  }
 
 }
-
-
