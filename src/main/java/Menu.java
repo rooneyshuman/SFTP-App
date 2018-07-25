@@ -40,7 +40,7 @@ class Menu {
     option = 0;
     while (option < 1 || option > 10) {
       System.out.println("1.  List Directories");
-      System.out.println("2.  Get File/Files");
+      System.out.println("2.  Change local directory");
       System.out.println("3.  Put File/Files");
       System.out.println("4.  Create Directory");
       System.out.println("5.  Delete File/Directory");

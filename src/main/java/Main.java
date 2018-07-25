@@ -41,7 +41,8 @@ public class Main {
                 break;
 
               case 2: //get file/files: which files, put where
-                out.println("Getting files...");
+                out.println("Changing local directory...");
+                client.changeLocalWorkingDir();
                 break;
 
               case 3: //put file/files: which files put where

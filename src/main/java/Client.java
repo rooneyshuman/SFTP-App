@@ -114,7 +114,7 @@ class Client {
   }
 
   /**
-   * List current working local path
+   * Print current working local path
    */
   void printLocalWorkingDir() {
     String lpwd = cSftp.lpwd();
@@ -122,11 +122,25 @@ class Client {
   }
 
   /**
-   * List current working remote path
+   * Print current working remote path
    */
   void printRemoteWorkingDir() throws SftpException {
     String pwd = cSftp.pwd();
     out.println("This is your current remote working directory: " + pwd + "\n");
+  }
+
+  /**
+   * Change current working local path
+   */
+  void changeLocalWorkingDir() throws SftpException {
+    String newDir;
+    String lpwd = cSftp.lpwd();
+    out.println("This is your current local working directory: " + lpwd + "\n");
+    out.println("Enter the path of the directory you'd like to change to: ");
+    newDir = scanner.next();
+    cSftp.lcd(newDir);
+    lpwd = cSftp.lpwd();
+    out.println("This is your new current local working directory: " + lpwd + "\n");
   }
 
 
