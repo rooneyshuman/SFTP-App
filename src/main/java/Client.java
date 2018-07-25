@@ -1,139 +1,157 @@
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
+import com.jcraft.jsch.*;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.Properties;
+import java.util.Scanner;
+import java.util.Vector;
+
+import static java.lang.System.out;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
 
 
 class Client {
+  private Scanner scanner = new Scanner(System.in);
+  private static final int TIMEOUT = 10000;
+  private User user;
+  private JSch jsch;
+  private Session session;
+  private ChannelSftp cSftp;
 
-  void Sftp() {
-    var jsch = new JSch();
-    int option;
-    var menu = new Menu();
-
-    do{
-      option = menu.mainMenu();
-      if (option ==1) {
-        try {
-          var user = new User();
-          String username = user.getUsername();
-          String password = user.getPassword();
-          String hostname = user.getHostname();
-          Session session = jsch.getSession(username, hostname, 22);
-          session.setPassword(password);
-          session.setConfig("StrictHostKeyChecking", "no");
-          System.out.println("Establishing Connection...");
-          session.connect();
-
-          Channel channel = session.openChannel("sftp");
-          channel.connect();
-          ChannelSftp cSftp = (ChannelSftp) channel;
-
-          System.out.println("Successful SFTP connection");
-
-          do {
-            option = menu.workingMenu();
-            switch (option) {
-              case 1: //list directories: local and remote option
-                option = menu.displayFilesMenu();
-                if (option == 1) {
-                  System.out.println("Listing remote directories...");
-                }
-                if (option == 2) {
-                  System.out.println("Listing local directories and files...");
-                  File currentDir = new File(".");
-                  displayLocalFiles(currentDir);
-                }
-                break;
-
-              case 2: //get file/files: which files, put where
-                System.out.println("Getting files...");
-                break;
-
-              case 3: //put file/files: which files put where
-                System.out.println("Putting Files...");
-                break;
-
-              case 4: //create directory: name?, where?
-                System.out.println("Creating directories...");
-                break;
-
-              case 5: //delete file/directory
-                System.out.println("Deleting directories...");
-                break;
-
-              case 6: //change permissions
-                System.out.println("Changing permissions...");
-                break;
-
-              case 7: //copy directory
-                System.out.println("Copying directories...");
-                break;
-
-              case 8: //rename file
-                System.out.println("Renaming files...");
-                break;
-
-              case 9: //view log history
-                System.out.println("Viewing log history...");
-                break;
-
-              case 10: //exit
-                System.out.println("Closing connection...");
-                cSftp.exit();
-                session.disconnect();
-                break;
-
-              default:
-                System.out.println("Try again");
-                break;
-            }
-          } while (option != 10);
-        } catch (Exception e) {
-          if(e.getCause() instanceof UnknownHostException)
-            System.out.println("Unknown host name");
-          else if(e.getMessage().equals("Auth fail"))
-            System.out.println("Authentication failed");
-          else if(e.getCause() instanceof IOException)
-            System.out.println("IOException detected");
-          else
-            e.printStackTrace();
-        }
-      }
-    } while (option != 2);
-    System.out.println("Goodbye");
+  /**
+   * Class constructor
+   */
+  public Client() {
+    user = new User();
+    jsch = new JSch();
+    session = null;
+    cSftp = new ChannelSftp();
   }
 
-  public static void main(String[] args) {
-    var connection = new Client();
-    connection.Sftp();
+  /**
+   * Prompts for connection information
+   */
+  void promptConnectionInfo() {
+    user.getUsername();
+    user.getPassword();
+    user.getHostname();
+  }
+
+  /**
+   * Initiates connection
+   */
+  void connect() throws JSchException {
+    session = jsch.getSession(user.username, user.hostname, 22);
+    session.setPassword(user.password);
+    Properties config = new Properties();
+    config.put("StrictHostKeyChecking", "no");
+    session.setConfig(config);
+
+    out.println("Establishing Connection...");
+    session.connect(TIMEOUT);
+
+    Channel channel = session.openChannel("sftp");
+    channel.setInputStream(null);
+    channel.connect(TIMEOUT);
+    cSftp = (ChannelSftp) channel;
+
+    out.println("Successful SFTP connection");
+  }
+
+  /**
+   * Terminates connection
+   */
+  void disconnect() {
+    cSftp.exit();
+    session.disconnect();
   }
 
   /**
    * Lists all directories and files on the user's local machine (from the current directory).
    */
-  public static int displayLocalFiles(File dir) {
-    try {
-      File[] files = dir.listFiles();
+  int displayLocalFiles(File dir) {
+    printLocalWorkingDir();
+    File[] files = dir.listFiles();
+    if(files != null) {
+      int count = 0;
       for (File file : files) {
-        if (file.isDirectory()) {
-          System.out.println("Directory: " + file.getCanonicalPath());
-          displayLocalFiles(file);
-        } else {
-          System.out.println("     File: " + file.getCanonicalPath());
+        if (count == 5) {
+          count = 0;
+          out.println();
         }
+        out.print(file.getName() + "    ");
+        ++count;
       }
-      return 1;
-    } catch (IOException e) {
-      e.printStackTrace();
-      return -1;
+      out.println("\n");
+    }
+    return 1;
+  }
+
+  /**
+   * Lists all directories and files on the user's remote machine.
+   */
+  void displayRemoteFiles() throws SftpException {
+    printRemoteWorkingDir();
+    String path = ".";
+    Vector remoteDir = cSftp.ls(path);
+    if (remoteDir != null) {
+      int count = 0;
+      for (int i = 0; i < remoteDir.size(); ++i) {
+        if (count == 5) {
+          count = 0;
+          out.println();
+        }
+        Object dirEntry = remoteDir.elementAt(i);
+        if (dirEntry instanceof ChannelSftp.LsEntry)
+          out.print(((ChannelSftp.LsEntry) dirEntry).getFilename() + "    ");
+        ++count;
+      }
+      out.println("\n");
     }
   }
+
+  /**
+   * Create a directory on the user's remote machine.
+   */
+  void createRemoteDir () throws SftpException {
+    out.println("Enter the name of the new directory: ");
+    String newDir = scanner.next();
+    cSftp.mkdir(newDir);
+  }
+
+  /**
+   * Print current working local path
+   */
+  void printLocalWorkingDir() {
+    String lpwd = cSftp.lpwd();
+    out.println("This is your current local working directory: " + lpwd + "\n");
+  }
+
+  /**
+   * Print current working remote path
+   */
+  void printRemoteWorkingDir() throws SftpException {
+    String pwd = cSftp.pwd();
+    out.println("This is your current remote working directory: " + pwd + "\n");
+  }
+
+  /**
+   * Change current working local path
+   */
+  void changeLocalWorkingDir() throws SftpException {
+    String newDir;
+    String lpwd = cSftp.lpwd();
+    out.println("This is your current local working directory: " + lpwd + "\n");
+    out.println("Enter the path of the directory you'd like to change to: ");
+    newDir = scanner.next();
+    cSftp.lcd(newDir);
+    lpwd = cSftp.lpwd();
+    out.println("This is your new current local working directory: " + lpwd + "\n");
+  }
+
+
+
 }
+
 

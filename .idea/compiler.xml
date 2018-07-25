@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="AGILE" target="10" />
+      <module name="AGILE" target="1.10" />
     </bytecodeTargetLevel>
   </component>
 </project>
