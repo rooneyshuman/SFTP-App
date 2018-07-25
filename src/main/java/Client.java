@@ -1,10 +1,10 @@
 import com.jcraft.jsch.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Vector;
+
 import static java.lang.System.out;
 
 
@@ -68,23 +68,21 @@ class Client {
    * Lists all directories and files on the user's local machine (from the current directory).
    */
   int displayLocalFiles(File dir) {
-    try {
-      printLocalWorkingDir();
-      File[] files = dir.listFiles();
-      if(files != null) {
-        for (File file : files) {
-          if (file.isDirectory()) {
-            out.println("Directory: " + file.getCanonicalPath());
-          } else {
-            out.println("     File: " + file.getCanonicalPath());
-          }
+    printLocalWorkingDir();
+    File[] files = dir.listFiles();
+    if(files != null) {
+      int count = 0;
+      for (File file : files) {
+        if (count == 5) {
+          count = 0;
+          out.println();
         }
+        out.print(file.getName() + "    ");
+        ++count;
       }
-      return 1;
-    } catch (IOException e) {
-      e.printStackTrace();
-      return -1;
+      out.println("\n");
     }
+    return 1;
   }
 
   /**
@@ -95,12 +93,18 @@ class Client {
     String path = ".";
     Vector remoteDir = cSftp.ls(path);
     if (remoteDir != null) {
+      int count = 0;
       for (int i = 0; i < remoteDir.size(); ++i) {
-        Object dirEntry = remoteDir.elementAt(i);
-        if (dirEntry instanceof ChannelSftp.LsEntry) {
-          out.println(((ChannelSftp.LsEntry) dirEntry).getFilename());
+        if (count == 5) {
+          count = 0;
+          out.println();
         }
+        Object dirEntry = remoteDir.elementAt(i);
+        if (dirEntry instanceof ChannelSftp.LsEntry)
+          out.print(((ChannelSftp.LsEntry) dirEntry).getFilename() + "    ");
+        ++count;
       }
+      out.println("\n");
     }
   }
 
