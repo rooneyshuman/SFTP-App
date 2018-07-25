@@ -7,6 +7,9 @@ import java.util.Vector;
 
 import static java.lang.System.out;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+
 
 class Client {
   private Scanner scanner = new Scanner(System.in);
