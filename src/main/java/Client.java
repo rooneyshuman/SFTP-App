@@ -69,6 +69,7 @@ class Client {
    */
   int displayLocalFiles(File dir) {
     try {
+      printLocalWorkingDir();
       File[] files = dir.listFiles();
       if(files != null) {
         for (File file : files) {
@@ -90,6 +91,7 @@ class Client {
    * Lists all directories and files on the user's remote machine.
    */
   void displayRemoteFiles() throws SftpException {
+    printRemoteWorkingDir();
     String path = ".";
     Vector remoteDir = cSftp.ls(path);
     if (remoteDir != null) {
@@ -110,6 +112,23 @@ class Client {
     String newDir = scanner.next();
     cSftp.mkdir(newDir);
   }
+
+  /**
+   * List current working local path
+   */
+  void printLocalWorkingDir() {
+    String lpwd = cSftp.lpwd();
+    out.println("This is your current local working directory: " + lpwd + "\n");
+  }
+
+  /**
+   * List current working remote path
+   */
+  void printRemoteWorkingDir() throws SftpException {
+    String pwd = cSftp.pwd();
+    out.println("This is your current remote working directory: " + pwd + "\n");
+  }
+
 
 
 }
