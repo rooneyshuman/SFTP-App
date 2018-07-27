@@ -11,6 +11,7 @@ public class Main {
 
     do {
       option = menu.mainMenu();
+
       switch (option) {
         case 1:
           try {
@@ -85,7 +86,6 @@ public class Main {
       }
     } while (option != 2);
     out.println("Goodbye");
-
   }
 
   /**
