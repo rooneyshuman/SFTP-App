@@ -119,7 +119,7 @@ public class Main {
         case 6:
           System.out.println("Rename remote directory/file...");
           break;
-        case 7:
+        case 7: //return to previous menu
           break;
         default:
           System.err.println("You did not enter a valid option");
@@ -160,7 +160,7 @@ public class Main {
         case 6:
           System.out.println("Change permissions remote directory...");
           break;
-        case 7:
+        case 7: //return to previous
           break;
         default:
           System.err.println("You did not enter a valid option");
@@ -201,7 +201,7 @@ public class Main {
         case 6:
           System.out.println("Delete remote directory/file...");
           break;
-        case 7:
+        case 7: //return to previous menu
           break;
         default:
           System.err.println("You did not enter a valid option");
@@ -247,7 +247,7 @@ public class Main {
           }
           out.println("Your directory has been created");
           break;
-        case 7:
+        case 7: //return to previous menu
           break;
         default:
           System.err.println("You did not enter a valid option");
@@ -294,7 +294,7 @@ public class Main {
             System.err.println("Error displaying remote files");
           }
           break;
-        case 7:
+        case 7: //return to previous menu
           break;
         default:
           System.err.println("You did not enter a valid option");

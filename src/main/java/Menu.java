@@ -76,6 +76,7 @@ class Menu {
     System.out.println("5. " + operation + " local");
     System.out.println("6. " + operation + " remote");
     System.out.println("7. Back to main menu");
+    System.out.println("Enter an above option number");
 
     return intCheck();
   }
