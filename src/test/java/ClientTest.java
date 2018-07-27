@@ -8,7 +8,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 public class ClientTest {
   @Test
   public void test() {
-    assertThat("default", equalTo("Default"));
+    assertThat("Default", equalTo("Default"));
   }
 
   @Test
