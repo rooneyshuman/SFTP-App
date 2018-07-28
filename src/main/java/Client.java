@@ -188,6 +188,6 @@ class Client {
     File newDir = new File(path);
     if (!newDir.mkdir())
       out.println("Error creating local directory.");
-}
+  }
 
 }
