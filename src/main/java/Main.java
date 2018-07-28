@@ -74,6 +74,14 @@ public class Main {
                 case 8: //rename file
                   out.println("Renaming files...");
                   rename(client);
+                  try {
+                  client.displayRemoteFiles();
+                  String oldFilePath = scanner.next();
+                  String newFilePath = scanner.next();
+                  client.renameRemoteFile(oldFilePath, newFilePath);
+                  } catch (SftpException e) {
+                    out.println("Error renaming file");
+                  }
                   break;
 
                 case 9: //view log history

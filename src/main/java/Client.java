@@ -178,4 +178,13 @@ class Client {
     out.println("The file has been downloaded to: " + lpwd);
   }
 
+  /**
+   * Rename file on remote directory
+   */
+  void renameRemoteFile(String oldFilePath, String newFilePath) throws SftpException {
+    String pwd = cSftp.pwd();
+    cSftp.rename(oldFilePath, newFilePath);
+    out.println("The file has been renamed in your current working directory: " + pwd);
+  }
+
 }
