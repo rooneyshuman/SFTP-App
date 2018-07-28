@@ -110,7 +110,7 @@ class Client {
   /**
    * Create a directory on the user's remote machine.
    */
-  void createRemoteDir () throws SftpException {
+  void createRemoteDir() throws SftpException {
     out.println("Enter the name of the new directory: ");
     String newDir = scanner.next();
     cSftp.mkdir(newDir);
@@ -147,8 +147,8 @@ class Client {
   }
 
   /**
-  * Change current working remote path
-  */
+   * Change current working remote path
+   */
   void changeRemoteWorkingDir() throws SftpException {
     String newDir;
     String pwd = cSftp.pwd();
@@ -161,8 +161,8 @@ class Client {
   }
 
   /**
-  * Upload file to current remote directory path
-  */
+   * Upload file to current remote directory path
+   */
   void uploadFile(String filename) throws SftpException {
     cSftp.put(filename, filename);
     String pwd = cSftp.pwd();
@@ -170,12 +170,24 @@ class Client {
   }
 
   /**
-  * Download file to current local directory path
-  */
+   * Download file to current local directory path
+   */
   void downloadFile(String filename) throws SftpException{
     cSftp.get(filename,filename);
     String lpwd = cSftp.lpwd();
     out.println("The file has been downloaded to: " + lpwd);
   }
+
+  /**
+   * Create a directory on the user's local machine.
+   */
+  void createLocalDir() {
+	out.println("Enter the name of the new directory: ");
+	String dirName = scanner.next();
+    String path = cSftp.lpwd() + "/" + dirName;
+    File newDir = new File(path);
+    if (!newDir.mkdir())
+      out.println("Error creating local directory.");
+}
 
 }
