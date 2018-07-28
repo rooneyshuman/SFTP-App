@@ -145,6 +145,4 @@ class Client {
     lpwd = cSftp.lpwd();
     out.println("This is your new current local working directory: " + lpwd + "\n");
   }
-
-
 }
