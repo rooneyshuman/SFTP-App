@@ -147,8 +147,8 @@ class Client {
   }
 
   /**
-  * Change current working remote path
-  */
+   * Change current working remote path
+   */
   void changeRemoteWorkingDir() throws SftpException {
     String newDir;
     String pwd = cSftp.pwd();
@@ -161,8 +161,8 @@ class Client {
   }
 
   /**
-  * Upload file to current remote directory path
-  */
+   * Upload file to current remote directory path
+   */
   void uploadFile(String filename) throws SftpException {
     cSftp.put(filename, filename);
     String pwd = cSftp.pwd();
@@ -170,8 +170,8 @@ class Client {
   }
 
   /**
-  * Download file to current local directory path
-  */
+   * Download file to current local directory path
+   */
   void downloadFile(String filename) throws SftpException{
     cSftp.get(filename,filename);
     String lpwd = cSftp.lpwd();
@@ -186,4 +186,17 @@ class Client {
     out.println(filename + " has been renamed to: " + newFilename + "\n");
   }
 
+  /**
+   * Rename file on local directory
+   */
+  void renameLocalFile(String filename, String newFilename) {
+    File file = new File(filename);
+    File newFile = new File(newFilename);
+
+    if (file.renameTo(newFile)) {
+      out.println(filename + " has been renamed to: " + newFilename + "\n");
+    } else {
+      out.println("Error: rename unsuccessful");
+    }
+  }
 }

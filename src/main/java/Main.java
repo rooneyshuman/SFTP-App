@@ -136,15 +136,21 @@ public class Main {
           break;
         case 5:
           System.out.println("Rename local directory/file...");
+          client.displayLocalFiles();
+          out.println("Enter the original file name: ");
+          String filename = scanner.next();
+          out.println("Enter the new file name: ");
+          String newFilename = scanner.next();
+          client.renameLocalFile(filename, newFilename);
           break;
         case 6:
           System.out.println("Rename remote directory/file...");
           try {
             client.displayRemoteFiles();
             out.println("Enter the original file name: ");
-            String filename = scanner.next();
+            filename = scanner.next();
             out.println("Enter the new file name: ");
-            String newFilename = scanner.next();
+            newFilename = scanner.next();
             client.renameRemoteFile(filename, newFilename);
           } catch (SftpException e) {
             out.println("Error renaming file");
