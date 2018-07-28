@@ -74,14 +74,6 @@ public class Main {
                 case 8: //rename file
                   out.println("Renaming files...");
                   rename(client);
-                  try {
-                  client.displayRemoteFiles();
-                  String oldFilePath = scanner.next();
-                  String newFilePath = scanner.next();
-                  client.renameRemoteFile(oldFilePath, newFilePath);
-                  } catch (SftpException e) {
-                    out.println("Error renaming file");
-                  }
                   break;
 
                 case 9: //view log history
@@ -122,6 +114,8 @@ public class Main {
   private static void rename(Client client) throws SftpException {
     var menu = new Menu();
     int opt;
+    Scanner scanner = new Scanner(System.in);
+
     do {
       opt = menu.localOrRemoteMenu("Rename");
       switch (opt) {
@@ -145,7 +139,18 @@ public class Main {
           break;
         case 6:
           System.out.println("Rename remote directory/file...");
+          try {
+            client.displayRemoteFiles();
+            out.println("Enter the original file name: ");
+            String filename = scanner.next();
+            out.println("Enter the new file name: ");
+            String newFilename = scanner.next();
+            client.renameRemoteFile(filename, newFilename);
+          } catch (SftpException e) {
+            out.println("Error renaming file");
+          }
           break;
+
         case 7: //return to previous menu
           break;
         default:
