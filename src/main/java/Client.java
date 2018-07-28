@@ -158,6 +158,7 @@ class Client {
     cSftp.cd(newDir);
     pwd = cSftp.pwd();
     out.println("This is your new current local working directory: " + pwd + "\n");
+  }
 
   /**
   * Upload file to current remote directory path
