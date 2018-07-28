@@ -158,6 +158,23 @@ class Client {
     cSftp.cd(newDir);
     pwd = cSftp.pwd();
     out.println("This is your new current local working directory: " + pwd + "\n");
+
+  /**
+  * Upload file to current remote directory path
+  */
+  void uploadFile(String filename) throws SftpException {
+    cSftp.put(filename, filename);
+    String pwd = cSftp.pwd();
+    out.println("The file has been uploaded to: " + pwd);
+  }
+
+  /**
+  * Download file to current local directory path
+  */
+  void downloadFile(String filename) throws SftpException{
+    cSftp.get(filename,filename);
+    String lpwd = cSftp.lpwd();
+    out.println("The file has been downloaded to: " + lpwd);
   }
 
 }

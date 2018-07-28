@@ -1,13 +1,17 @@
 import com.jcraft.jsch.SftpException;
 
+import java.util.Scanner;
+
 import static java.lang.System.out;
 
 public class Main {
+
 
   public static void main(String[] args) {
     Client client = new Client(); //init client class
     int option;
     var menu = new Menu();
+    Scanner scanner = new Scanner(System.in);
 
     do {
       option = menu.mainMenu();
@@ -25,12 +29,27 @@ public class Main {
                   listDirectories(client);
                   break;
 
-                case 2: //get file/files: which files, put where
-                  out.println("Getting Files...");
+                case 2: //download a file
+                  try {
+                    out.println("Listing remote directories and files...");
+                    client.displayRemoteFiles();
+                    String filename = scanner.next();
+                    client.downloadFile(filename);
+                  } catch (SftpException e) {
+                    out.println("Error downloading file");
+                  }
                   break;
 
-                case 3: //put file/files: which files put where
-                  out.println("Putting Files...");
+                case 3: //upload a file
+                  try {
+                    out.println("Listing local directories and files...");
+                    client.displayLocalFiles();
+                    String filename = scanner.next();
+                    client.uploadFile(filename);
+                  } catch (SftpException e) {
+                    out.println("Error uploading file");
+                  }
+
                   break;
 
                 case 4: //create remote directory in current dir: name

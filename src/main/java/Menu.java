@@ -80,4 +80,5 @@ class Menu {
 
     return intCheck();
   }
+
 }
