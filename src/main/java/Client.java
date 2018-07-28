@@ -181,9 +181,12 @@ class Client {
   /**
    * Rename file on remote directory
    */
-  void renameRemoteFile(String filename, String newFilename) throws SftpException {
+  void renameRemoteFile() throws SftpException {
+    out.println("Enter the original file name: ");
+    String filename = scanner.next();
+    out.println("Enter the new file name: ");
+    String newFilename = scanner.next();
     cSftp.rename(filename, newFilename);
     out.println(filename + " has been renamed to: " + newFilename + "\n");
   }
-
 }
