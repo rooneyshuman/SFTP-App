@@ -137,11 +137,7 @@ public class Main {
         case 5:
           System.out.println("Rename local directory/file...");
           client.displayLocalFiles();
-          out.println("Enter the original file name: ");
-          String filename = scanner.next();
-          out.println("Enter the new file name: ");
-          String newFilename = scanner.next();
-          client.renameLocalFile(filename, newFilename);
+          client.renameLocalFile();
           break;
         case 6:
           System.out.println("Rename remote directory/file...");

@@ -193,7 +193,12 @@ class Client {
   /**
    * Rename file on local directory
    */
-  void renameLocalFile(String filename, String newFilename) {
+  void renameLocalFile() {
+    out.println("Enter the original file name: ");
+    String filename = scanner.next();
+    out.println("Enter the new file name: ");
+    String newFilename = scanner.next();
+
     File file = new File(filename);
     File newFile = new File(newFilename);
 
