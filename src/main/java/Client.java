@@ -173,10 +173,10 @@ class Client {
 			String removeWhitespace = filename.replaceAll("\\s","");
 			String [] arr = removeWhitespace.split(",");
 			String output = new String();
-			String lpwd = cSftp.lpwd();
+			String pwd = cSftp.pwd();
 			for (String file : arr) {
 				cSftp.put(file, file);
-				output += file + " has been uploaded to: " + lpwd + "\n";
+				output += file + " has been uploaded to: " + pwd + "\n";
 			}
 			out.println(output);
 		}else {

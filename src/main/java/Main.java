@@ -19,7 +19,7 @@ public class Main {
       switch (option) {
         case 1:
           try {
-            //client.promptConnectionInfo();
+            client.promptConnectionInfo();
             client.connect();
 
             do {
