@@ -111,10 +111,36 @@ class Client {
    * Create a directory on the user's remote machine.
    */
   void createRemoteDir() throws SftpException {
-    out.println("Enter the name of the new directory: ");
-    String newDir = scanner.next();
-    cSftp.mkdir(newDir);
-  }
+	boolean repeat = true;
+	String answer;
+	String newDir;
+    SftpATTRS attrs = null;
+
+    while (repeat) {
+    	out.println("Enter the name of the new directory: ");
+
+    	newDir = scanner.next();
+		try {
+			attrs = cSftp.stat(newDir);
+		} catch (Exception e) {
+			out.println("Directory doesn't exist, it will now be created.");
+		}
+		if (attrs != null) {            //directory exists
+			out.println("A directory by this name exists. Overwrite? (yes/no)");
+			answer = scanner.next();
+			attrs = null;
+			if (answer.equalsIgnoreCase("yes")) {
+				cSftp.rmdir(newDir);
+				cSftp.mkdir(newDir);
+				repeat = false;
+			}
+		}
+		else {
+			cSftp.mkdir(newDir);
+			repeat = false;
+		}
+   }
+ }
 
   /**
    * Print current working local path
