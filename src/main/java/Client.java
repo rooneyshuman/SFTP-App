@@ -191,20 +191,6 @@ class Client {
   }
 
   /**
-   * Wrapper for renaming local files/directories
-   */
-  void renameLocal() {
-    System.out.println("Enter the original file name: ");
-    String filename = scanner.nextLine();
-    System.out.println("Enter the new file name: ");
-    String newFilename = scanner.nextLine();
-    if (renameLocalFile(filename, newFilename))
-      out.println(filename + " has been renamed to: " + newFilename + "\n");
-    else
-      out.println("Error: rename unsuccessful");
-  }
-
-  /**
    * Rename file on local directory
    */
   boolean renameLocalFile(String filename, String newFilename) {
@@ -218,6 +204,17 @@ class Client {
     }
   }
 
-
-
+  /**
+   * Wrapper for renaming local files/directories
+   */
+  void renameLocal() {
+    System.out.println("Enter the original file name: ");
+    String filename = scanner.nextLine();
+    System.out.println("Enter the new file name: ");
+    String newFilename = scanner.nextLine();
+    if (renameLocalFile(filename, newFilename))
+      out.println(filename + " has been renamed to: " + newFilename + "\n");
+    else
+      out.println("Error: rename unsuccessful");
+  }
 }
