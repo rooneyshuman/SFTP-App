@@ -70,7 +70,7 @@ class Client {
     File dir = new File(cSftp.lpwd());
     printLocalWorkingDir();
     File[] files = dir.listFiles();
-    if(files != null) {
+    if (files != null) {
       int count = 0;
       for (File file : files) {
         if (count == 5) {
@@ -111,36 +111,74 @@ class Client {
    * Create a directory on the user's remote machine.
    */
   void createRemoteDir() throws SftpException {
-	boolean repeat = true;
-	String answer;
-	String newDir;
+    boolean repeat = true;
+    String answer;
+    String dirName;
     SftpATTRS attrs = null;
 
     while (repeat) {
-    	out.println("Enter the name of the new directory: ");
+      out.println("Enter the name of the new directory: ");
+      dirName = scanner.next();
+      try {
+        attrs = cSftp.stat(dirName);
+      } catch (Exception e) {
+        out.println("A directory by this name doesn't exist, it will now be created.");
+      }
+      if (attrs != null) {            //directory exists
+        out.println("A directory by this name exists. Overwrite? (yes/no)");
+        answer = scanner.next();
+        attrs = null;               //reset attrs for loop
+        if (answer.equalsIgnoreCase("yes")) {
+          try {
+            cSftp.rmdir(dirName);
+            cSftp.mkdir(dirName);
+            out.println(dirName + " has been overwritten");
+            repeat = false;
+          } catch (SftpException e) {
+            out.println("Error overwriting file");
+          }
+        }
+      }
+      else {
+        cSftp.mkdir(dirName);
+        out.println(dirName + " has been created");
+        repeat = false;
+      }
+    }
+  }
 
-    	newDir = scanner.next();
-		try {
-			attrs = cSftp.stat(newDir);
-		} catch (Exception e) {
-			out.println("Directory doesn't exist, it will now be created.");
-		}
-		if (attrs != null) {            //directory exists
-			out.println("A directory by this name exists. Overwrite? (yes/no)");
-			answer = scanner.next();
-			attrs = null;
-			if (answer.equalsIgnoreCase("yes")) {
-				cSftp.rmdir(newDir);
-				cSftp.mkdir(newDir);
-				repeat = false;
-			}
-		}
-		else {
-			cSftp.mkdir(newDir);
-			repeat = false;
-		}
-   }
- }
+  /**
+   * Create a directory on the user's local machine.
+   */
+  void createLocalDir() {
+    boolean repeat = true;
+    String dirName;
+    String answer;
+
+    while (repeat) {
+      out.println("Enter the name of the new directory: ");
+      dirName = scanner.next();
+      String path = cSftp.lpwd() + "/" + dirName;
+      File newDir = new File(path);
+      if (newDir.exists()) {          //directory exists
+        out.println("A directory by this name exists. Overwrite? (yes/no)");
+        answer = scanner.next();
+        if (answer.equalsIgnoreCase("yes")) {
+          if (newDir.delete() && newDir.mkdir())
+            out.println(dirName + " has been overwritten");
+          else
+          	out.println("Error overwriting file");
+          repeat = false;
+        }
+      }
+      else {
+        if (!newDir.mkdir())
+          out.println("Error creating local directory.");
+        out.println(dirName + " has been created");
+        repeat = false;
+      }
+    }
+  }
 
   /**
    * Print current working local path
@@ -198,22 +236,9 @@ class Client {
   /**
    * Download file to current local directory path
    */
-  void downloadFile(String filename) throws SftpException{
-    cSftp.get(filename,filename);
+  void downloadFile(String filename) throws SftpException {
+    cSftp.get(filename, filename);
     String lpwd = cSftp.lpwd();
     out.println("The file has been downloaded to: " + lpwd);
   }
-
-  /**
-   * Create a directory on the user's local machine.
-   */
-  void createLocalDir() {
-	out.println("Enter the name of the new directory: ");
-	String dirName = scanner.next();
-    String path = cSftp.lpwd() + "/" + dirName;
-    File newDir = new File(path);
-    if (!newDir.mkdir())
-      out.println("Error creating local directory.");
-  }
-
 }
