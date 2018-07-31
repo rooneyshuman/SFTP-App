@@ -266,6 +266,7 @@ public class Main {
           break;
         case 5:
           System.out.println("Create local directory...");
+          client.createLocalDir();
           break;
         case 6:
           try {
