@@ -147,8 +147,8 @@ class Client {
   }
 
   /**
-  * Change current working remote path
-  */
+   * Change current working remote path
+   */
   void changeRemoteWorkingDir() throws SftpException {
     String newDir;
     String pwd = cSftp.pwd();
@@ -161,8 +161,8 @@ class Client {
   }
 
   /**
-  * Upload file to current remote directory path
-  */
+   * Upload file to current remote directory path
+   */
   void uploadFile(String filename) throws SftpException {
     cSftp.put(filename, filename);
     String pwd = cSftp.pwd();
@@ -170,8 +170,8 @@ class Client {
   }
 
   /**
-  * Download file to current local directory path
-  */
+   * Download file to current local directory path
+   */
   void downloadFile(String filename) throws SftpException{
     cSftp.get(filename,filename);
     String lpwd = cSftp.lpwd();
@@ -179,21 +179,31 @@ class Client {
   }
 
   /**
-   * Wrapper for renaming remote files/directories
-   */
-   void renameRemote() throws SftpException {
-     out.println("Enter the original file name: ");
-     String filename = scanner.next();
-     out.println("Enter the new file name: ");
-     String newFilename = scanner.next();
-     renameRemoteFile(filename, newFilename);
-   }
-
-  /**
    * Rename file on remote directory
    */
-  void renameRemoteFile(String filename, String newFilename) throws SftpException {
-    cSftp.rename(filename, newFilename);
-    out.println(filename + " has been renamed to: " + newFilename + "\n");
+  boolean renameRemoteFile(String filename, String newFilename) throws SftpException {
+    boolean success = false;
+    try {
+      cSftp.rename(filename, newFilename);
+      success = true;
+    } catch (SftpException e) {
+      out.println("Error: rename unsuccessful");
+      success = false;
+    }
+    return success;
+  }
+
+  /**
+   * Wrapper for renaming remote files/directories
+   */
+  void renameRemote() throws SftpException {
+    out.println("Enter the original file name: ");
+    String filename = scanner.next();
+    out.println("Enter the new file name: ");
+    String newFilename = scanner.next();
+    if (renameRemoteFile(filename, newFilename))
+      out.println(filename + " has been renamed to: " + newFilename + "\n");
+    else
+      out.println("Error: rename unsuccessful");
   }
 }

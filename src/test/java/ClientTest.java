@@ -1,3 +1,4 @@
+import com.jcraft.jsch.SftpException;
 import org.junit.Test;
 
 import java.io.File;
@@ -20,4 +21,11 @@ public class ClientTest {
     //assertThat(expected, equalTo(actual));
   }
 
+  @Test
+  public void renameRemoteFilesHappyPath() throws SftpException {
+    Client client = new Client();
+    boolean expected = false;
+    boolean actual = client.renameRemoteFile("original", "rename");
+    assertThat(actual, equalTo(expected));
+  }
 }
