@@ -198,7 +198,10 @@ class Client {
     String filename = scanner.nextLine();
     System.out.println("Enter the new file name: ");
     String newFilename = scanner.nextLine();
-    renameLocalFile(filename, newFilename);
+    if (renameLocalFile(filename, newFilename))
+      out.println(filename + " has been renamed to: " + newFilename + "\n");
+    else
+      out.println("Error: rename unsuccessful");
   }
 
   /**
@@ -209,10 +212,8 @@ class Client {
     File newFile = new File(newFilename);
 
     if (file.renameTo(newFile)) {
-      out.println(filename + " has been renamed to: " + newFilename + "\n");
       return true;
     } else {
-      out.println("Error: rename unsuccessful");
       return false;
     }
   }
