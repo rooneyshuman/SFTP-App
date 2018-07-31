@@ -110,7 +110,7 @@ class Client {
   /**
    * Create a directory on the user's remote machine.
    */
-  void createRemoteDir () throws SftpException {
+  void createRemoteDir() throws SftpException {
     out.println("Enter the name of the new directory: ");
     String newDir = scanner.next();
     cSftp.mkdir(newDir);
@@ -205,6 +205,7 @@ class Client {
   }
 
   /**
+<<<<<<< HEAD
    * Wrapper for renaming local files/directories
    */
   void renameLocal() {
@@ -216,5 +217,17 @@ class Client {
       out.println(filename + " has been renamed to: " + newFilename + "\n");
     else
       out.println("Error: rename unsuccessful");
+  }
+
+  /**
+   * Create a directory on the user's local machine.
+   */
+  void createLocalDir() {
+	out.println("Enter the name of the new directory: ");
+	String dirName = scanner.next();
+    String path = cSftp.lpwd() + "/" + dirName;
+    File newDir = new File(path);
+    if (!newDir.mkdir())
+      out.println("Error creating local directory.");
   }
 }
