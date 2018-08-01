@@ -25,6 +25,13 @@ class Client {
 		cSftp = new ChannelSftp();
 	}
 
+	public Client(String password, String hostName, String userName){
+		user = new User(password,hostName,userName);
+		jsch = new JSch();
+		session = null;
+		cSftp = new ChannelSftp();
+	}
+
 	/**
 	 * Prompts for connection information
 	 */
@@ -61,6 +68,14 @@ class Client {
 	void disconnect() {
 		cSftp.exit();
 		session.disconnect();
+	}
+
+	/**
+	 * Simple getter for cSftp for use in test suite.
+	 * @return -- returns the cSftp object.
+	 */
+	ChannelSftp getcSftp(){
+		return cSftp;
 	}
 
 	/**
@@ -165,7 +180,7 @@ class Client {
 	 * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
 	 * @throws SftpException -- General errors/exceptions
 	 */
-	public void uploadFile (String filename) throws SftpException {
+	public int uploadFile (String filename) throws SftpException {
 		if(filename.contains(",")){
 			//multiple files are wanted.
 
@@ -179,10 +194,12 @@ class Client {
 				output += file + " has been uploaded to: " + pwd + "\n";
 			}
 			out.println(output);
+			return 1;
 		}else {
 			cSftp.put(filename, filename);
 			String pwd = cSftp.pwd();
 			out.println("The file has been uploaded to: " + pwd);
+			return 1;
 		}
 	}
 
@@ -191,7 +208,7 @@ class Client {
 	 * @param filename
 	 * @throws SftpException
 	 */
-	public void downloadFile (String filename) throws SftpException {
+	public int downloadFile (String filename) throws SftpException {
 		if(filename.contains(",")){
 			//multiple files are wanted.
 
@@ -205,10 +222,12 @@ class Client {
 				output += file + " has been downloaded to: " + lpwd + "\n";
 			}
 			out.println(output);
+			return 1;
 		}else {
 			cSftp.get(filename, filename);
 			String lpwd = cSftp.lpwd();
 			out.println("The file has been downloaded to: " + lpwd);
+			return 1;
 		}
 	}
 
@@ -248,18 +267,5 @@ class Client {
 			ex.printStackTrace();
 		}
 	}
-
-
-  /**
-   * Create a directory on the user's local machine.
-   */
-  void createLocalDir() {
-	out.println("Enter the name of the new directory: ");
-	String dirName = scanner.next();
-    String path = cSftp.lpwd() + "/" + dirName;
-    File newDir = new File(path);
-    if (!newDir.mkdir())
-      out.println("Error creating local directory.");
-  }
 
 }

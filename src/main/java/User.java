@@ -35,6 +35,12 @@ class User {
     username = null;
   }
 
+  User(String pw, String hn, String un){
+    password = pw;
+    hostname = hn;
+    username = un;
+  }
+
   /**
    * Prompts the user for a valid password
    * @return  The password input
@@ -59,7 +65,7 @@ class User {
     //username = ""; //for testing
     if (username == null || username.isEmpty() || !verifyUsername(username)) {
       System.err.println("That was not a valid username.  Please enter 8-20 alpha numeric " +
-          "characters.");
+              "characters.");
       username = scanner.next(); //comment out for testing
     }
     return username;
@@ -90,7 +96,7 @@ class User {
     while (hostname == null || hostname.isEmpty() || !verifyHostName(hostname)) {
       System.out.println("That was not a valid Host Name.");
       System.out.println("Valid host names are no longer than 255 alpha numeric characters and \n" +
-          "dashes. Each segment of the host name cannot be longer than 63 characters.");
+              "dashes. Each segment of the host name cannot be longer than 63 characters.");
       hostname = scanner.next();
     }
     return hostname;
@@ -106,7 +112,7 @@ class User {
     if (toVerify.length() > 255)
       return false;
     String userNamePattern = "^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])(\\." +
-        "([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9]))*$";
+            "([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9]))*$";
     Pattern pattern = Pattern.compile(userNamePattern);
     Matcher matcher = pattern.matcher(toVerify);
     return matcher.matches();
