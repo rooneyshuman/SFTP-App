@@ -249,4 +249,17 @@ class Client {
 		}
 	}
 
+
+  /**
+   * Create a directory on the user's local machine.
+   */
+  void createLocalDir() {
+	out.println("Enter the name of the new directory: ");
+	String dirName = scanner.next();
+    String path = cSftp.lpwd() + "/" + dirName;
+    File newDir = new File(path);
+    if (!newDir.mkdir())
+      out.println("Error creating local directory.");
+  }
+
 }
