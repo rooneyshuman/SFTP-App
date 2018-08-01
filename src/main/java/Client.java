@@ -205,7 +205,6 @@ class Client {
   }
 
   /**
-<<<<<<< HEAD
    * Wrapper for renaming local files/directories
    */
   void renameLocal() {
