@@ -2,6 +2,8 @@
 
 # Ignroe .idea files
 *.iml
+*.xml
+.idea/workspace.xml
 
 # Ignore local maven files
 *.lst
