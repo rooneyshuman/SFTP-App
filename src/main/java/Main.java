@@ -269,6 +269,7 @@ public class Main {
           } catch (SftpException e) {
             System.err.println("Error creating new directory");
           }
+          out.println("Your directory has been created");
           break;
         case 7: //return to previous menu
           break;
