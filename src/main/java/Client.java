@@ -138,8 +138,7 @@ class Client {
             out.println("Error overwriting file");
           }
         }
-      }
-      else {
+      } else {
         cSftp.mkdir(dirName);
         out.println(dirName + " has been created");
         repeat = false;
@@ -167,11 +166,10 @@ class Client {
           if (newDir.delete() && newDir.mkdir())
             out.println(dirName + " has been overwritten");
           else
-          	out.println("Error overwriting file");
+            out.println("Error overwriting file");
           repeat = false;
         }
-      }
-      else {
+      } else {
         if (!newDir.mkdir())
           out.println("Error creating local directory.");
         out.println(dirName + " has been created");
@@ -225,74 +223,92 @@ class Client {
   }
 
   /**
-   * Upload file to current remote directory path
+   * Uploads file(s) to the current working remote directory from the current working local directory.
+   *
+   * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
+   * @throws SftpException -- General errors/exceptions
    */
-  void uploadFile(String filename) throws SftpException {
-    cSftp.put(filename, filename);
-    String pwd = cSftp.pwd();
-    out.println("The file has been uploaded to: " + pwd);
+  public void uploadFile(String filename) throws SftpException {
+    if (filename.contains(",")) {
+      //multiple files are wanted.
+
+      //take the string and separate out the files.
+      String removeWhitespace = filename.replaceAll("\\s", "");
+      String[] arr = removeWhitespace.split(",");
+      String output = new String();
+      String pwd = cSftp.pwd();
+      for (String file : arr) {
+        cSftp.put(file, file);
+        output += file + " has been uploaded to: " + pwd + "\n";
+      }
+      out.println(output);
+    } else {
+      cSftp.put(filename, filename);
+      String pwd = cSftp.pwd();
+      out.println("The file has been uploaded to: " + pwd);
+    }
   }
 
-	/**
-	 * Downloads file(s) from the current working remote directory to the current working local directory.
-	 * @param filename
-	 * @throws SftpException
-	 */
-	public void downloadFile (String filename) throws SftpException {
-		if(filename.contains(",")){
-			//multiple files are wanted.
+  /**
+   * Downloads file(s) from the current working remote directory to the current working local directory.
+   *
+   * @param filename
+   * @throws SftpException
+   */
+  public void downloadFile(String filename) throws SftpException {
+    if (filename.contains(",")) {
+      //multiple files are wanted.
 
-			//take the string and separate out the files.
-			String removeWhitespace = filename.replaceAll("\\s","");
-			String [] arr = removeWhitespace.split(",");
-			String output = new String();
-			String lpwd = cSftp.lpwd();
-			for (String file : arr) {
-				cSftp.get(file, file);
-				output += file + " has been downloaded to: " + lpwd + "\n";
-			}
-			out.println(output);
-		}else {
-			cSftp.get(filename, filename);
-			String lpwd = cSftp.lpwd();
-			out.println("The file has been downloaded to: " + lpwd);
-		}
-	}
+      //take the string and separate out the files.
+      String removeWhitespace = filename.replaceAll("\\s", "");
+      String[] arr = removeWhitespace.split(",");
+      String output = new String();
+      String lpwd = cSftp.lpwd();
+      for (String file : arr) {
+        cSftp.get(file, file);
+        output += file + " has been downloaded to: " + lpwd + "\n";
+      }
+      out.println(output);
+    } else {
+      cSftp.get(filename, filename);
+      String lpwd = cSftp.lpwd();
+      out.println("The file has been downloaded to: " + lpwd);
+    }
+  }
 
-	/**
-	 * Executes a command on the remote server.
-	 *
-	 * @param
-	 * command -- The text command that you'd like to execute. (Ex: "ls -a" or "cd mydirectory")
-	 */
-	void remoteExec(String command) {
-		try {
-			Channel channel = session.openChannel("Exec");
-			((ChannelExec) channel).setCommand(command);
-			channel.setInputStream(null);
-			((ChannelExec) channel).setErrStream(System.err);
+  /**
+   * Executes a command on the remote server.
+   *
+   * @param command -- The text command that you'd like to execute. (Ex: "ls -a" or "cd mydirectory")
+   */
+  void remoteExec(String command) {
+    try {
+      Channel channel = session.openChannel("Exec");
+      ((ChannelExec) channel).setCommand(command);
+      channel.setInputStream(null);
+      ((ChannelExec) channel).setErrStream(System.err);
 
 
-			channel.connect();
-			InputStream input = channel.getInputStream();
-			try {
-				InputStreamReader inputReader = new InputStreamReader(input);
-				BufferedReader bufferedReader = new BufferedReader(inputReader);
-				String line = null;
+      channel.connect();
+      InputStream input = channel.getInputStream();
+      try {
+        InputStreamReader inputReader = new InputStreamReader(input);
+        BufferedReader bufferedReader = new BufferedReader(inputReader);
+        String line = null;
 
-				while ((line = bufferedReader.readLine()) != null) {
-					System.out.println(line);
-				}
-				bufferedReader.close();
-				inputReader.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
+        while ((line = bufferedReader.readLine()) != null) {
+          System.out.println(line);
+        }
+        bufferedReader.close();
+        inputReader.close();
+      } catch (IOException ex) {
+        ex.printStackTrace();
+      }
 
-			channel.disconnect();
-			session.disconnect();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
+      channel.disconnect();
+      session.disconnect();
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }
 }
