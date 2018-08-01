@@ -33,10 +33,12 @@ public class Main {
                   try {
                     out.println("Listing remote directories and files...");
                     client.displayRemoteFiles();
-                    String filename = scanner.next();
+                    out.println("Please enter the name of the file(s) you'd like to download. Example usage: file1.txt, file2.txt");
+                    String filename = scanner.nextLine();
                     client.downloadFile(filename);
                   } catch (SftpException e) {
                     out.println("Error downloading file");
+                    e.printStackTrace();
                   }
                   break;
 
@@ -44,10 +46,12 @@ public class Main {
                   try {
                     out.println("Listing local directories and files...");
                     client.displayLocalFiles();
-                    String filename = scanner.next();
+                    out.println("Please enter the name of the file(s) you'd like to download. Example usage: file1.txt, file2.txt");
+                    String filename = scanner.nextLine();
                     client.uploadFile(filename);
                   } catch (SftpException e) {
                     out.println("Error uploading file");
+                    e.printStackTrace();
                   }
 
                   break;
