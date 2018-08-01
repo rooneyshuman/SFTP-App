@@ -4,8 +4,8 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import org.junit.Test;
 
 public class MainTest {
-	@Test
-	public void defaultTest() {
-		assertThat("Default", equalTo("Default"));
-	}
+  @Test
+  public void defaultTest() {
+    assertThat("Default", equalTo("Default"));
+  }
 }
