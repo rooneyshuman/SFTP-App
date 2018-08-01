@@ -162,16 +162,17 @@ class Client {
 
 	/**
 	 * Uploads file(s) to the current working remote directory from the current working local directory.
+	 *
 	 * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
 	 * @throws SftpException -- General errors/exceptions
 	 */
-	public void uploadFile (String filename) throws SftpException {
-		if(filename.contains(",")){
+	public void uploadFile(String filename) throws SftpException {
+		if (filename.contains(",")) {
 			//multiple files are wanted.
 
 			//take the string and separate out the files.
-			String removeWhitespace = filename.replaceAll("\\s","");
-			String [] arr = removeWhitespace.split(",");
+			String removeWhitespace = filename.replaceAll("\\s", "");
+			String[] arr = removeWhitespace.split(",");
 			String output = new String();
 			String pwd = cSftp.pwd();
 			for (String file : arr) {
@@ -179,7 +180,7 @@ class Client {
 				output += file + " has been uploaded to: " + pwd + "\n";
 			}
 			out.println(output);
-		}else {
+		} else {
 			cSftp.put(filename, filename);
 			String pwd = cSftp.pwd();
 			out.println("The file has been uploaded to: " + pwd);
@@ -188,16 +189,17 @@ class Client {
 
 	/**
 	 * Downloads file(s) from the current working remote directory to the current working local directory.
+	 *
 	 * @param filename
 	 * @throws SftpException
 	 */
-	public void downloadFile (String filename) throws SftpException {
-		if(filename.contains(",")){
+	public void downloadFile(String filename) throws SftpException {
+		if (filename.contains(",")) {
 			//multiple files are wanted.
 
 			//take the string and separate out the files.
-			String removeWhitespace = filename.replaceAll("\\s","");
-			String [] arr = removeWhitespace.split(",");
+			String removeWhitespace = filename.replaceAll("\\s", "");
+			String[] arr = removeWhitespace.split(",");
 			String output = new String();
 			String lpwd = cSftp.lpwd();
 			for (String file : arr) {
@@ -205,7 +207,7 @@ class Client {
 				output += file + " has been downloaded to: " + lpwd + "\n";
 			}
 			out.println(output);
-		}else {
+		} else {
 			cSftp.get(filename, filename);
 			String lpwd = cSftp.lpwd();
 			out.println("The file has been downloaded to: " + lpwd);
@@ -215,8 +217,7 @@ class Client {
 	/**
 	 * Executes a command on the remote server.
 	 *
-	 * @param
-	 * command -- The text command that you'd like to execute. (Ex: "ls -a" or "cd mydirectory")
+	 * @param command -- The text command that you'd like to execute. (Ex: "ls -a" or "cd mydirectory")
 	 */
 	void remoteExec(String command) {
 		try {
@@ -250,16 +251,16 @@ class Client {
 	}
 
 
-  /**
-   * Create a directory on the user's local machine.
-   */
-  void createLocalDir() {
-	out.println("Enter the name of the new directory: ");
-	String dirName = scanner.next();
-    String path = cSftp.lpwd() + "/" + dirName;
-    File newDir = new File(path);
-    if (!newDir.mkdir())
-      out.println("Error creating local directory.");
-  }
+	/**
+	 * Create a directory on the user's local machine.
+	 */
+	void createLocalDir() {
+		out.println("Enter the name of the new directory: ");
+		String dirName = scanner.next();
+		String path = cSftp.lpwd() + "/" + dirName;
+		File newDir = new File(path);
+		if (!newDir.mkdir())
+			out.println("Error creating local directory.");
+	}
 
 }
