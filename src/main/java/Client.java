@@ -208,22 +208,44 @@ class Client {
    * Wrapper for renaming local files/directories
    */
   void renameLocal() {
-    System.out.println("Enter the original file name: ");
-    String filename = scanner.nextLine();
-    System.out.println("Enter the new file name: ");
-    String newFilename = scanner.nextLine();
-    if (renameLocalFile(filename, newFilename))
-      out.println(filename + " has been renamed to: " + newFilename + "\n");
-    else
-      out.println("Error: rename unsuccessful");
+    boolean repeat = true;
+    String answer;
+    while (repeat) {
+      System.out.println("Enter the original file name: ");
+      String filename = scanner.nextLine();
+      System.out.println("Enter the new file name: ");
+      String newFilename = scanner.nextLine();
+      File newFile = new File(newFilename);
+      //Check for a duplicate file/directory name
+      if (newFile.exists()) {
+        out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
+        answer = scanner.nextLine();
+        if ((answer.equalsIgnoreCase("yes") || (answer.equalsIgnoreCase("y")))) {
+          if (renameLocalFile(filename, newFilename)) {
+            out.println(filename + " has been overwritten.\n");
+          } else {
+            out.println("Error: rename unsuccessful.\n");
+          }
+          repeat = false;
+        }
+      }
+      if (!newFile.exists()) {
+        if (renameLocalFile(filename, newFilename)) {
+          out.println(filename + " has been renamed to: " + newFilename + "\n");
+        } else {
+          out.println("Error: rename unsuccessful.\n");
+        }
+        repeat = false;
+      }
+    }
   }
 
   /**
    * Create a directory on the user's local machine.
    */
   void createLocalDir() {
-	out.println("Enter the name of the new directory: ");
-	String dirName = scanner.next();
+    out.println("Enter the name of the new directory: ");
+    String dirName = scanner.next();
     String path = cSftp.lpwd() + "/" + dirName;
     File newDir = new File(path);
     if (!newDir.mkdir())
