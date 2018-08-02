@@ -306,8 +306,8 @@ class Client {
     }
   }
 
+  /**
    * Executes a command on the remote server.
-   *
    * @param command -- The text command that you'd like to execute. (Ex: "ls -a" or "cd mydirectory")
    */
   void remoteExec(String command) {
