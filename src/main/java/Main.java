@@ -82,6 +82,7 @@ public class Main {
 
                 case 9: //view log history
                   out.println("Viewing log history...");
+                  client.displayLogHistory();
                   break;
 
                 case 10: //exit
