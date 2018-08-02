@@ -6,6 +6,6 @@ import org.junit.Test;
 public class MainTest {
   @Test
   public void defaultTest() {
-    assertThat("Default",equalTo("Default"));
+    assertThat("Default", equalTo("Default"));
   }
 }
