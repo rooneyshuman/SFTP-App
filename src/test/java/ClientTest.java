@@ -16,14 +16,4 @@ public class ClientTest {
     // int actual = client.displayLocalFiles();
     // assertThat(expected, equalTo(actual));
   }
-
-  @Test
-  public void renameLocalFilesHappyPath() {
-    Client client = new Client();
-
-    boolean expected = true;
-    boolean actual = client.renameLocalFile("original", "renamed");
-
-    assertThat(actual, equalTo(expected));
-  }
 }
