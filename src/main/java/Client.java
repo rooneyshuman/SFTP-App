@@ -1,4 +1,5 @@
 import com.jcraft.jsch.*;
+import jdk.jshell.spi.ExecutionControlProvider;
 
 import java.io.*;
 import java.util.Properties;
@@ -261,6 +262,32 @@ class Client {
     File newDir = new File(path);
     if (!newDir.mkdir())
       out.println("Error creating local directory.");
+  }
+
+  void deleteRemoteFile(String files){
+    String pwd = new String();
+    if (files.contains(",")) {
+      //multiple files are wanted.
+      //take the string and separate out the files.
+      String removeWhitespace = files.replaceAll("\\s", "");
+      String[] arr = removeWhitespace.split(",");
+      String output = new String();
+      try {
+        pwd = cSftp.pwd();
+
+      for (String file : arr) {
+        cSftp.rm(file);
+        output += file + " has been deleted from: " + pwd + "\n";
+      }
+      }catch(Exception e){}
+      out.println(output);
+    } else {
+      try {
+        cSftp.rm(files);
+        pwd = cSftp.pwd();
+      }catch(Exception e){}
+      out.println("The file has been deleted from: " + pwd);
+    }
   }
 
 }
