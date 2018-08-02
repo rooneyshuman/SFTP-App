@@ -1,9 +1,7 @@
 ## gitignore file for IDE files
 
-# Ignroe .idea files
+# Ignore .idea files
 *.iml
-*.xml
-.idea/workspace.xml
 
 # Ignore local maven files
 *.lst
