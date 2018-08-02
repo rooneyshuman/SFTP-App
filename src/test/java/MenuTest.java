@@ -15,14 +15,14 @@ public class MenuTest {
   public void mainMenuHappyPathTwo() {
     var menu = new Menu("2");
     int ret = menu.mainMenu();
-    assertThat(ret,equalTo(2));
+    assertThat(ret, equalTo(2));
   }
 
   @Test
   public void mainMenuReturnsZeroIfAlpha() {
     var menu = new Menu("a");
     int ret = menu.mainMenu();
-    assertThat(ret,equalTo(0));
+    assertThat(ret, equalTo(0));
   }
 
   @Test
@@ -34,7 +34,7 @@ public class MenuTest {
       input = "" + i;
       menu = new Menu(input);
       ret = menu.workingMenu();
-      assertThat(ret,equalTo(i));
+      assertThat(ret, equalTo(i));
     }
   }
 
@@ -47,7 +47,7 @@ public class MenuTest {
       input = "" + i;
       menu = new Menu(input);
       ret = menu.workingMenu();
-      assertThat(ret,equalTo(i));
+      assertThat(ret, equalTo(i));
     }
   }
 }

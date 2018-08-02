@@ -113,7 +113,8 @@ public class Main {
 
   /**
    * Switch statement that controls local and remote rename options based on localOrRemote() menu
-   * @throws SftpException  from JSCH
+   *
+   * @throws SftpException from JSCH
    */
   private static void rename(Client client) throws SftpException {
     var menu = new Menu();
@@ -153,7 +154,8 @@ public class Main {
 
   /**
    * Switch Statement that controls local and remote permission options based on localOrRemote() menu
-   * @throws SftpException  from JSCH
+   *
+   * @throws SftpException from JSCH
    */
   private static void changePermission(Client client) throws SftpException {
     var menu = new Menu();
@@ -194,7 +196,8 @@ public class Main {
 
   /**
    * Switch Statement that controls local and remote delete options based on localOrRemote() menu
-   * @throws SftpException  from JSCH
+   *
+   * @throws SftpException from JSCH
    */
   private static void delete(Client client) throws SftpException {
     var menu = new Menu();
@@ -235,7 +238,8 @@ public class Main {
 
   /**
    * Switch Statement that controls local and remote create dir options based on localOrRemote() menu
-   * @throws SftpException  from JSCH
+   *
+   * @throws SftpException from JSCH
    */
   private static void createDirectory(Client client) throws SftpException {
     var menu = new Menu();
@@ -282,7 +286,8 @@ public class Main {
 
   /**
    * Switch Statement that controls local and remote list options based on localOrRemote() menu
-   * @throws SftpException  from JSCH
+   *
+   * @throws SftpException from JSCH
    */
   private static void listDirectories(Client client) throws SftpException {
     var menu = new Menu();

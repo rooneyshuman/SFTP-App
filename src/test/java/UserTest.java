@@ -14,7 +14,7 @@ public class UserTest {
   }
 
   @Test
-  public void verifyHostNameDoesntAllowAt () {
+  public void verifyHostNameDoesntAllowAt() {
     boolean valid = user.verifyHostName("@linux.cs.pdx.edu");
     assertThat(valid, equalTo(false));
   }
@@ -32,7 +32,7 @@ public class UserTest {
   }
 
   @Test
-  public void verifyHostNameCatchesUnderscore () {
+  public void verifyHostNameCatchesUnderscore() {
     boolean valid = user.verifyHostName("linux_cs.pdx.edu");
     assertThat(valid, equalTo(false));
   }
@@ -82,7 +82,7 @@ public class UserTest {
   @Test
   public void vefifyUserNameAllowsAlphaNumeric() {
     boolean valid = user.verifyUsername("ThisIsValid");
-    assertThat("Username was valid",valid);
+    assertThat("Username was valid", valid);
   }
 
   @Test

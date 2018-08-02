@@ -15,7 +15,7 @@ class Menu {
   /**
    * Compartmentalizes the scanner for unit testing
    *
-   * @return  the number entered or zero if non numerical
+   * @return the number entered or zero if non numerical
    */
   private int intCheck() {
     int opt = 0;
@@ -30,7 +30,7 @@ class Menu {
   /**
    * This is the main menu.  Method displays all options and prompts for a choice
    *
-   * @return  zero if non number entered, else the number entered
+   * @return zero if non number entered, else the number entered
    */
   int mainMenu() {
     System.out.println("1. Establish Connection");
@@ -44,7 +44,7 @@ class Menu {
    * This is a working menu once a connection is established.  Method displays all options and
    * prompts for a choice
    *
-   * @return  zero if non number entered, else the number entered
+   * @return zero if non number entered, else the number entered
    */
   int workingMenu() {
     System.out.println("1.  List Directories");
@@ -66,7 +66,7 @@ class Menu {
    * Menu used for menu options that may be local or remote.  Method displays all options and
    * prompts for a choice
    *
-   * @return  zero if non number entered, else the number entered
+   * @return zero if non number entered, else the number entered
    */
   int localOrRemoteMenu(String operation) {
     System.out.println("1. View current local directory");
