@@ -6,3 +6,5 @@
 # Ignore local maven files
 *.lst
 *.class
+.idea/misc.xml
+.idea/workspace.xml
