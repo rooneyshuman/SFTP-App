@@ -25,6 +25,12 @@ class Client {
     cSftp = new ChannelSftp();
   }
 
+  /**
+   * A constructor taking username, password and hostname to facilitate creating a connection quickly.
+   * @param password -- Your password
+   * @param hostName -- Your host
+   * @param userName -- Your username
+   */
   public Client(String password, String hostName, String userName) {
     user = new User(password, hostName, userName);
     jsch = new JSch();
@@ -333,6 +339,10 @@ class Client {
     }
   }
 
+  /**
+   * Deletes a file from the remote server. Can take one or multiple files in the format "testfile.txt, testfile2.txt"
+   * @param files -- The string read in main containing the names of the files.
+   */
   void deleteRemoteFile(String files) {
     String pwd = new String();
     if (files.contains(",")) {
