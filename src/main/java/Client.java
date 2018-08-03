@@ -257,37 +257,30 @@ class Client {
   }
 
   /**
-   * Rename file on local directory
-   */
-  boolean renameLocalFile(String filename, String newFilename) {
-    File file = new File(filename);
-    File newFile = new File(newFilename);
-
-    if (file.renameTo(newFile)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /**
-   * Wrapper for renaming local files/directories
+   * Rename local files/directories
    */
   void renameLocal() {
     boolean repeat = true;
-    String answer;
+    String input;
     while (repeat) {
-      System.out.println("Enter the original file or directory name (e.g., file.txt or directoryName): ");
-      String filename = scanner.nextLine();
-      System.out.println("Enter the new file or directory name (e.g., renamed.txt or directoryRenamed): ");
-      String newFilename = scanner.nextLine();
-      File newFile = new File(newFilename);
-      //Check for a duplicate file/directory name
-      if (newFile.exists()) {
+      //get original file name
+      out.println("Enter the original file or directory name (e.g., file.txt or directoryName): ");
+      String filename = scanner.next();
+      //append the file name to the current path
+      String originalPath = cSftp.lpwd() + "/" + filename;
+      File originalFile = new File(originalPath);
+      //get the new file name
+      out.println("Enter the new file or directory name (e.g., renamed.txt or directoryRenamed): ");
+      String newFilename = scanner.next();
+      //append the file name to the current path
+      String renamePath = cSftp.lpwd() + "/" + newFilename;
+      File renamedFile = new File(renamePath);
+      //check for a duplicate file/directory name
+      if (renamedFile.exists()) {
         out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
-        answer = scanner.nextLine();
-        if ((answer.equalsIgnoreCase("yes") || (answer.equalsIgnoreCase("y")))) {
-          if (renameLocalFile(filename, newFilename)) {
+        input = scanner.next();
+        if ((input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y")))) {
+          if (originalFile.renameTo(renamedFile)) {
             out.println(filename + " has been overwritten.\n");
           } else {
             out.println("Error: rename unsuccessful.\n");
@@ -295,8 +288,8 @@ class Client {
           repeat = false;
         }
       }
-      if (!newFile.exists()) {
-        if (renameLocalFile(filename, newFilename)) {
+      if (!renamedFile.exists()) {
+        if (originalFile.renameTo(renamedFile)) {
           out.println(filename + " has been renamed to: " + newFilename + "\n");
         } else {
           out.println("Error: rename unsuccessful.\n");
