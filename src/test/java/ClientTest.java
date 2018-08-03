@@ -6,6 +6,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ClientTest {
+  private String userName = "brambora";
+  private String password = "Oatman641!";
+  private String hostName = "linux.cs.pdx.edu";
+
   @Test
   public void test() {
     assertThat("Default", equalTo("Default"));
@@ -24,7 +28,7 @@ public class ClientTest {
    * Trying to upload a file should result in an error. This test verifies that.
    */
   @Test
-  public void uploadFakeFile(String userName, String password, String hostName){
+  public void uploadFakeFile(){
     Client client = new Client(password, hostName, userName);
     try{
       client.connect();
@@ -38,7 +42,7 @@ public class ClientTest {
       }
 
     }catch(Exception e){
-      System.out.println("Error");
+      System.out.println("Error in testing uploading a fake file.");
       e.printStackTrace();
     }
   }
@@ -47,13 +51,17 @@ public class ClientTest {
    * Test whether uploading a real file is correct.
    */
   @Test
-  public void uploadFile(String userName, String password, String hostName, String fileName){
+  public void uploadFile(){
+    String fileName = "testfile.txt";
+    String fileName2 = "testfile.txt, testfile2.txt";
+
     Client client = new Client(password, hostName, userName);
     try{
       client.connect();
 
       try{
         client.uploadFile(fileName);
+        client.uploadFile(fileName2);
 
         File dir = new File(client.getcSftp().pwd());
         File[] files = dir.listFiles();
@@ -63,6 +71,9 @@ public class ClientTest {
             assertThat(file.getName(), equalTo(fileName));
           }
         }
+        System.out.println("Now deleting the files you uploaded.");
+        client.deleteRemoteFile(fileName);
+        client.deleteRemoteFile(fileName2);
       }catch(Exception e){
         System.out.println("There was an error uploading the file.");
       }
@@ -75,7 +86,7 @@ public class ClientTest {
    * Trying to upload a file that does not exist should result in an error. This test verifies that is the case.
    */
   @Test
-  public void downloadFakeFile(String userName, String password, String hostName){
+  public void downloadFakeFile(){
     Client client = new Client("Oatman641!", "linux.cs.pdx.edu", "brambora");
     try{
       client.connect();
@@ -98,7 +109,10 @@ public class ClientTest {
    * Test whether a file is uploaded correctly.
    */
   @Test
-  public void downloadFile(String userName, String password, String hostName, String fileName){
+  public void downloadFile(){
+    String fileName = "testfile.txt";
+    String fileName2 = "testfile.txt, testfile2.txt";
+
     Client client = new Client("Oatman641!", "linux.cs.pdx.edu", "brambora");
     try{
       client.connect();
@@ -106,6 +120,7 @@ public class ClientTest {
       //try downloading a file
       try{
         client.downloadFile(fileName);
+        client.downloadFile(fileName2);
         //verify that the file is in the local directory
         File dir = new File(client.getcSftp().lpwd());
         File[] files = dir.listFiles();

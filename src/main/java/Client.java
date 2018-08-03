@@ -229,7 +229,7 @@ class Client {
 		}else {
 			cSftp.put(filename, filename);
 			String pwd = cSftp.pwd();
-			out.println("The file has been uploaded to: " + pwd);
+			out.println(filename +" has been uploaded to: " + pwd);
 			return 1;
 		}
 	}
