@@ -28,20 +28,20 @@ public class ClientTest {
    * Trying to upload a file should result in an error. This test verifies that.
    */
   @Test
-  public void uploadFakeFile(){
+  public void uploadFakeFile() {
     Client client = new Client(password, hostName, userName);
-    try{
+    try {
       client.connect();
 
       //try uploading a non existent file.
       try {
         client.uploadFile("This is not a file");
-      }catch(Exception e){
+      } catch (Exception e) {
         System.out.println("Correct. This should throw an file not found exception.");
         e.printStackTrace();
       }
 
-    }catch(Exception e){
+    } catch (Exception e) {
       System.out.println("Error in testing uploading a fake file.");
       e.printStackTrace();
     }
@@ -51,22 +51,22 @@ public class ClientTest {
    * Test whether uploading a real file is correct.
    */
   @Test
-  public void uploadFile(){
+  public void uploadFile() {
     String fileName = "testfile.txt";
     String fileName2 = "testfile.txt, testfile2.txt";
 
     Client client = new Client(password, hostName, userName);
-    try{
+    try {
       client.connect();
 
-      try{
+      try {
         client.uploadFile(fileName);
         client.uploadFile(fileName2);
 
         File dir = new File(client.getcSftp().pwd());
         File[] files = dir.listFiles();
-        for(File file : files){
-          if(file.getName().equals(fileName)){
+        for (File file : files) {
+          if (file.getName().equals(fileName)) {
             //the file was found so the upload was successful.
             assertThat(file.getName(), equalTo(fileName));
           }
@@ -74,10 +74,10 @@ public class ClientTest {
         System.out.println("Now deleting the files you uploaded.");
         client.deleteRemoteFile(fileName);
         client.deleteRemoteFile(fileName2);
-      }catch(Exception e){
+      } catch (Exception e) {
         System.out.println("There was an error uploading the file.");
       }
-    }catch(Exception e){
+    } catch (Exception e) {
       System.out.println("There was an error with the uploading correct file test.");
     }
   }
@@ -86,20 +86,20 @@ public class ClientTest {
    * Trying to upload a file that does not exist should result in an error. This test verifies that is the case.
    */
   @Test
-  public void downloadFakeFile(){
+  public void downloadFakeFile() {
     Client client = new Client("Oatman641!", "linux.cs.pdx.edu", "brambora");
-    try{
+    try {
       client.connect();
 
       //try downloading a non existent file.
-      try{
+      try {
         client.downloadFile("This is not a file");
-      }catch(Exception e){
+      } catch (Exception e) {
         System.out.println("Correct. This should throw a file not found exception.");
         e.printStackTrace();
       }
 
-    }catch(Exception e){
+    } catch (Exception e) {
       System.out.println("Error");
       e.printStackTrace();
     }
@@ -109,33 +109,33 @@ public class ClientTest {
    * Test whether a file is uploaded correctly.
    */
   @Test
-  public void downloadFile(){
+  public void downloadFile() {
     String fileName = "testfile.txt";
     String fileName2 = "testfile.txt, testfile2.txt";
 
     Client client = new Client("Oatman641!", "linux.cs.pdx.edu", "brambora");
-    try{
+    try {
       client.connect();
 
       //try downloading a file
-      try{
+      try {
         client.downloadFile(fileName);
         client.downloadFile(fileName2);
         //verify that the file is in the local directory
         File dir = new File(client.getcSftp().lpwd());
         File[] files = dir.listFiles();
-        for(File file : files){
-          if(file.getName().equals(fileName)){
+        for (File file : files) {
+          if (file.getName().equals(fileName)) {
             //the file was found so the download was successful.
             assertThat(file.getName(), equalTo(fileName));
           }
         }
 
-      }catch(Exception e){
+      } catch (Exception e) {
         System.out.println("This is an error. There was a problem downloading.");
         e.printStackTrace();
       }
-    }catch(Exception e){
+    } catch (Exception e) {
       System.out.println("There was an error somewhere.");
       e.printStackTrace();
     }

@@ -25,21 +25,21 @@ class Client {
     cSftp = new ChannelSftp();
   }
 
-	public Client(String password, String hostName, String userName){
-		user = new User(password,hostName,userName);
-		jsch = new JSch();
-		session = null;
-		cSftp = new ChannelSftp();
-	}
+  public Client(String password, String hostName, String userName) {
+    user = new User(password, hostName, userName);
+    jsch = new JSch();
+    session = null;
+    cSftp = new ChannelSftp();
+  }
 
-	/**
-	 * Prompts for connection information
-	 */
-	void promptConnectionInfo() {
-		user.getUsername();
-		user.getPassword();
-		user.getHostname();
-	}
+  /**
+   * Prompts for connection information
+   */
+  void promptConnectionInfo() {
+    user.getUsername();
+    user.getPassword();
+    user.getHostname();
+  }
 
   /**
    * Initiates connection
@@ -70,35 +70,36 @@ class Client {
     session.disconnect();
   }
 
-	/**
-	 * Simple getter for cSftp for use in test suite.
-	 * @return -- returns the cSftp object.
-	 */
-	ChannelSftp getcSftp(){
-		return cSftp;
-	}
+  /**
+   * Simple getter for cSftp for use in test suite.
+   *
+   * @return -- returns the cSftp object.
+   */
+  ChannelSftp getcSftp() {
+    return cSftp;
+  }
 
-	/**
-	 * Lists all directories and files on the user's local machine (from the current directory).
-	 */
-	int displayLocalFiles() {
-		File dir = new File(cSftp.lpwd());
-		printLocalWorkingDir();
-		File[] files = dir.listFiles();
-		if (files != null) {
-			int count = 0;
-			for (File file : files) {
-				if (count == 5) {
-					count = 0;
-					out.println();
-				}
-				out.print(file.getName() + "    ");
-				++count;
-			}
-			out.println("\n");
-		}
-		return 1;
-	}
+  /**
+   * Lists all directories and files on the user's local machine (from the current directory).
+   */
+  int displayLocalFiles() {
+    File dir = new File(cSftp.lpwd());
+    printLocalWorkingDir();
+    File[] files = dir.listFiles();
+    if (files != null) {
+      int count = 0;
+      for (File file : files) {
+        if (count == 5) {
+          count = 0;
+          out.println();
+        }
+        out.print(file.getName() + "    ");
+        ++count;
+      }
+      out.println("\n");
+    }
+    return 1;
+  }
 
   /**
    * Lists all directories and files on the user's remote machine.
@@ -215,24 +216,24 @@ class Client {
     if (filename.contains(",")) {
       //multiple files are wanted.
 
-			//take the string and separate out the files.
-			String removeWhitespace = filename.replaceAll("\\s","");
-			String [] arr = removeWhitespace.split(",");
-			String output = new String();
-			String pwd = cSftp.pwd();
-			for (String file : arr) {
-				cSftp.put(file, file);
-				output += file + " has been uploaded to: " + pwd + "\n";
-			}
-			out.println(output);
-			return 1;
-		}else {
-			cSftp.put(filename, filename);
-			String pwd = cSftp.pwd();
-			out.println(filename +" has been uploaded to: " + pwd);
-			return 1;
-		}
-	}
+      //take the string and separate out the files.
+      String removeWhitespace = filename.replaceAll("\\s", "");
+      String[] arr = removeWhitespace.split(",");
+      String output = new String();
+      String pwd = cSftp.pwd();
+      for (String file : arr) {
+        cSftp.put(file, file);
+        output += file + " has been uploaded to: " + pwd + "\n";
+      }
+      out.println(output);
+      return 1;
+    } else {
+      cSftp.put(filename, filename);
+      String pwd = cSftp.pwd();
+      out.println(filename + " has been uploaded to: " + pwd);
+      return 1;
+    }
+  }
 
   /**
    * Downloads file(s) from the current working remote directory to the current working local directory.
@@ -244,24 +245,24 @@ class Client {
     if (filename.contains(",")) {
       //multiple files are wanted.
 
-			//take the string and separate out the files.
-			String removeWhitespace = filename.replaceAll("\\s","");
-			String [] arr = removeWhitespace.split(",");
-			String output = new String();
-			String lpwd = cSftp.lpwd();
-			for (String file : arr) {
-				cSftp.get(file, file);
-				output += file + " has been downloaded to: " + lpwd + "\n";
-			}
-			out.println(output);
-			return 1;
-		}else {
-			cSftp.get(filename, filename);
-			String lpwd = cSftp.lpwd();
-			out.println("The file has been downloaded to: " + lpwd);
-			return 1;
-		}
-	}
+      //take the string and separate out the files.
+      String removeWhitespace = filename.replaceAll("\\s", "");
+      String[] arr = removeWhitespace.split(",");
+      String output = new String();
+      String lpwd = cSftp.lpwd();
+      for (String file : arr) {
+        cSftp.get(file, file);
+        output += file + " has been downloaded to: " + lpwd + "\n";
+      }
+      out.println(output);
+      return 1;
+    } else {
+      cSftp.get(filename, filename);
+      String lpwd = cSftp.lpwd();
+      out.println("The file has been downloaded to: " + lpwd);
+      return 1;
+    }
+  }
 
   /**
    * Executes a command on the remote server.
@@ -332,7 +333,7 @@ class Client {
     }
   }
 
-  void deleteRemoteFile(String files){
+  void deleteRemoteFile(String files) {
     String pwd = new String();
     if (files.contains(",")) {
       //multiple files are wanted.
@@ -343,17 +344,19 @@ class Client {
       try {
         pwd = cSftp.pwd();
 
-      for (String file : arr) {
-        cSftp.rm(file);
-        output += file + " has been deleted from: " + pwd + "\n";
+        for (String file : arr) {
+          cSftp.rm(file);
+          output += file + " has been deleted from: " + pwd + "\n";
+        }
+      } catch (Exception e) {
       }
-      }catch(Exception e){}
       out.println(output);
     } else {
       try {
         cSftp.rm(files);
         pwd = cSftp.pwd();
-      }catch(Exception e){}
+      } catch (Exception e) {
+      }
       out.println("The file has been deleted from: " + pwd);
     }
   }
