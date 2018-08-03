@@ -27,6 +27,19 @@ class Client {
   }
 
   /**
+   * A constructor taking username, password and hostname to facilitate creating a connection quickly.
+   * @param password -- Your password
+   * @param hostName -- Your host
+   * @param userName -- Your username
+   */
+  public Client(String password, String hostName, String userName) {
+    user = new User(password, hostName, userName);
+    jsch = new JSch();
+    session = null;
+    cSftp = new ChannelSftp();
+  }
+
+  /**
    * Prompts for connection information
    */
   void promptConnectionInfo() {
@@ -66,6 +79,15 @@ class Client {
     session.disconnect();
     logger.log("SFTP connection closed");
     logger.save(user.username + "@" + user.hostname);
+  }
+
+  /**
+   * Simple getter for cSftp for use in test suite.
+   *
+   * @return -- returns the cSftp object.
+   */
+  ChannelSftp getcSftp() {
+    return cSftp;
   }
 
   /**
@@ -208,7 +230,7 @@ class Client {
    * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
    * @throws SftpException -- General errors/exceptions
    */
-  void uploadFile(String filename) throws SftpException {
+  public int uploadFile(String filename) throws SftpException {
     logger.log("uploadFile called w/ argument '" + filename + "'");
     if (filename.contains(",")) {
       //multiple files are wanted.
@@ -223,10 +245,12 @@ class Client {
         output += file + " has been uploaded to: " + pwd + "\n";
       }
       out.println(output);
+      return 1;
     } else {
       cSftp.put(filename, filename);
       String pwd = cSftp.pwd();
-      out.println("The file has been uploaded to: " + pwd);
+      out.println(filename + " has been uploaded to: " + pwd);
+      return 1;
     }
   }
 
@@ -236,7 +260,7 @@ class Client {
    * @param filename
    * @throws SftpException
    */
-  void downloadFile(String filename) throws SftpException {
+  public int downloadFile(String filename) throws SftpException {
     logger.log("downloadFile called w/ argument '" + filename + "'");
     if (filename.contains(",")) {
       //multiple files are wanted.
@@ -251,10 +275,12 @@ class Client {
         output += file + " has been downloaded to: " + lpwd + "\n";
       }
       out.println(output);
+      return 1;
     } else {
       cSftp.get(filename, filename);
       String lpwd = cSftp.lpwd();
       out.println("The file has been downloaded to: " + lpwd);
+      return 1;
     }
   }
 
@@ -336,7 +362,12 @@ class Client {
     logger.display();
     logger.log("displayLogHistory called");
   }
-
+  
+  /**
+   * Deletes a file from the remote server. Can take one or multiple files in the format "testfile.txt, testfile2.txt"
+   * 
+   * @param files -- The string read in main containing the names of the files.
+   */
   void deleteRemoteFile(String files){
     String pwd = new String();
     if (files.contains(",")) {
@@ -348,17 +379,19 @@ class Client {
       try {
         pwd = cSftp.pwd();
 
-      for (String file : arr) {
-        cSftp.rm(file);
-        output += file + " has been deleted from: " + pwd + "\n";
+        for (String file : arr) {
+          cSftp.rm(file);
+          output += file + " has been deleted from: " + pwd + "\n";
+        }
+      } catch (Exception e) {
       }
-      }catch(Exception e){}
       out.println(output);
     } else {
       try {
         cSftp.rm(files);
         pwd = cSftp.pwd();
-      }catch(Exception e){}
+      } catch (Exception e) {
+      }
       out.println("The file has been deleted from: " + pwd);
     }
   }

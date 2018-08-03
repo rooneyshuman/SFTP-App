@@ -35,6 +35,12 @@ class User {
     username = null;
   }
 
+  User(String pw, String hn, String un){
+    password = pw;
+    hostname = hn;
+    username = un;
+  }
+
   /**
    * Prompts the user for a valid password
    *
