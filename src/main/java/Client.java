@@ -14,6 +14,7 @@ class Client {
   private JSch jsch;
   private Session session;
   private ChannelSftp cSftp;
+  private Logger logger;
 
   /**
    * Class constructor
@@ -38,12 +39,13 @@ class Client {
    * Initiates connection
    */
   void connect() throws JSchException {
+    logger = new Logger();
     session = jsch.getSession(user.username, user.hostname, 22);
     session.setPassword(user.password);
     Properties config = new Properties();
     config.put("StrictHostKeyChecking", "no");
     session.setConfig(config);
-
+    logger.log("Establishing connection for " + user.username + "@" + user.hostname + "...");
     out.println("Establishing Connection...");
     session.connect(TIMEOUT);
 
@@ -52,6 +54,7 @@ class Client {
     channel.connect(TIMEOUT);
     cSftp = (ChannelSftp) channel;
 
+    logger.log("Successful SFTP connection made");
     out.println("Successful SFTP connection");
   }
 
@@ -61,12 +64,15 @@ class Client {
   void disconnect() {
     cSftp.exit();
     session.disconnect();
+    logger.log("SFTP connection closed");
+    logger.save(user.username + "@" + user.hostname);
   }
 
   /**
    * Lists all directories and files on the user's local machine (from the current directory).
    */
   int displayLocalFiles() {
+    logger.log("displayLocalFiles called");
     File dir = new File(cSftp.lpwd());
     printLocalWorkingDir();
     File[] files = dir.listFiles();
@@ -89,6 +95,7 @@ class Client {
    * Lists all directories and files on the user's remote machine.
    */
   void displayRemoteFiles() throws SftpException {
+    logger.log("displayRemoteFiles called");
     printRemoteWorkingDir();
     Vector remoteDir = cSftp.ls(cSftp.pwd());
     if (remoteDir != null) {
@@ -111,6 +118,7 @@ class Client {
    * Create a directory on the user's remote machine.
    */
   void createRemoteDir() throws SftpException {
+    logger.log("createRemoteDir called");
     boolean repeat = true;
     String answer;
     String dirName;
@@ -150,6 +158,7 @@ class Client {
    * Print current working local path
    */
   void printLocalWorkingDir() {
+    logger.log("printLocalWorkingDir called");
     String lpwd = cSftp.lpwd();
     out.println("This is your current local working directory: " + lpwd + "\n");
   }
@@ -158,6 +167,7 @@ class Client {
    * Print current working remote path
    */
   void printRemoteWorkingDir() throws SftpException {
+    logger.log("printRemoteWorkingDir called");
     String pwd = cSftp.pwd();
     out.println("This is your current remote working directory: " + pwd + "\n");
   }
@@ -166,6 +176,7 @@ class Client {
    * Change current working local path
    */
   void changeLocalWorkingDir() throws SftpException {
+    logger.log("changeLocalWorkingDir called");
     String newDir;
     String lpwd = cSftp.lpwd();
     out.println("This is your current local working directory: " + lpwd + "\n");
@@ -180,6 +191,7 @@ class Client {
    * Change current working remote path
    */
   void changeRemoteWorkingDir() throws SftpException {
+    logger.log("changeRemoteWorkingDir called");
     String newDir;
     String pwd = cSftp.pwd();
     out.println("This is your current local working directory: " + pwd + "\n");
@@ -196,7 +208,8 @@ class Client {
    * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
    * @throws SftpException -- General errors/exceptions
    */
-  public void uploadFile(String filename) throws SftpException {
+  void uploadFile(String filename) throws SftpException {
+    logger.log("uploadFile called w/ argument '" + filename + "'");
     if (filename.contains(",")) {
       //multiple files are wanted.
 
@@ -223,7 +236,8 @@ class Client {
    * @param filename
    * @throws SftpException
    */
-  public void downloadFile(String filename) throws SftpException {
+  void downloadFile(String filename) throws SftpException {
+    logger.log("downloadFile called w/ argument '" + filename + "'");
     if (filename.contains(",")) {
       //multiple files are wanted.
 
@@ -250,6 +264,7 @@ class Client {
    * @param command -- The text command that you'd like to execute. (Ex: "ls -a" or "cd mydirectory")
    */
   void remoteExec(String command) {
+    logger.log("remoteExec called w/ argument '" + command + "'");
     try {
       Channel channel = session.openChannel("Exec");
       ((ChannelExec) channel).setCommand(command);
@@ -285,6 +300,7 @@ class Client {
    * Create a directory on the user's local machine.
    */
   void createLocalDir() {
+    logger.log("createLocalDir called");
     boolean repeat = true;
     String dirName;
     String answer;
@@ -313,6 +329,14 @@ class Client {
     }
   }
 
+  /**
+   * Displays log history to user
+   */
+  void displayLogHistory() {
+    logger.display();
+    logger.log("displayLogHistory called");
+  }
+
   void deleteRemoteFile(String files){
     String pwd = new String();
     if (files.contains(",")) {
@@ -338,5 +362,4 @@ class Client {
       out.println("The file has been deleted from: " + pwd);
     }
   }
-
 }
