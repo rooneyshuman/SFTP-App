@@ -137,6 +137,7 @@ public class Main {
           break;
         case 4:
           System.out.println("Changed remote directory");
+          client.changeRemoteWorkingDir();
           break;
         case 5:
           System.out.println("Rename local directory/file...");
@@ -178,7 +179,7 @@ public class Main {
           break;
         case 4:
           System.out.println("Changed remote directory");
-          //change remote directory
+          client.changeRemoteWorkingDir();
           break;
         case 5:
           System.out.println("Change permissions local directory...");
@@ -221,7 +222,7 @@ public class Main {
           break;
         case 4:
           System.out.println("Changed remote directory");
-          //change remote dir
+          client.changeRemoteWorkingDir();
           break;
         case 5:
           System.out.println("Delete local directory/file...");
