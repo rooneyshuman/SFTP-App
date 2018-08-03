@@ -277,9 +277,9 @@ class Client {
     boolean repeat = true;
     String answer;
     while (repeat) {
-      System.out.println("Enter the original file name: ");
+      System.out.println("Enter the original file or directory name (e.g., file.txt or directoryName): ");
       String filename = scanner.nextLine();
-      System.out.println("Enter the new file name: ");
+      System.out.println("Enter the new file or directory name (e.g., renamed.txt or directoryRenamed): ");
       String newFilename = scanner.nextLine();
       File newFile = new File(newFilename);
       //Check for a duplicate file/directory name
