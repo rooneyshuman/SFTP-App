@@ -203,6 +203,7 @@ public class Main {
   private static void delete(Client client) throws SftpException {
     var menu = new Menu();
     int opt;
+    Scanner scanner = new Scanner(System.in);
     do {
       opt = menu.localOrRemoteMenu("Delete");
       switch (opt) {
@@ -227,6 +228,16 @@ public class Main {
           break;
         case 6:
           System.out.println("Delete remote directory/file...");
+          try {
+            out.println("Listing local directories and files...");
+            client.displayRemoteFiles();
+            out.println("Please enter the name of the file(s) you'd like to delete. Example usage: file1.txt, file2.txt");
+            String filename = scanner.nextLine();
+            client.deleteRemoteFile(filename);
+          } catch (SftpException e) {
+            out.println("Error deleting file");
+            e.printStackTrace();
+          }
           break;
         case 7: //return to previous menu
           break;
