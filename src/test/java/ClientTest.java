@@ -6,9 +6,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ClientTest {
-  private String userName = "brambora";
-  private String password = "Oatman641!";
-  private String hostName = "linux.cs.pdx.edu";
+  /**
+   * These need to be filled in before the tests will run properly.
+   */
+  private String userName;
+  private String password;
+  private String hostName;
 
   @Test
   public void test() {
