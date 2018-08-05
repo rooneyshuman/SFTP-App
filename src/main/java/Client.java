@@ -206,7 +206,6 @@ class Client {
       } catch (Exception e) {
         out.println();
       }
-
       if (attrs != null) {
         out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
         input = scanner.next();
