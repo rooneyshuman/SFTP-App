@@ -33,10 +33,12 @@ public class Main {
                   try {
                     out.println("Listing remote directories and files...");
                     client.displayRemoteFiles();
-                    String filename = scanner.next();
+                    out.println("Please enter the name of the file(s) you'd like to download. Example usage: file1.txt, file2.txt");
+                    String filename = scanner.nextLine();
                     client.downloadFile(filename);
                   } catch (SftpException e) {
                     out.println("Error downloading file");
+                    e.printStackTrace();
                   }
                   break;
 
@@ -44,10 +46,12 @@ public class Main {
                   try {
                     out.println("Listing local directories and files...");
                     client.displayLocalFiles();
-                    String filename = scanner.next();
+                    out.println("Please enter the name of the file(s) you'd like to download. Example usage: file1.txt, file2.txt");
+                    String filename = scanner.nextLine();
                     client.uploadFile(filename);
                   } catch (SftpException e) {
                     out.println("Error uploading file");
+                    e.printStackTrace();
                   }
 
                   break;
@@ -78,6 +82,7 @@ public class Main {
 
                 case 9: //view log history
                   out.println("Viewing log history...");
+                  client.displayLogHistory();
                   break;
 
                 case 10: //exit
@@ -109,7 +114,8 @@ public class Main {
 
   /**
    * Switch statement that controls local and remote rename options based on localOrRemote() menu
-   * @throws SftpException  from JSCH
+   *
+   * @throws SftpException from JSCH
    */
   private static void rename(Client client) throws SftpException {
     var menu = new Menu();
@@ -155,7 +161,8 @@ public class Main {
 
   /**
    * Switch Statement that controls local and remote permission options based on localOrRemote() menu
-   * @throws SftpException  from JSCH
+   *
+   * @throws SftpException from JSCH
    */
   private static void changePermission(Client client) throws SftpException {
     var menu = new Menu();
@@ -177,7 +184,7 @@ public class Main {
           break;
         case 4:
           System.out.println("Changed remote directory");
-          //change remote directory
+          client.changeRemoteWorkingDir();
           break;
         case 5:
           System.out.println("Change permissions local directory...");
@@ -196,11 +203,13 @@ public class Main {
 
   /**
    * Switch Statement that controls local and remote delete options based on localOrRemote() menu
-   * @throws SftpException  from JSCH
+   *
+   * @throws SftpException from JSCH
    */
   private static void delete(Client client) throws SftpException {
     var menu = new Menu();
     int opt;
+    Scanner scanner = new Scanner(System.in);
     do {
       opt = menu.localOrRemoteMenu("Delete");
       switch (opt) {
@@ -218,13 +227,23 @@ public class Main {
           break;
         case 4:
           System.out.println("Changed remote directory");
-          //change remote dir
+          client.changeRemoteWorkingDir();
           break;
         case 5:
           System.out.println("Delete local directory/file...");
           break;
         case 6:
           System.out.println("Delete remote directory/file...");
+          try {
+            out.println("Listing local directories and files...");
+            client.displayRemoteFiles();
+            out.println("Please enter the name of the file(s) you'd like to delete. Example usage: file1.txt, file2.txt");
+            String filename = scanner.nextLine();
+            client.deleteRemoteFile(filename);
+          } catch (SftpException e) {
+            out.println("Error deleting file");
+            e.printStackTrace();
+          }
           break;
         case 7: //return to previous menu
           break;
@@ -237,7 +256,8 @@ public class Main {
 
   /**
    * Switch Statement that controls local and remote create dir options based on localOrRemote() menu
-   * @throws SftpException  from JSCH
+   *
+   * @throws SftpException from JSCH
    */
   private static void createDirectory(Client client) throws SftpException {
     var menu = new Menu();
@@ -284,7 +304,8 @@ public class Main {
 
   /**
    * Switch Statement that controls local and remote list options based on localOrRemote() menu
-   * @throws SftpException  from JSCH
+   *
+   * @throws SftpException from JSCH
    */
   private static void listDirectories(Client client) throws SftpException {
     var menu = new Menu();

@@ -1,6 +1,6 @@
 ## gitignore file for IDE files
 
-# Ignroe .idea files
+# Ignore .idea files
 *.iml
 
 # Ignore local maven files
