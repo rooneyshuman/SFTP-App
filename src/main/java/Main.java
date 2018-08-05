@@ -133,6 +133,7 @@ public class Main {
           break;
         case 4:
           System.out.println("Changed remote directory");
+          client.changeRemoteWorkingDir();
           break;
         case 5:
           System.out.println("Rename local directory/file...");
