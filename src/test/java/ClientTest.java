@@ -1,7 +1,4 @@
 import org.junit.Test;
-
-import java.io.File;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -21,10 +18,9 @@ public class ClientTest {
   @Test
   public void verifyDisplayLocalDirectoriesAndFiles() {
     Client client = new Client();
-    File directory = new File(".");
     int expected = 1;
-    //int actual = client.displayLocalFiles(directory);
-    //assertThat(expected, equalTo(actual));
+    // int actual = client.displayLocalFiles();
+    // assertThat(expected, equalTo(actual));
   }
 
   /**

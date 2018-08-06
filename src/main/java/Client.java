@@ -285,8 +285,62 @@ class Client {
   }
 
   /**
+   * Rename file on remote directory
+   */
+  void renameRemoteFile() throws SftpException {
+    out.println("Enter the original file name: ");
+    String filename = scanner.next();
+    out.println("Enter the new file name: ");
+    String newFilename = scanner.next();
+    cSftp.rename(filename, newFilename);
+    out.println(filename + " has been renamed to: " + newFilename + "\n");
+  }
+
+  /**
+   * Rename local files/directories
+   */
+  void renameLocal() {
+    boolean repeat = true;
+    String input;
+    while (repeat) {
+      //get original file name
+      out.println("Enter the original file or directory name (e.g., file.txt or directoryName): ");
+      String filename = scanner.next();
+      //append the file name to the current path
+      String originalPath = cSftp.lpwd() + "/" + filename;
+      File originalFile = new File(originalPath);
+      //get the new file name
+      out.println("Enter the new file or directory name (e.g., renamed.txt or directoryRenamed): ");
+      String newFilename = scanner.next();
+      //append the file name to the current path
+      String renamePath = cSftp.lpwd() + "/" + newFilename;
+      File renamedFile = new File(renamePath);
+      //check for a duplicate file/directory name
+      if (renamedFile.exists()) {
+        out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
+        input = scanner.next();
+        if ((input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y")))) {
+          if (originalFile.renameTo(renamedFile)) {
+            out.println(filename + " has been overwritten.\n");
+          } else {
+            out.println("Error: rename unsuccessful.\n");
+          }
+          repeat = false;
+        }
+      }
+      if (!renamedFile.exists()) {
+        if (originalFile.renameTo(renamedFile)) {
+          out.println(filename + " has been renamed to: " + newFilename + "\n");
+        } else {
+          out.println("Error: rename unsuccessful.\n");
+        }
+        repeat = false;
+      }
+    }
+  }
+
+  /**
    * Executes a command on the remote server.
-   *
    * @param command -- The text command that you'd like to execute. (Ex: "ls -a" or "cd mydirectory")
    */
   void remoteExec(String command) {
