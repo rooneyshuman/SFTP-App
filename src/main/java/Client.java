@@ -375,7 +375,59 @@ class Client {
     }
   }
 
-
+  /**
+   * Rename file/directory on remote server
+   */
+  void renameRemote() throws SftpException {
+    boolean repeat = true;
+    String input;
+    SftpATTRS attrs = null;
+    while (repeat) {
+      //get original file name
+      out.println("Enter the original file name: ");
+      String filename = scanner.next();
+      //append the file name to the current path
+      String originalPath = cSftp.pwd() + "/" + filename;
+      File originalFile = new File(originalPath);
+      //get the new file name
+      out.println("Enter the new file name: ");
+      String newFilename = scanner.next();
+      //append the file name to the current path
+      String renamedPath = cSftp.pwd() + "/" + newFilename;
+      File renamedFile = new File(renamedPath);
+      //convert file object to string to pass to JSch rename method
+      String file = originalFile.toString();
+      String renamed = renamedFile.toString();
+      try {
+        attrs = cSftp.stat(newFilename);
+      } catch (Exception e) {
+        out.println();
+      }
+      if (attrs != null) {
+        out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
+        input = scanner.next();
+        attrs = null;
+        if (input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y"))) {
+          try {
+            cSftp.rename(file, renamed);
+            out.println(filename + " has been successfully overwritten.\n");
+          } catch (SftpException e) {
+            out.println("Error: rename unsuccessful.\n");
+          }
+          repeat = false;
+        }
+      } else {
+        try {
+          cSftp.rename(file, renamed);
+          out.println(filename + " has been renamed to: " + newFilename + "\n");
+        } catch (SftpException e) {
+          out.println("Error: rename unsuccessful.\n");
+        }
+        repeat = false;
+      }
+    }
+  }
+  
   /**
    * Create a directory on the user's local machine.
    */
