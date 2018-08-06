@@ -120,7 +120,6 @@ public class Main {
   private static void rename(Client client) throws SftpException {
     var menu = new Menu();
     int opt;
-    Scanner scanner = new Scanner(System.in);
 
     do {
       opt = menu.localOrRemoteMenu("Rename");
@@ -143,11 +142,17 @@ public class Main {
           break;
         case 5:
           System.out.println("Rename local directory/file...");
+          client.displayLocalFiles();
+          client.renameLocal();
           break;
         case 6:
           System.out.println("Rename remote directory/file...");
           client.displayRemoteFiles();
-          client.renameRemote();
+          try {
+            client.renameRemoteFile();
+          } catch (SftpException e) {
+            out.println("Error renaming file");
+          }
           break;
 
         case 7: //return to previous menu

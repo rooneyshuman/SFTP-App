@@ -7,9 +7,9 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 Below are the libraries, frameworks, and/or plug-ins used to develop the chat application in IntelliJ.
-* [jdk-10.0.1.jdk](http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html)
-* [jsch-0.1.54](http://www.jcraft.com/jsch/)
-* [junit:4.12](https://github.com/junit-team/junit4/blob/master/doc/ReleaseNotes4.12.md)
+* [Java SE 10](http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html)
+* [JSch](http://www.jcraft.com/jsch/)
+* [JUnit](https://github.com/junit-team/junit4/blob/master/doc/ReleaseNotes4.12.md)
 
 ### Installing
 
@@ -27,23 +27,37 @@ All unit tests were created in the **test** folder.
 
 ## Deployment
 
-In order to run the SFTP client on your local computer you must add the pre-requisites and do the following:
+In order to run the SFTP client on your local computer you must add the prerequisites and do the following:
 
-1. Right-click Client.java -> Run 'Client.main()'
+```
+1. Right-click Main.java -> Run 'Main.main()'
+```
 
-## Built With
+This will prompt the user to establish an SFTP connection or exit the program. To establish a connection, the program will prompt the user for the following information.
 
-* [Java SE 10](http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html)
-* [JSch](http://www.jcraft.com/jsch/)
-* [JUnit](https://github.com/junit-team/junit4/blob/master/doc/ReleaseNotes4.12.md)
+```
+Enter your username:
+exampleUser
+```
+```
+Enter your password:
+strongPassword
+```
+```
+Enter your hostname:
+linux.cs.pdx.edu
+```
+Once a connection is established, the user is provided a menu to securely manage files.
 
-## Authors
-* **Belen**
-* **Brent** 
-* **Carissa** 
-* **Dante** 
-* **Mack**
-* **Marcus** 
+## Brought To You By
+|   Name    |    @mention   |
+|-----------|---------------|
+|   Belen   | @rooneyshuman |
+|   Brent   | @bamcmanus    |
+|  Carissa  | @carissaallen |
+|   Dante   | @Liriaene     |
+|   Mack    | @mackkcooper  |
+|  Marcus   | @pdxbigman    |
 
 ## License
 
