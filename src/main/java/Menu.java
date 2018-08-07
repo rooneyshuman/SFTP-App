@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 class Menu {
 
-  private Scanner sc;
+  Scanner sc;
 
   Menu() {
     sc = new Scanner(System.in);
@@ -17,7 +17,7 @@ class Menu {
    *
    * @return the number entered or zero if non numerical
    */
-  private int intCheck() {
+  int intCheck() {
     int opt = 0;
     if (!sc.hasNextInt()) {
       sc.next();
