@@ -1,10 +1,10 @@
+import org.junit.Test;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-import org.junit.Test;
-
 public class UserTest {
-  User user = new User();
+  private User user = new User();
 
   @Test
   public void userStartsNull() {
@@ -41,6 +41,12 @@ public class UserTest {
   public void verifyHostNameAllowsValid() {
     boolean valid = user.verifyHostName("linux.cs.pdx.edu");
     assertThat(valid, equalTo(true));
+  }
+
+  @Test
+  public void verifyHostNameCatchesTooLong() {
+    boolean valid = user.verifyHostName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    assertThat(valid, equalTo(false));
   }
 
   @Test
@@ -101,8 +107,70 @@ public class UserTest {
     assertThat(valid, equalTo(false));
   }
 
-  /*@Test
-  public void getUsernamePrintsErrorEmpty() {
+  @Test
+  public void getUsernameHappyPath() {
+    String name = "Brent";
+    var user = new User(name);
+    String result = user.getUsername();
+    assertThat(result, equalTo(name));
+  }
 
-  }*/
+  @Test
+  public void getUserNameUnHappyPath() {
+    String name = "Bre..nt\nBrent";
+    var user = new User(name);
+    String result = user.getUsername();
+    assertThat(result, equalTo("Brent"));
+  }
+
+  @Test
+  public void getHostnameHappyPath() {
+    String host = "linux.cs.pdx.edu";
+    var user = new User(host);
+    String result = user.getHostname();
+    assertThat(result, equalTo(host));
+  }
+
+  @Test
+  public void getHostnameUnHappyPath() {
+    String host = "@linux.cs.pdx.edu\nlinux.cs.pdx.edu";
+    var user = new User(host);
+    String result = user.getHostname();
+    assertThat(result, equalTo("linux.cs.pdx.edu"));
+  }
+
+  @Test
+  public void getPasswordHappyPath() {
+    String password = "PA$$w0rd";
+    var user = new User(password);
+    String result = user.getPassword();
+    assertThat(result, equalTo(password));
+  }
+
+  @Test
+  public void getPasswordUnHappyPath() {
+    String password = "test this\nBrent";
+    var user = new User(password);
+    String result = user.getPassword();
+    assertThat(result, equalTo("Brent"));
+  }
+
+  @Test
+  public void getPasswordEmpytTest() {
+    String password = "\nBrent";
+    var user = new User(password);
+    String result = user.getPassword();
+    assertThat(result, equalTo("Brent"));
+  }
+
+  @Test
+  public void paramaterizedConstructorWorks() {
+    String validPass = "dafa";
+    String validUser = "thisGuy";
+    String validHost = "linux.cs.pdx.edu";
+    var user = new User(validPass,validHost,validUser);
+    assertThat(user.password, equalTo(validPass));
+    assertThat(user.hostname, equalTo(validHost));
+    assertThat(user.username, equalTo(validUser));
+  }
 }
