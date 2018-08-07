@@ -51,24 +51,30 @@ class Client {
   /**
    * Initiates connection
    */
-  void connect() throws JSchException {
+   boolean connect() {
     logger = new Logger();
-    session = jsch.getSession(user.username, user.hostname, 22);
-    session.setPassword(user.password);
-    Properties config = new Properties();
-    config.put("StrictHostKeyChecking", "no");
-    session.setConfig(config);
-    logger.log("Establishing connection for " + user.username + "@" + user.hostname + "...");
-    out.println("Establishing Connection...");
-    session.connect(TIMEOUT);
+    try {
+      session = jsch.getSession(user.username, user.hostname, 22);
+      session.setPassword(user.password);
+      Properties config = new Properties();
+      config.put("StrictHostKeyChecking", "no");
+      session.setConfig(config);
+      logger.log("Establishing connection for " + user.username + "@" + user.hostname + "...");
+      out.println("Establishing Connection...");
+      session.connect(TIMEOUT);
 
-    Channel channel = session.openChannel("sftp");
-    channel.setInputStream(null);
-    channel.connect(TIMEOUT);
-    cSftp = (ChannelSftp) channel;
+      Channel channel = session.openChannel("sftp");
+      channel.setInputStream(null);
+      channel.connect(TIMEOUT);
+      cSftp = (ChannelSftp) channel;
+    } catch (JSchException e) {
+      out.println("Connection failed.");
+      return false;
+    }
 
     logger.log("Successful SFTP connection made");
     out.println("Successful SFTP connection");
+    return true;
   }
 
   /**

@@ -7,15 +7,11 @@ public class ClientTest {
   /**
    * These need to be filled in before the tests will run properly.
    */
-  private String userName;
-  private String password;
-  private String hostName;
+  private String userName = "user";
+  private String password = "pw";
+  private String hostName = "linux.cs.pdx.edu";
 
-  @Test
-  public void test() {
-    assertThat("Default", equalTo("Default"));
-  }
-
+  // TODO
   @Test
   public void verifyDisplayLocalDirectoriesAndFiles() {
     Client client = new Client();
@@ -23,6 +19,13 @@ public class ClientTest {
     // int actual = client.displayLocalFiles();
     // assertThat(expected, equalTo(actual));
   }
+
+  @Test
+  public void connectionTest() {
+    Client client = new Client(password, hostName, userName);
+    assertThat(client.connect(), equalTo(true));
+  }
+
 
   /**
    * Trying to upload a file should result in an error. This test verifies that.
