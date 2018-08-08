@@ -1,9 +1,9 @@
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import org.junit.Test;
+import java.io.File;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import java.io.File;
 
 public class ClientTest {
   /**
@@ -29,6 +29,15 @@ public class ClientTest {
   public void connection_assertsSuccessfulConnection() {
     Client client = new Client(password, hostName, userName);
     assertThat(client.connect(), equalTo(true));
+  }
+
+  /**
+   * Test connection with fake credentials. Asserts connect() returns false.
+   */
+  @Test
+  public void connection_wrongCredentials_expectsSftpException() {
+    Client client = new Client("fakepw", "fakehn", "fakeun");
+    assertThat(client.connect(), equalTo(false));
   }
 
   /**
@@ -138,5 +147,19 @@ public class ClientTest {
       System.out.println("There was an error somewhere.");
       e.printStackTrace();
     }
+  }
+
+  /**
+   * Asserts whether a remote directory is created
+   */
+  @Test
+  public void createRemoteDir_assertsDirExists() throws SftpException {
+    Client client = new Client(password, hostName, userName);
+    client.connect();
+
+    String dirName = "newDirectory";
+    assertThat(client.createRemoteDir(dirName), equalTo(true));
+    System.out.println(dirName + " was created successfully");
+    client.getcSftp().rmdir(dirName);        //clean up
   }
 }
