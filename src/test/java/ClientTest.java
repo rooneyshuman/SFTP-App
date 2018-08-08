@@ -13,7 +13,7 @@ public class ClientTest {
    */
   private String userName = "username";
   private String password = "password";
-  private String hostName = "linux.cs.pdx.edu";
+  private String hostName = "hostname";
 
   // TODO
   @Test
@@ -84,6 +84,7 @@ public class ClientTest {
     Client client = new Client(password, hostName, userName);
     client.connect();
 
+    client.deleteRemoteFile(fileName);
     client.uploadFile(fileName);
     attrs = client.getcSftp().stat(fileName);
     if (attrs != null)
