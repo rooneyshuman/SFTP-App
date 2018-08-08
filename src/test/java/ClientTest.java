@@ -2,6 +2,8 @@ import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import org.junit.Test;
 import java.io.File;
+import java.io.IOException;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -9,8 +11,8 @@ public class ClientTest {
   /**
    * These need to be filled in before the tests will run properly.
    */
-  private String userName = "user";
-  private String password = "pw";
+  private String userName = "mkc";
+  private String password = "DingusTrog123";
   private String hostName = "linux.cs.pdx.edu";
 
   // TODO
@@ -53,13 +55,31 @@ public class ClientTest {
   }
 
   /**
+   * Should throw exception when file not found when upload attempted
+   */
+  @Test (expected = SftpException.class)
+  public void uploadFile_expectsSftpException_NoSuchFile() throws SftpException {
+    String fileName = "MissingTextFile.txt";
+
+    Client client = new Client(password, hostName, userName);
+    client.connect();
+
+    client.uploadFile(fileName);
+  }
+
+  /**
    * Asserts uploaded file exists
    */
   @Test
-  public void uploadFile_assertsFileExists() throws SftpException {
+  public void uploadFile_assertsFileExists() throws SftpException, IOException {
     String fileName = "testfile.txt";
+    File file = new File(fileName);
+    if(file.createNewFile())
+      System.out.println("Added testfile.txt to local");
+    else
+      System.out.println("Could not add testfile.txt to local");
     boolean pass = false;
-    SftpATTRS attrs = null;
+    SftpATTRS attrs;
 
     Client client = new Client(password, hostName, userName);
     client.connect();
@@ -71,6 +91,10 @@ public class ClientTest {
     System.out.println("Now deleting the files you uploaded.");
     client.deleteRemoteFile(fileName);
     assertThat(pass, equalTo(true));
+    if(file.delete())
+      System.out.println("Deleted testfile.txt from local");
+    else
+      System.out.println("Could not delete testfile.txt from local");
   }
 
   /**
