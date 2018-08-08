@@ -185,7 +185,7 @@ class Client {
 
   /**
    * Called by createRemoteDir() to make a new remote directory in current remote path
-   * @return true if file created exists
+   * @return true if file was successfully created
    */
   boolean createRemoteDir(String dirName) throws SftpException {
     SftpATTRS attrs = null;
