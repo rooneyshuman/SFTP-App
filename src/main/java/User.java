@@ -4,8 +4,6 @@ import java.util.regex.Pattern;
 
 /**
  * User class for SFTP project.  Used to gather information about a connection
- *
- * @see {@link Client}
  */
 class User {
 
@@ -42,18 +40,38 @@ class User {
   }
 
   /**
+   * Constructor sets scanner for testing purposes
+   * @param scannerArg    String with args for testing
+   */
+  User(String scannerArg) {
+    password = null;
+    hostname = null;
+    username = null;
+    scanner = new Scanner(scannerArg);
+  }
+
+  /**
    * Prompts the user for a valid password
    *
    * @return The password input
    */
   String getPassword() {
     System.out.println("Enter your password:");
-    password = scanner.next();
-    while (password == null || password.isEmpty()) {
+    password = scanner.nextLine();
+    while (password == null || password.isEmpty() || !verifyPassword(password)) {
       System.err.println("You did not enter a password. Enter your password:");
       password = scanner.next();
     }
     return password;
+  }
+
+  /**
+   * verifies a string does not contains spaces and is not empty
+   * @param password      String to be assessed
+   * @return              true if does not include space and is not empty else false
+   */
+  private boolean verifyPassword(String password) {
+    return !password.isEmpty() && !password.contains(" ");
   }
 
   /**
