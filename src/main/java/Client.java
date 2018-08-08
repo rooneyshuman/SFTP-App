@@ -167,19 +167,36 @@ class Client {
         if (answer.equalsIgnoreCase("yes")) {
           try {
             cSftp.rmdir(dirName);
-            cSftp.mkdir(dirName);
-            out.println(dirName + " has been overwritten");
+            if(createRemoteDir(dirName))
+              out.println(dirName + " has been overwritten");
             repeat = false;
           } catch (SftpException e) {
-            out.println("Error overwriting file");
+            out.println("Error overwriting directory");
           }
         }
       } else {
-        cSftp.mkdir(dirName);
-        out.println(dirName + " has been created");
+        if(createRemoteDir(dirName))
+          out.println(dirName + " has been created");
         repeat = false;
       }
     }
+  }
+
+  /**
+   * Called by createRemoteDir() to make a new remote directory in current remote path
+   * @return true if file created exists
+   */
+  boolean createRemoteDir(String dirName) throws SftpException {
+    SftpATTRS attrs = null;
+    cSftp.mkdir(dirName);
+    try {
+      attrs = cSftp.stat(dirName);
+    } catch (Exception e) {
+        out.println("Error creating directory.");
+    }
+    if(attrs != null)
+      return true;
+    return false;
   }
 
   /**
