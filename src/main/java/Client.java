@@ -195,9 +195,7 @@ class Client {
     } catch (Exception e) {
         out.println("Error creating directory.");
     }
-    if(attrs != null)
-      return true;
-    return false;
+    return attrs != null;
   }
 
   /**
@@ -262,12 +260,16 @@ class Client {
       //take the string and separate out the files.
       String removeWhitespace = filename.replaceAll("\\s", "");
       String[] arr = removeWhitespace.split(",");
-      String output = "";
       String pwd = cSftp.pwd();
+      StringBuilder sb = new StringBuilder();
       for (String file : arr) {
         cSftp.put(file, file);
-        output += file + " has been uploaded to: " + pwd + "\n";
+        sb.append(file);
+        sb.append(" has been uploaded to: ");
+        sb.append(pwd);
+        sb.append("\n");
       }
+      String output = sb.toString();
       out.println(output);
       return 1;
     } else {
@@ -281,8 +283,8 @@ class Client {
   /**
    * Downloads file(s) from the current working remote directory to the current working local directory.
    *
-   * @param filename
-   * @throws SftpException
+   * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
+   * @throws SftpException -- General errors/exceptions
    */
   int downloadFile(String filename) throws SftpException {
     logger.log("downloadFile called w/ argument '" + filename + "'");
@@ -292,12 +294,16 @@ class Client {
       //take the string and separate out the files.
       String removeWhitespace = filename.replaceAll("\\s", "");
       String[] arr = removeWhitespace.split(",");
-      String output = "";
       String lpwd = cSftp.lpwd();
+      StringBuilder sb = new StringBuilder();
       for (String file : arr) {
         cSftp.get(file, file);
-        output += file + " has been downloaded to: " + lpwd + "\n";
+        sb.append(file);
+        sb.append(" has been downloaded to: ");
+        sb.append(lpwd);
+        sb.append("\n");
       }
+      String output = sb.toString();
       out.println(output);
       return 1;
     } else {
@@ -382,7 +388,7 @@ class Client {
       try {
         InputStreamReader inputReader = new InputStreamReader(input);
         BufferedReader bufferedReader = new BufferedReader(inputReader);
-        String line = null;
+        String line;
 
         while ((line = bufferedReader.readLine()) != null) {
           System.out.println(line);
@@ -509,11 +515,15 @@ class Client {
       String output = "";
       try {
         pwd = cSftp.pwd();
-
+        StringBuilder sb = new StringBuilder();
         for (String file : arr) {
           cSftp.rm(file);
-          output += file + " has been deleted from: " + pwd + "\n";
+          sb.append(file);
+          sb.append(" has been deleted from:");
+          sb.append(pwd);
+          sb.append("\n");
         }
+        output = sb.toString();
       } catch (Exception e) {
         e.printStackTrace();
       }
