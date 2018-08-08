@@ -28,6 +28,7 @@ class Client {
 
   /**
    * A constructor taking username, password and hostname to facilitate creating a connection quickly.
+   *
    * @param password -- Your password
    * @param hostName -- Your host
    * @param userName -- Your username
@@ -51,7 +52,7 @@ class Client {
   /**
    * Initiates connection
    */
-   boolean connect() {
+  boolean connect() {
     logger = new Logger();
     try {
       session = jsch.getSession(user.username, user.hostname, 22);
@@ -236,7 +237,7 @@ class Client {
    * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
    * @throws SftpException -- General errors/exceptions
    */
-  public int uploadFile(String filename) throws SftpException {
+  int uploadFile(String filename) throws SftpException {
     logger.log("uploadFile called w/ argument '" + filename + "'");
     if (filename.contains(",")) {
       //multiple files are wanted.
@@ -244,7 +245,7 @@ class Client {
       //take the string and separate out the files.
       String removeWhitespace = filename.replaceAll("\\s", "");
       String[] arr = removeWhitespace.split(",");
-      String output = new String();
+      String output = "";
       String pwd = cSftp.pwd();
       for (String file : arr) {
         cSftp.put(file, file);
@@ -266,7 +267,7 @@ class Client {
    * @param filename
    * @throws SftpException
    */
-  public int downloadFile(String filename) throws SftpException {
+  int downloadFile(String filename) throws SftpException {
     logger.log("downloadFile called w/ argument '" + filename + "'");
     if (filename.contains(",")) {
       //multiple files are wanted.
@@ -274,7 +275,7 @@ class Client {
       //take the string and separate out the files.
       String removeWhitespace = filename.replaceAll("\\s", "");
       String[] arr = removeWhitespace.split(",");
-      String output = new String();
+      String output = "";
       String lpwd = cSftp.lpwd();
       for (String file : arr) {
         cSftp.get(file, file);
@@ -347,6 +348,7 @@ class Client {
 
   /**
    * Executes a command on the remote server.
+   *
    * @param command -- The text command that you'd like to execute. (Ex: "ls -a" or "cd mydirectory")
    */
   void remoteExec(String command) {
@@ -433,7 +435,7 @@ class Client {
       }
     }
   }
-  
+
   /**
    * Create a directory on the user's local machine.
    */
@@ -474,20 +476,20 @@ class Client {
     logger.display();
     logger.log("displayLogHistory called");
   }
-  
+
   /**
    * Deletes a file from the remote server. Can take one or multiple files in the format "testfile.txt, testfile2.txt"
-   * 
+   *
    * @param files -- The string read in main containing the names of the files.
    */
-  void deleteRemoteFile(String files){
-    String pwd = new String();
+  void deleteRemoteFile(String files) {
+    String pwd = "";
     if (files.contains(",")) {
       //multiple files are wanted.
       //take the string and separate out the files.
       String removeWhitespace = files.replaceAll("\\s", "");
       String[] arr = removeWhitespace.split(",");
-      String output = new String();
+      String output = "";
       try {
         pwd = cSftp.pwd();
 
@@ -496,6 +498,7 @@ class Client {
           output += file + " has been deleted from: " + pwd + "\n";
         }
       } catch (Exception e) {
+        e.printStackTrace();
       }
       out.println(output);
     } else {
@@ -503,6 +506,7 @@ class Client {
         cSftp.rm(files);
         pwd = cSftp.pwd();
       } catch (Exception e) {
+        e.printStackTrace();
       }
       out.println("The file has been deleted from: " + pwd);
     }
