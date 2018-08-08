@@ -1,3 +1,5 @@
+import com.jcraft.jsch.SftpATTRS;
+import com.jcraft.jsch.SftpException;
 import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -20,69 +22,63 @@ public class ClientTest {
     // assertThat(expected, equalTo(actual));
   }
 
+  /**
+   * Asserts that the connect method returns true
+   */
   @Test
-  public void connectionTest() {
+  public void connection_assertsSuccessfulConnection() {
     Client client = new Client(password, hostName, userName);
     assertThat(client.connect(), equalTo(true));
   }
 
-
   /**
-   * Trying to upload a file should result in an error. This test verifies that.
+   * Trying to upload a file should result in an error. Expects an SftpException.
    */
-  @Test
-  public void uploadFakeFile() {
+  @Test (expected = SftpException.class)
+  public void uploadFakeFile_expectsSftpException() throws SftpException{
     Client client = new Client(password, hostName, userName);
-    try {
-      client.connect();
+    client.connect();
 
-      //try uploading a non existent file.
-      try {
-        client.uploadFile("This is not a file");
-      } catch (Exception e) {
-        System.out.println("Correct. This should throw an file not found exception.");
-        e.printStackTrace();
-      }
-
-    } catch (Exception e) {
-      System.out.println("Error in testing uploading a fake file.");
-      e.printStackTrace();
-    }
+    //try uploading a non existent file.
+    client.uploadFile("This is not a file");
   }
 
   /**
-   * Test whether uploading a real file is correct.
+   * Asserts uploaded file exists
    */
   @Test
-  public void uploadFile() {
+  public void uploadFile_assertsFileExists() throws SftpException {
     String fileName = "testfile.txt";
-    String fileName2 = "testfile.txt, testfile2.txt";
+    boolean pass = false;
+    SftpATTRS attrs = null;
 
     Client client = new Client(password, hostName, userName);
-    try {
-      client.connect();
+    client.connect();
 
-      try {
-        client.uploadFile(fileName);
-        client.uploadFile(fileName2);
+    client.uploadFile(fileName);
+    attrs = client.getcSftp().stat(fileName);
+    if (attrs != null)
+      pass = true;
+    System.out.println("Now deleting the files you uploaded.");
+    client.deleteRemoteFile(fileName);
+    assertThat(pass, equalTo(true));
+  }
 
-        File dir = new File(client.getcSftp().pwd());
-        File[] files = dir.listFiles();
-        for (File file : files) {
-          if (file.getName().equals(fileName)) {
-            //the file was found so the upload was successful.
-            assertThat(file.getName(), equalTo(fileName));
-          }
-        }
-        System.out.println("Now deleting the files you uploaded.");
-        client.deleteRemoteFile(fileName);
-        client.deleteRemoteFile(fileName2);
-      } catch (Exception e) {
-        System.out.println("There was an error uploading the file.");
-      }
-    } catch (Exception e) {
-      System.out.println("There was an error with the uploading correct file test.");
-    }
+  /**
+   * Asserts uploaded file was deleted. stat() throws exception if filename is not found.
+   */
+  @Test (expected = SftpException.class)
+  public void deleteFile_expectsSftpException() throws SftpException {
+    String fileName = "testfile.txt";
+    SftpATTRS attrs = null;
+
+    Client client = new Client(password, hostName, userName);
+    client.connect();
+
+    client.uploadFile(fileName);
+    System.out.println("Now deleting the files you uploaded.");
+    client.deleteRemoteFile(fileName);
+    attrs = client.getcSftp().stat(fileName);
   }
 
   /**
