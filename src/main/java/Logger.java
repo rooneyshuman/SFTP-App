@@ -1,4 +1,7 @@
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -37,7 +40,7 @@ class Logger {
 	 */
 	void log(String log) {
 		timestamp = new Date(System.currentTimeMillis());
-		logHistory.add(new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(timestamp) + ": " + log);
+		logHistory.add(new SimpleDateFormat("MM/dd/yy hh:mm a").format(timestamp) + ": " + log);
 	}
 
 	/**
@@ -57,18 +60,15 @@ class Logger {
 	 */
 	void save(String userhost) {
 		timestamp = new Date(System.currentTimeMillis());
-		String filename = "SFTP Log History -" + userhost + " " + new SimpleDateFormat("MM/dd/yy HH:mm").format(timestamp) + ".txt";
+		String filename = "SFTP Log History - " + userhost + " " + timestamp + ".txt";
 		BufferedWriter writer = null;
 		try {
-			//String home = System.getProperty("user.home");
-      File file = new File(System.getProperty("user.home") + "/Downloads/" + filename);
-      writer = new BufferedWriter(new FileWriter(file));
+			String home = System.getProperty("user.home");
+			writer = new BufferedWriter(new FileWriter(home + "/Downloads/" + filename));
 			for (String log : logHistory) {
 				writer.write(log + "\n");
 			}
 		} catch (IOException e) {
-		  System.err.println(e.getLocalizedMessage());
-		  System.err.println(e.getMessage());
 			e.printStackTrace();
 		} finally {
 			try {
