@@ -57,12 +57,11 @@ class Logger {
 	 */
 	void save(String userhost) {
 		timestamp = new Date(System.currentTimeMillis());
-		String filename = "SFTPLogHistory-" + userhost + " " + new SimpleDateFormat("MM/dd/yy HH:mm").format(timestamp) + ".txt";
+		String filename = "SFTP Log History -" + userhost + " " + new SimpleDateFormat("MM/dd/yy HH:mm").format(timestamp) + ".txt";
 		BufferedWriter writer = null;
 		try {
-			String home = System.getProperty("user.home");
-      File file = new File(home + "/Downloads/" + filename);
-      file.createNewFile();
+			//String home = System.getProperty("user.home");
+      File file = new File(System.getProperty("user.home") + "/Downloads/" + filename);
       writer = new BufferedWriter(new FileWriter(file));
 			for (String log : logHistory) {
 				writer.write(log + "\n");
