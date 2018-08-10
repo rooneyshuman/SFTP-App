@@ -477,19 +477,33 @@ class Client {
         out.println("A directory by this name exists. Overwrite? (yes/no)");
         answer = scanner.next();
         if (answer.equalsIgnoreCase("yes")) {
-          if (newDir.delete() && newDir.mkdir())
+          if (newDir.delete() && createLocalDir(newDir))
             out.println(dirName + " has been overwritten");
           else
             out.println("Error overwriting file");
           repeat = false;
         }
       } else {
-        if (!newDir.mkdir())
+        if (!createLocalDir(newDir))
           out.println("Error creating local directory.");
         out.println(dirName + " has been created");
         repeat = false;
       }
     }
+  }
+
+  /**
+   * Called by createLocalDir() to make a new local directory in current local path
+   * @return true if file was successfully created
+   */
+  boolean createLocalDir(File newDir) {
+    boolean pass = false;
+    try {
+      pass = newDir.mkdir();
+    } catch (Exception e) {
+      out.println("Error creating directory.");
+    }
+    return pass;
   }
 
   /**
