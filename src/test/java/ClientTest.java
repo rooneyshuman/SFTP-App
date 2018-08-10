@@ -217,7 +217,6 @@ public class ClientTest {
     boolean pass = false;
     ByteArrayOutputStream output = new ByteArrayOutputStream();
     PrintStream stdout = System.out;
-    System.setOut(new PrintStream(output));
     String newLocalPath = "newLocalPath";
     File newDir = new File(newLocalPath);
 
@@ -225,6 +224,7 @@ public class ClientTest {
     client.connect();
 
     if(newDir.mkdir()) {          //create new directory path
+      System.setOut(new PrintStream(output));
       output.reset();
       client.printLocalWorkingDir();
       assertThat(output.toString().contains(newLocalPath), equalTo(false)); //assert current path is not newDir
@@ -244,6 +244,43 @@ public class ClientTest {
     else {
       System.setOut(stdout);
       System.out.println("Error in mkdir");
+    }
+    assertThat(pass, equalTo(true));
+  }
+
+  /**
+   * Asserts whether a remote directory was changed
+   * Also inherently tests printRemoteWorkingDir()
+   */
+  @Test
+  public void changeRemoteDir_assertsDirChanged() throws SftpException{
+    boolean pass = false;
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    PrintStream stdout = System.out;
+    String newRemotePath = "newRemotePath";
+
+    Client client = new Client(password, hostName, userName);
+    client.connect();
+
+    if(client.createRemoteDir(newRemotePath)){
+      System.setOut(new PrintStream(output));
+      output.reset();
+      client.printRemoteWorkingDir();
+      assertThat(output.toString().contains(newRemotePath), equalTo(false)); //assert current path is not newDir
+      client.changeRemoteWorkingDir(newRemotePath);       //change path to newDir
+      output.reset();
+      client.printRemoteWorkingDir();
+      assertThat(output.toString(), containsString(newRemotePath));    //assert current path is newDir
+      client.changeRemoteWorkingDir("..");       //reset path
+      System.setOut(stdout);    //reset output to standard System.out
+
+      client.getcSftp().rmdir(newRemotePath);
+      System.out.println("Path successfully changed to new dir. New dir has been deleted and path is reset.");
+      pass = true;
+    }
+   else {
+      System.setOut(stdout);
+      System.out.println("Error in createRemoteDir");
     }
     assertThat(pass, equalTo(true));
   }
