@@ -239,16 +239,11 @@ public class Main {
           break;
         case 6:
           System.out.println("Delete remote directory/file...");
-          try {
-            out.println("Listing local directories and files...");
-            client.displayRemoteFiles();
-            out.println("Please enter the name of the file(s) you'd like to delete. Example usage: file1.txt, file2.txt");
-            String filename = scanner.nextLine();
-            client.deleteRemoteFile(filename);
-          } catch (SftpException e) {
-            out.println("Error deleting file");
-            e.printStackTrace();
-          }
+          out.println("Listing local directories and files...");
+          client.displayRemoteFiles();
+          out.println("Please enter the name of the file(s) you'd like to delete. Example usage: file1.txt, file2.txt");
+          String filename = scanner.nextLine();
+          client.deleteRemoteFile(filename);
           break;
         case 7: //return to previous menu
           break;
@@ -339,12 +334,8 @@ public class Main {
           client.displayLocalFiles();
           break;
         case 6:
-          try {
-            out.println("Listing remote directories and files...");
-            client.displayRemoteFiles();
-          } catch (SftpException e) {
-            System.err.println("Error displaying remote files");
-          }
+          out.println("Listing remote directories and files...");
+          client.displayRemoteFiles();
           break;
         case 7: //return to previous menu
           break;
