@@ -192,7 +192,7 @@ public class ClientTest {
    * Asserts whether a local directory is created
    */
   @Test
-  public void createLocalDir_assertsDirExists() throws SftpException {
+  public void createLocalDir_assertsDirExists() {
     Client client = new Client(password, hostName, userName);
     client.connect();
     String dirName = "newDirectory";
@@ -200,6 +200,7 @@ public class ClientTest {
     File newDir = new File(path);
     assertThat(client.createLocalDir(newDir), equalTo(true));
     System.out.println(dirName + " was created successfully");
-    client.getcSftp().rmdir(dirName);        //clean up
+    if(newDir.delete())        //clean up
+      System.out.println(dirName + " was deleted");
   }
 }
