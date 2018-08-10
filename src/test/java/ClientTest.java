@@ -210,6 +210,7 @@ public class ClientTest {
 
   /**
    * Asserts whether a local directory was changed
+   * Also inherently tests printLocalWorkingDir()
    */
   @Test
   public void changeLocalDir_assertsDirChanged(){
