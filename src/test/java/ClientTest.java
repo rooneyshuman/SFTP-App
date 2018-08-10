@@ -315,17 +315,17 @@ public class ClientTest {
     client.connect();
 
     if (client.createRemoteDir(dirName)) {
-      System.setOut(new PrintStream(output));
+      System.setOut(new PrintStream(output));   //Redirect printstream
       client.displayRemoteFiles();
-      assertThat(output.toString(), containsString(dirName));
+      assertThat(output.toString(), containsString(dirName));   //Assert output contains new dir
       client.getcSftp().rmdir(dirName);        //clean up
-      System.setOut(stdout);
+      System.setOut(stdout);      //Reset printstream to System.out
       System.out.println("New remote file successfully displayed. New dir has been deleted.");
       pass = true;
-    } else {
-      System.setOut(stdout);
+    } 
+    else 
       System.out.println("Error in createRemoteDir");
-    }
+    
     assertThat(pass, equalTo(true));
   }
 }
