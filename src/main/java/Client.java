@@ -98,6 +98,13 @@ class Client {
   }
 
   /**
+   * Simple getter for session for use in test suite.
+   *
+   * @return -- returns the Session object.
+   */
+  Session getSession() { return session; }
+
+  /**
    * Lists all directories and files on the user's local machine (from the current directory).
    */
   int displayLocalFiles() {
