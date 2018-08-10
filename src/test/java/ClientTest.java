@@ -284,4 +284,19 @@ public class ClientTest {
     }
     assertThat(pass, equalTo(true));
   }
+
+  /**
+   * Asserts whether a remote directory was changed
+   * Also inherently tests printRemoteWorkingDir()
+   */
+  @Test
+  public void disconnect_assertsSessionIsDisconnected() {
+    Client client = new Client(password, hostName, userName);
+    if (client.connect()) {
+      System.out.println("Now disconnecting your session...");
+      client.disconnect();
+      assertThat(client.getSession().isConnected(), equalTo(false));
+    } else
+      System.out.println("Connection error.");
+  }
 }
