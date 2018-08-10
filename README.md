@@ -22,7 +22,7 @@ https://github.com/bamcmanus/AGILE.git
 
 Open the project in IntelliJ IDEA using Jave SE 10.
 
-## Running the tests
+## Testing
 
 All unit tests are located in the [test](src/test/java/) folder and require the login variables to be updated to credentials for a valid SFTP connection.
 
