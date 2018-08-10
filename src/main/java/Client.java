@@ -102,7 +102,9 @@ class Client {
    *
    * @return -- returns the Session object.
    */
-  Session getSession() { return session; }
+  Session getSession() {
+    return session;
+  }
 
   /**
    * Lists all directories and files on the user's local machine (from the current directory).
@@ -130,23 +132,30 @@ class Client {
   /**
    * Lists all directories and files on the user's remote machine.
    */
-  void displayRemoteFiles() throws SftpException {
+  boolean displayRemoteFiles() {
     logger.log("displayRemoteFiles called");
-    printRemoteWorkingDir();
-    Vector remoteDir = cSftp.ls(cSftp.pwd());
-    if (remoteDir != null) {
-      int count = 0;
-      for (int i = 0; i < remoteDir.size(); ++i) {
-        if (count == 5) {
-          count = 0;
-          out.println();
+
+    try {
+      printRemoteWorkingDir();
+      Vector remoteDir = cSftp.ls(cSftp.pwd());
+      if (remoteDir != null) {
+        int count = 0;
+        for (int i = 0; i < remoteDir.size(); ++i) {
+          if (count == 5) {
+            count = 0;
+            out.println();
+          }
+          Object dirEntry = remoteDir.elementAt(i);
+          if (dirEntry instanceof ChannelSftp.LsEntry)
+            out.print(((ChannelSftp.LsEntry) dirEntry).getFilename() + "    ");
+          ++count;
         }
-        Object dirEntry = remoteDir.elementAt(i);
-        if (dirEntry instanceof ChannelSftp.LsEntry)
-          out.print(((ChannelSftp.LsEntry) dirEntry).getFilename() + "    ");
-        ++count;
+        out.println("\n");
       }
-      out.println("\n");
+      return true;
+    } catch (SftpException e) {
+      System.out.println("Error displaying remote files");
+      return false;
     }
   }
 
