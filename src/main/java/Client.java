@@ -28,6 +28,7 @@ class Client {
 
   /**
    * A constructor taking username, password and hostname to facilitate creating a connection quickly.
+   *
    * @param password -- Your password
    * @param hostName -- Your host
    * @param userName -- Your username
@@ -51,24 +52,30 @@ class Client {
   /**
    * Initiates connection
    */
-  void connect() throws JSchException {
+  boolean connect() {
     logger = new Logger();
-    session = jsch.getSession(user.username, user.hostname, 22);
-    session.setPassword(user.password);
-    Properties config = new Properties();
-    config.put("StrictHostKeyChecking", "no");
-    session.setConfig(config);
-    logger.log("Establishing connection for " + user.username + "@" + user.hostname + "...");
-    out.println("Establishing Connection...");
-    session.connect(TIMEOUT);
+    try {
+      session = jsch.getSession(user.username, user.hostname, 22);
+      session.setPassword(user.password);
+      Properties config = new Properties();
+      config.put("StrictHostKeyChecking", "no");
+      session.setConfig(config);
+      logger.log("Establishing connection for " + user.username + "@" + user.hostname + "...");
+      out.println("Establishing Connection...");
+      session.connect(TIMEOUT);
 
-    Channel channel = session.openChannel("sftp");
-    channel.setInputStream(null);
-    channel.connect(TIMEOUT);
-    cSftp = (ChannelSftp) channel;
+      Channel channel = session.openChannel("sftp");
+      channel.setInputStream(null);
+      channel.connect(TIMEOUT);
+      cSftp = (ChannelSftp) channel;
+    } catch (JSchException e) {
+      out.println("Connection failed.");
+      return false;
+    }
 
     logger.log("Successful SFTP connection made");
     out.println("Successful SFTP connection");
+    return true;
   }
 
   /**
@@ -161,19 +168,34 @@ class Client {
         if (answer.equalsIgnoreCase("yes")) {
           try {
             cSftp.rmdir(dirName);
-            cSftp.mkdir(dirName);
-            out.println(dirName + " has been overwritten");
+            if(createRemoteDir(dirName))
+              out.println(dirName + " has been overwritten");
             repeat = false;
           } catch (SftpException e) {
-            out.println("Error overwriting file");
+            out.println("Error overwriting directory");
           }
         }
       } else {
-        cSftp.mkdir(dirName);
-        out.println(dirName + " has been created");
+        if(createRemoteDir(dirName))
+          out.println(dirName + " has been created");
         repeat = false;
       }
     }
+  }
+
+  /**
+   * Called by createRemoteDir() to make a new remote directory in current remote path
+   * @return true if file was successfully created
+   */
+  boolean createRemoteDir(String dirName) throws SftpException {
+    SftpATTRS attrs = null;
+    cSftp.mkdir(dirName);
+    try {
+      attrs = cSftp.stat(dirName);
+    } catch (Exception e) {
+        out.println("Error creating directory.");
+    }
+    return attrs != null;
   }
 
   /**
@@ -230,7 +252,7 @@ class Client {
    * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
    * @throws SftpException -- General errors/exceptions
    */
-  public int uploadFile(String filename) throws SftpException {
+  int uploadFile(String filename) throws SftpException {
     logger.log("uploadFile called w/ argument '" + filename + "'");
     if (filename.contains(",")) {
       //multiple files are wanted.
@@ -238,12 +260,16 @@ class Client {
       //take the string and separate out the files.
       String removeWhitespace = filename.replaceAll("\\s", "");
       String[] arr = removeWhitespace.split(",");
-      String output = new String();
       String pwd = cSftp.pwd();
+      StringBuilder sb = new StringBuilder();
       for (String file : arr) {
         cSftp.put(file, file);
-        output += file + " has been uploaded to: " + pwd + "\n";
+        sb.append(file);
+        sb.append(" has been uploaded to: ");
+        sb.append(pwd);
+        sb.append("\n");
       }
+      String output = sb.toString();
       out.println(output);
       return 1;
     } else {
@@ -257,10 +283,10 @@ class Client {
   /**
    * Downloads file(s) from the current working remote directory to the current working local directory.
    *
-   * @param filename
-   * @throws SftpException
+   * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
+   * @throws SftpException -- General errors/exceptions
    */
-  public int downloadFile(String filename) throws SftpException {
+  int downloadFile(String filename) throws SftpException {
     logger.log("downloadFile called w/ argument '" + filename + "'");
     if (filename.contains(",")) {
       //multiple files are wanted.
@@ -268,12 +294,16 @@ class Client {
       //take the string and separate out the files.
       String removeWhitespace = filename.replaceAll("\\s", "");
       String[] arr = removeWhitespace.split(",");
-      String output = new String();
       String lpwd = cSftp.lpwd();
+      StringBuilder sb = new StringBuilder();
       for (String file : arr) {
         cSftp.get(file, file);
-        output += file + " has been downloaded to: " + lpwd + "\n";
+        sb.append(file);
+        sb.append(" has been downloaded to: ");
+        sb.append(lpwd);
+        sb.append("\n");
       }
+      String output = sb.toString();
       out.println(output);
       return 1;
     } else {
@@ -341,6 +371,7 @@ class Client {
 
   /**
    * Executes a command on the remote server.
+   *
    * @param command -- The text command that you'd like to execute. (Ex: "ls -a" or "cd mydirectory")
    */
   void remoteExec(String command) {
@@ -357,7 +388,7 @@ class Client {
       try {
         InputStreamReader inputReader = new InputStreamReader(input);
         BufferedReader bufferedReader = new BufferedReader(inputReader);
-        String line = null;
+        String line;
 
         while ((line = bufferedReader.readLine()) != null) {
           System.out.println(line);
@@ -427,7 +458,7 @@ class Client {
       }
     }
   }
-  
+
   /**
    * Create a directory on the user's local machine.
    */
@@ -446,19 +477,33 @@ class Client {
         out.println("A directory by this name exists. Overwrite? (yes/no)");
         answer = scanner.next();
         if (answer.equalsIgnoreCase("yes")) {
-          if (newDir.delete() && newDir.mkdir())
+          if (newDir.delete() && createLocalDir(newDir))
             out.println(dirName + " has been overwritten");
           else
             out.println("Error overwriting file");
           repeat = false;
         }
       } else {
-        if (!newDir.mkdir())
+        if (!createLocalDir(newDir))
           out.println("Error creating local directory.");
         out.println(dirName + " has been created");
         repeat = false;
       }
     }
+  }
+
+  /**
+   * Called by createLocalDir() to make a new local directory in current local path
+   * @return true if file was successfully created
+   */
+  boolean createLocalDir(File newDir) {
+    boolean pass = false;
+    try {
+      pass = newDir.mkdir();
+    } catch (Exception e) {
+      out.println("Error creating directory.");
+    }
+    return pass;
   }
 
   /**
@@ -468,28 +513,33 @@ class Client {
     logger.display();
     logger.log("displayLogHistory called");
   }
-  
+
   /**
    * Deletes a file from the remote server. Can take one or multiple files in the format "testfile.txt, testfile2.txt"
-   * 
+   *
    * @param files -- The string read in main containing the names of the files.
    */
-  void deleteRemoteFile(String files){
-    String pwd = new String();
+  void deleteRemoteFile(String files) {
+    String pwd = "";
     if (files.contains(",")) {
       //multiple files are wanted.
       //take the string and separate out the files.
       String removeWhitespace = files.replaceAll("\\s", "");
       String[] arr = removeWhitespace.split(",");
-      String output = new String();
+      String output = "";
       try {
         pwd = cSftp.pwd();
-
+        StringBuilder sb = new StringBuilder();
         for (String file : arr) {
           cSftp.rm(file);
-          output += file + " has been deleted from: " + pwd + "\n";
+          sb.append(file);
+          sb.append(" has been deleted from:");
+          sb.append(pwd);
+          sb.append("\n");
         }
+        output = sb.toString();
       } catch (Exception e) {
+        e.printStackTrace();
       }
       out.println(output);
     } else {
@@ -497,6 +547,7 @@ class Client {
         cSftp.rm(files);
         pwd = cSftp.pwd();
       } catch (Exception e) {
+        e.printStackTrace();
       }
       out.println("The file has been deleted from: " + pwd);
     }
