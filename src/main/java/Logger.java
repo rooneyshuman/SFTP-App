@@ -12,6 +12,7 @@ import java.util.Queue;
  * connection close.
  */
 class Logger {
+
 	Logger(PrintStream test) {
 		System.setOut(test);
 	}
@@ -57,26 +58,17 @@ class Logger {
 	 */
 	void save(String userhost) {
 		timestamp = new Date(System.currentTimeMillis());
-		String filename = "SFTP Log History -" + userhost + " " + new SimpleDateFormat("MM/dd/yy HH:mm").format(timestamp) + ".txt";
-		BufferedWriter writer = null;
+		String filename = "SFTP Log History - " + userhost + ".txt";
 		try {
-			//String home = System.getProperty("user.home");
-      File file = new File(System.getProperty("user.home") + "/Downloads/" + filename);
-      writer = new BufferedWriter(new FileWriter(file));
+      var file = new File(System.getProperty("user.home") + "/Downloads/" + filename);
+			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 			for (String log : logHistory) {
-				writer.write(log + "\n");
+				writer.println(log);
 			}
+			writer.close();
 		} catch (IOException e) {
-		  System.err.println(e.getLocalizedMessage());
-		  System.err.println(e.getMessage());
+			System.err.println(e.getLocalizedMessage());
 			e.printStackTrace();
-		} finally {
-			try {
-				if (writer != null)
-					writer.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		}
 	}
 }
