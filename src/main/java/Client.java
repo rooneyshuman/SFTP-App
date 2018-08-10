@@ -168,7 +168,7 @@ class Client {
         if (answer.equalsIgnoreCase("yes")) {
           try {
             cSftp.rmdir(dirName);
-            if(createRemoteDir(dirName))
+            if (createRemoteDir(dirName))
               out.println(dirName + " has been overwritten");
             repeat = false;
           } catch (SftpException e) {
@@ -176,7 +176,7 @@ class Client {
           }
         }
       } else {
-        if(createRemoteDir(dirName))
+        if (createRemoteDir(dirName))
           out.println(dirName + " has been created");
         repeat = false;
       }
@@ -185,6 +185,7 @@ class Client {
 
   /**
    * Called by createRemoteDir() to make a new remote directory in current remote path
+   *
    * @return true if file was successfully created
    */
   boolean createRemoteDir(String dirName) throws SftpException {
@@ -193,7 +194,7 @@ class Client {
     try {
       attrs = cSftp.stat(dirName);
     } catch (Exception e) {
-        out.println("Error creating directory.");
+      out.println("Error creating directory.");
     }
     return attrs != null;
   }
@@ -217,7 +218,7 @@ class Client {
   }
 
   /**
-   * Change current working local path
+   * Wrapper for changing current working local path
    */
   void changeLocalWorkingDir() throws SftpException {
     logger.log("changeLocalWorkingDir called");
@@ -226,9 +227,27 @@ class Client {
     out.println("This is your current local working directory: " + lpwd + "\n");
     out.println("Enter the path of the directory you'd like to change to: ");
     newDir = scanner.next();
-    cSftp.lcd(newDir);
-    lpwd = cSftp.lpwd();
-    out.println("This is your new current local working directory: " + lpwd + "\n");
+    if (changeLocalWorkingDir(newDir)) {
+      lpwd = cSftp.lpwd();
+      out.println("This is your new current local working directory: " + lpwd + "\n");
+    }
+  }
+
+  /**
+   * Called by changeLocalWorkingDir() to change current working local path
+   *
+   * @param newDir -- String of the new path name
+   * @return true if successful
+   */
+  boolean changeLocalWorkingDir(String newDir) {
+    boolean pass = false;
+    try {
+      cSftp.lcd(newDir);
+      pass = true;
+    } catch (SftpException e) {
+      out.println("Error changing your directory");
+    }
+    return pass;
   }
 
   /**
@@ -460,7 +479,7 @@ class Client {
   }
 
   /**
-   * Create a directory on the user's local machine.
+   * Wrapper to create a directory on the user's local machine.
    */
   void createLocalDir() {
     logger.log("createLocalDir called");
@@ -494,6 +513,8 @@ class Client {
 
   /**
    * Called by createLocalDir() to make a new local directory in current local path
+   *
+   * @param newDir -- File to create in current local path
    * @return true if file was successfully created
    */
   boolean createLocalDir(File newDir) {
