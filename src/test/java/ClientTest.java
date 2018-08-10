@@ -291,12 +291,15 @@ public class ClientTest {
    */
   @Test
   public void disconnect_assertsSessionIsDisconnected() {
+    boolean pass = false;
     Client client = new Client(password, hostName, userName);
     if (client.connect()) {
       System.out.println("Now disconnecting your session...");
       client.disconnect();
       assertThat(client.getSession().isConnected(), equalTo(false));
+      pass = true;
     } else
       System.out.println("Connection error.");
+    assertThat(pass, equalTo(true));
   }
 }
