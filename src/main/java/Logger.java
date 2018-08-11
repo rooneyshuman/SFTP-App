@@ -1,6 +1,8 @@
 import java.io.*;
-import java.sql.Timestamp;
-import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Logger class for SFTP project.
@@ -10,14 +12,23 @@ import java.util.*;
  * connection close.
  */
 class Logger {
+
+	Logger(PrintStream test) {
+		System.setOut(test);
+	}
+
+	Logger() {
+	}
+
 	/**
 	 * data structure holding all logs as strings
 	 */
-	private Queue<String> logHistory = new LinkedList<>();
+	 Queue<String> logHistory = new LinkedList<>();
+
 	/**
 	 * field to hold a new timestamp when needed
 	 */
-	private Timestamp timestamp;
+	Date timestamp;
 
 	/**
 	 * produces a timestamp and appends the log message to it
@@ -26,8 +37,8 @@ class Logger {
 	 * @param log <- represents the message recorded
 	 */
 	void log(String log) {
-		timestamp = new Timestamp(System.currentTimeMillis());
-		logHistory.add(timestamp + ": " + log);
+		timestamp = new Date(System.currentTimeMillis());
+		logHistory.add(new SimpleDateFormat("MM/dd/yy HH:mm:ss").format(timestamp) + ": " + log);
 	}
 
 	/**
@@ -44,31 +55,20 @@ class Logger {
 	 * the local machine's Downloads directory
 	 *
 	 * @param userhost used to name the file (i.e. username@hostmachine.org)
-	 * @return
-	 * 0 for success
-	 * 1 for error
 	 */
-	int save(String userhost) {
-		timestamp = new Timestamp(System.currentTimeMillis());
-		String filename = "SFTP Log History - " + userhost + " " + timestamp + ".txt";
-		BufferedWriter writer = null;
+	void save(String userhost) {
+		timestamp = new Date(System.currentTimeMillis());
+		String filename = "SFTP Log History - " + userhost + ".txt";
 		try {
-			String home = System.getProperty("user.home");
-			writer = new BufferedWriter(new FileWriter(home + "/Downloads/" + filename));
+      var file = new File(System.getProperty("user.home") + "/Downloads/" + filename);
+			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 			for (String log : logHistory) {
-				writer.write(log + "\n");
+				writer.println(log);
 			}
+			writer.close();
 		} catch (IOException e) {
+			System.err.println(e.getLocalizedMessage());
 			e.printStackTrace();
-			return 1;
-		} finally {
-			try {
-				if (writer != null)
-					writer.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		}
-		return 0;
 	}
 }
