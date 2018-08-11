@@ -149,7 +149,7 @@ public class Main {
           System.out.println("Rename remote directory/file...");
           client.displayRemoteFiles();
           try {
-            client.renameRemoteFile();
+            client.renameRemote();
           } catch (SftpException e) {
             out.println("Error renaming file");
           }
@@ -291,11 +291,7 @@ public class Main {
           client.createLocalDir();
           break;
         case 6:
-          try {
-            client.createRemoteDir();
-          } catch (SftpException e) {
-            System.err.println("Error creating new directory");
-          }
+          client.createRemoteDir();
           out.println("Your directory has been created");
           break;
         case 7: //return to previous menu
