@@ -57,7 +57,7 @@ class User {
    */
   String getPassword() {
     System.out.println("Enter your password:");
-    password = scanner.nextLine();
+    password = scanner.next();
     while (password == null || password.isEmpty() || !verifyPassword(password)) {
       System.err.println("You did not enter a password. Enter your password:");
       password = scanner.next();

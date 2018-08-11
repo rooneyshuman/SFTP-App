@@ -15,9 +15,9 @@ public class ClientTest {
   /**
    * These need to be filled in before the tests will run properly.
    */
-  private String userName = "username";
-  private String password = "password";
-  private String hostName = "hostname";
+  private String userName = "mkc";
+  private String password = "DingusTrog123";
+  private String hostName = "linux.cs.pdx.edu";
 
   // TODO
   @Test
