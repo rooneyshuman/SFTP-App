@@ -6,10 +6,11 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-Below are the libraries, frameworks, and/or plug-ins used to develop the chat application in IntelliJ.
+Below are the libraries, frameworks, and/or plug-ins used to develop the SFTP Client application in IntelliJ.
 * [Java SE 10](http://www.oracle.com/technetwork/java/javase/downloads/jdk10-downloads-4416644.html)
 * [JSch](http://www.jcraft.com/jsch/)
 * [JUnit](https://github.com/junit-team/junit4/blob/master/doc/ReleaseNotes4.12.md)
+* [Hamcrest](http://hamcrest.org/JavaHamcrest/)
 
 ### Installing
 
@@ -21,9 +22,9 @@ https://github.com/bamcmanus/AGILE.git
 
 Open the project in IntelliJ IDEA using Jave SE 10.
 
-## Running the tests
+## Testing
 
-All unit tests were created in the **test** folder.
+All unit tests are located in the [test](src/test/java/) folder and require the login variables to be updated to credentials for a valid SFTP connection.
 
 ## Deployment
 
@@ -52,7 +53,7 @@ Once a connection is established, the user is provided a menu to securely manage
 ## Brought To You By
 |   Name    |    @mention   |
 |-----------|---------------|
-|   Belen   | @rooneyshuman |
+|   Belén   | @rooneyshuman |
 |   Brent   | @bamcmanus    |
 |  Carissa  | @carissaallen |
 |   Dante   | @Liriaene     |

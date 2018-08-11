@@ -146,7 +146,7 @@ class Client {
   /**
    * Create a directory on the user's remote machine.
    */
-  void createRemoteDir() throws SftpException {
+  void createRemoteDir() {
     logger.log("createRemoteDir called");
     boolean repeat = true;
     String answer;
@@ -168,7 +168,7 @@ class Client {
         if (answer.equalsIgnoreCase("yes")) {
           try {
             cSftp.rmdir(dirName);
-            if(createRemoteDir(dirName))
+            if (createRemoteDir(dirName))
               out.println(dirName + " has been overwritten");
             repeat = false;
           } catch (SftpException e) {
@@ -176,7 +176,7 @@ class Client {
           }
         }
       } else {
-        if(createRemoteDir(dirName))
+        if (createRemoteDir(dirName))
           out.println(dirName + " has been created");
         repeat = false;
       }
@@ -185,15 +185,16 @@ class Client {
 
   /**
    * Called by createRemoteDir() to make a new remote directory in current remote path
+   *
    * @return true if file was successfully created
    */
-  boolean createRemoteDir(String dirName) throws SftpException {
+  boolean createRemoteDir(String dirName) {
     SftpATTRS attrs = null;
-    cSftp.mkdir(dirName);
     try {
+      cSftp.mkdir(dirName);
       attrs = cSftp.stat(dirName);
     } catch (Exception e) {
-        out.println("Error creating directory.");
+      out.println("Error creating directory.");
     }
     return attrs != null;
   }
@@ -217,18 +218,36 @@ class Client {
   }
 
   /**
-   * Change current working local path
+   * Wrapper for changing current working local path
    */
-  void changeLocalWorkingDir() throws SftpException {
+  void changeLocalWorkingDir() {
     logger.log("changeLocalWorkingDir called");
     String newDir;
     String lpwd = cSftp.lpwd();
     out.println("This is your current local working directory: " + lpwd + "\n");
     out.println("Enter the path of the directory you'd like to change to: ");
     newDir = scanner.next();
-    cSftp.lcd(newDir);
-    lpwd = cSftp.lpwd();
-    out.println("This is your new current local working directory: " + lpwd + "\n");
+    if (changeLocalWorkingDir(newDir)) {
+      lpwd = cSftp.lpwd();
+      out.println("This is your new current local working directory: " + lpwd + "\n");
+    }
+  }
+
+  /**
+   * Called by changeLocalWorkingDir() to change current working local path
+   *
+   * @param newDir -- String of the new path name
+   * @return true if successful
+   */
+  boolean changeLocalWorkingDir(String newDir) {
+    boolean pass = false;
+    try {
+      cSftp.lcd(newDir);
+      pass = true;
+    } catch (SftpException e) {
+      out.println("Error changing your directory");
+    }
+    return pass;
   }
 
   /**
@@ -237,13 +256,28 @@ class Client {
   void changeRemoteWorkingDir() throws SftpException {
     logger.log("changeRemoteWorkingDir called");
     String newDir;
-    String pwd = cSftp.pwd();
-    out.println("This is your current local working directory: " + pwd + "\n");
+    out.println("This is your current remote working directory: " + cSftp.pwd() + "\n");
     out.println("Enter the path of the directory you'd like to change to: ");
     newDir = scanner.next();
-    cSftp.cd(newDir);
-    pwd = cSftp.pwd();
-    out.println("This is your new current local working directory: " + pwd + "\n");
+    if(changeRemoteWorkingDir(newDir))
+      out.println("This is your new current remote working directory: " + cSftp.pwd() + "\n");
+  }
+
+  /**
+   * Called by changeRemoteWorkingDir() to change current working remote path
+   *
+   * @param newDirPath -- String of new path name
+   */
+  boolean changeRemoteWorkingDir(String newDirPath) {
+    boolean pass = false;
+    try {
+      cSftp.cd(newDirPath);
+      pass = true;
+    } catch (SftpException e) {
+      e.printStackTrace();
+      System.out.println("Error changing your directory");
+    }
+    return pass;
   }
 
   /**
@@ -252,7 +286,7 @@ class Client {
    * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
    * @throws SftpException -- General errors/exceptions
    */
-  int uploadFile(String filename) throws SftpException {
+  void uploadFile(String filename) throws SftpException {
     logger.log("uploadFile called w/ argument '" + filename + "'");
     if (filename.contains(",")) {
       //multiple files are wanted.
@@ -271,12 +305,10 @@ class Client {
       }
       String output = sb.toString();
       out.println(output);
-      return 1;
     } else {
       cSftp.put(filename, filename);
       String pwd = cSftp.pwd();
       out.println(filename + " has been uploaded to: " + pwd);
-      return 1;
     }
   }
 
@@ -286,7 +318,7 @@ class Client {
    * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
    * @throws SftpException -- General errors/exceptions
    */
-  int downloadFile(String filename) throws SftpException {
+  void downloadFile(String filename) throws SftpException {
     logger.log("downloadFile called w/ argument '" + filename + "'");
     if (filename.contains(",")) {
       //multiple files are wanted.
@@ -305,25 +337,11 @@ class Client {
       }
       String output = sb.toString();
       out.println(output);
-      return 1;
     } else {
       cSftp.get(filename, filename);
       String lpwd = cSftp.lpwd();
       out.println("The file has been downloaded to: " + lpwd);
-      return 1;
     }
-  }
-
-  /**
-   * Rename file on remote directory
-   */
-  void renameRemoteFile() throws SftpException {
-    out.println("Enter the original file name: ");
-    String filename = scanner.next();
-    out.println("Enter the new file name: ");
-    String newFilename = scanner.next();
-    cSftp.rename(filename, newFilename);
-    out.println(filename + " has been renamed to: " + newFilename + "\n");
   }
 
   /**
@@ -334,33 +352,37 @@ class Client {
     String input;
     while (repeat) {
       //get original file name
-      out.println("Enter the original file or directory name (e.g., file.txt or directoryName): ");
-      String filename = scanner.next();
-      //append the file name to the current path
-      String originalPath = cSftp.lpwd() + "/" + filename;
-      File originalFile = new File(originalPath);
+      String oldFilename = "";
+      while(oldFilename.equals("")) {
+        out.println("Enter the original local file name (e.g., file.txt or directoryName): ");
+        oldFilename = scanner.nextLine();
+        if(oldFilename.equals("")) //check for empty input
+          System.err.println("You did not enter a file name.");
+      }
+      File originalFile = new File(cSftp.lpwd() + "/" + oldFilename);
       //get the new file name
-      out.println("Enter the new file or directory name (e.g., renamed.txt or directoryRenamed): ");
-      String newFilename = scanner.next();
-      //append the file name to the current path
-      String renamePath = cSftp.lpwd() + "/" + newFilename;
-      File renamedFile = new File(renamePath);
+      String newFilename = "";
+      while(newFilename.equals("")) {
+        out.println("Enter the new local file name (e.g., file.txt or directoryName): ");
+        newFilename = scanner.nextLine();
+        if(newFilename.equals("")) //check for empty input
+          System.err.println(("You did not enter a file name."));
+      }
+      File renamedFile = new File(cSftp.lpwd() + "/" + newFilename);
       //check for a duplicate file/directory name
+      boolean rename = false;
       if (renamedFile.exists()) {
         out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
         input = scanner.next();
         if ((input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y")))) {
-          if (originalFile.renameTo(renamedFile)) {
-            out.println(filename + " has been overwritten.\n");
-          } else {
-            out.println("Error: rename unsuccessful.\n");
-          }
-          repeat = false;
+          rename = true;
         }
+      } else {
+        rename = true;
       }
-      if (!renamedFile.exists()) {
+      if (rename) {
         if (originalFile.renameTo(renamedFile)) {
-          out.println(filename + " has been renamed to: " + newFilename + "\n");
+          out.println(oldFilename + " has been renamed to: " + newFilename + "\n");
         } else {
           out.println("Error: rename unsuccessful.\n");
         }
@@ -369,11 +391,13 @@ class Client {
     }
   }
 
+  /*
   /**
    * Executes a command on the remote server.
    *
    * @param command -- The text command that you'd like to execute. (Ex: "ls -a" or "cd mydirectory")
    */
+  /*
   void remoteExec(String command) {
     logger.log("remoteExec called w/ argument '" + command + "'");
     try {
@@ -405,6 +429,7 @@ class Client {
       ex.printStackTrace();
     }
   }
+  */
 
   /**
    * Rename file/directory on remote server
@@ -415,44 +440,44 @@ class Client {
     SftpATTRS attrs = null;
     while (repeat) {
       //get original file name
-      out.println("Enter the original file name: ");
-      String filename = scanner.next();
-      //append the file name to the current path
-      String originalPath = cSftp.pwd() + "/" + filename;
-      File originalFile = new File(originalPath);
+      String oldFilename = "";
+      while(oldFilename.equals("")) {
+        out.println("Enter the original remote file name (e.g., file.txt or directoryName): ");
+        oldFilename = scanner.nextLine();
+        if(oldFilename.equals("")) //check for empty input
+          System.err.println("You did not enter a file name.");
+      }
+      String oldFilePath = cSftp.pwd() + "/" + oldFilename;
       //get the new file name
-      out.println("Enter the new file name: ");
-      String newFilename = scanner.next();
-      //append the file name to the current path
-      String renamedPath = cSftp.pwd() + "/" + newFilename;
-      File renamedFile = new File(renamedPath);
-      //convert file object to string to pass to JSch rename method
-      String file = originalFile.toString();
-      String renamed = renamedFile.toString();
+      String newFilename = "";
+      while(newFilename.equals("")) {
+        out.println("Enter the new remote file name (e.g., file.txt or directoryName): ");
+        newFilename = scanner.nextLine();
+        if(newFilename.equals("")) //check for empty input
+          System.err.println(("You did not enter a file name."));
+      }
+      String newFilePath = cSftp.pwd() + "/" + newFilename;
       try {
-        attrs = cSftp.stat(newFilename);
+        attrs = cSftp.stat(newFilePath);
       } catch (Exception e) {
         out.println();
       }
+      boolean rename = false;
       if (attrs != null) {
         out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
         input = scanner.next();
         attrs = null;
-        if (input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y"))) {
-          try {
-            cSftp.rename(file, renamed);
-            out.println(filename + " has been successfully overwritten.\n");
-          } catch (SftpException e) {
-            out.println("Error: rename unsuccessful.\n");
-          }
-          repeat = false;
-        }
+        if (input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y")))
+          rename = true;
       } else {
+        rename = true;
+      }
+      if(rename) {
         try {
-          cSftp.rename(file, renamed);
-          out.println(filename + " has been renamed to: " + newFilename + "\n");
+          cSftp.rename(oldFilePath, newFilePath);
+          out.println(oldFilename + " has been renamed to: " + newFilename);
         } catch (SftpException e) {
-          out.println("Error: rename unsuccessful.\n");
+          out.println("Error: rename unsuccessful.");
         }
         repeat = false;
       }
@@ -460,7 +485,7 @@ class Client {
   }
 
   /**
-   * Create a directory on the user's local machine.
+   * Wrapper to create a directory on the user's local machine.
    */
   void createLocalDir() {
     logger.log("createLocalDir called");
@@ -494,6 +519,8 @@ class Client {
 
   /**
    * Called by createLocalDir() to make a new local directory in current local path
+   *
+   * @param newDir -- File to create in current local path
    * @return true if file was successfully created
    */
   boolean createLocalDir(File newDir) {
