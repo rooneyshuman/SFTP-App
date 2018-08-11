@@ -1,9 +1,13 @@
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -11,9 +15,9 @@ public class ClientTest {
   /**
    * These need to be filled in before the tests will run properly.
    */
-  private String userName = "username";
-  private String password = "password";
-  private String hostName = "hostname";
+  private String userName = "u";
+  private String password = "p";
+  private String hostName = "h";
 
   // TODO
   @Test
@@ -202,5 +206,82 @@ public class ClientTest {
     System.out.println(dirName + " was created successfully");
     if(newDir.delete())        //clean up
       System.out.println(dirName + " was deleted");
+  }
+
+  /**
+   * Asserts whether a local directory was changed
+   * Also inherently tests printLocalWorkingDir()
+   */
+  @Test
+  public void changeLocalDir_assertsDirChanged(){
+    boolean pass = false;
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    PrintStream stdout = System.out;
+    String newLocalPath = "newLocalPath";
+    File newDir = new File(newLocalPath);
+
+    Client client = new Client(password, hostName, userName);
+    client.connect();
+
+    if(newDir.mkdir()) {          //create new directory path
+      System.setOut(new PrintStream(output));
+      output.reset();
+      client.printLocalWorkingDir();
+      assertThat(output.toString().contains(newLocalPath), equalTo(false)); //assert current path is not newDir
+      client.changeLocalWorkingDir(newLocalPath);       //change path to newDir
+      output.reset();
+      client.printLocalWorkingDir();
+      assertThat(output.toString(), containsString(newLocalPath));    //assert current path is newDir
+      client.changeLocalWorkingDir("..");       //reset path
+      System.setOut(stdout);    //reset output to standard System.out
+      if(!newDir.delete())
+        System.out.println("Error deleting testing directory");
+      else {
+        System.out.println("Path successfully changed to new dir. New dir has been deleted and path is reset.");
+        pass = true;
+      }
+    }
+    else {
+      System.setOut(stdout);
+      System.out.println("Error in mkdir");
+    }
+    assertThat(pass, equalTo(true));
+  }
+
+  /**
+   * Asserts whether a remote directory was changed
+   * Also inherently tests printRemoteWorkingDir()
+   */
+  @Test
+  public void changeRemoteDir_assertsDirChanged() throws SftpException{
+    boolean pass = false;
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    PrintStream stdout = System.out;
+    String newRemotePath = "newRemotePath";
+
+    Client client = new Client(password, hostName, userName);
+    client.connect();
+
+    if(client.createRemoteDir(newRemotePath)){
+      System.setOut(new PrintStream(output));
+      output.reset();
+      client.printRemoteWorkingDir();
+      assertThat(output.toString().contains(newRemotePath), equalTo(false)); //assert current path is not newDir
+      client.changeRemoteWorkingDir(newRemotePath);       //change path to newDir
+      output.reset();
+      client.printRemoteWorkingDir();
+      assertThat(output.toString(), containsString(newRemotePath));    //assert current path is newDir
+      client.changeRemoteWorkingDir("..");       //reset path
+      System.setOut(stdout);    //reset output to standard System.out
+
+      client.getcSftp().rmdir(newRemotePath);
+      System.out.println("Path successfully changed to new dir. New dir has been deleted and path is reset.");
+      pass = true;
+    }
+   else {
+      System.setOut(stdout);
+      System.out.println("Error in createRemoteDir");
+    }
+    assertThat(pass, equalTo(true));
   }
 }
