@@ -15,9 +15,9 @@ public class ClientTest {
   /**
    * These need to be filled in before the tests will run properly.
    */
-  private String userName = "username";
-  private String password = "password";
-  private String hostName = "hostname";
+  private String userName = "u";
+  private String password = "p";
+  private String hostName = "h";
 
   // TODO
   @Test
@@ -88,7 +88,6 @@ public class ClientTest {
     Client client = new Client(password, hostName, userName);
     client.connect();
 
-    client.deleteRemoteFile(fileName);
     client.uploadFile(fileName);
     attrs = client.getcSftp().stat(fileName);
     if (attrs != null)
@@ -120,11 +119,11 @@ public class ClientTest {
   }
 
   /**
-   * Trying to upload a file that does not exist should result in an error. This test verifies that is the case.
+   * Trying to download a file that does not exist should result in an error. This test verifies that is the case.
    */
   @Test
   public void downloadFakeFile() {
-    Client client = new Client("Oatman641!", "linux.cs.pdx.edu", "brambora");
+    Client client = new Client(password, hostName, userName);
     try {
       client.connect();
 
@@ -143,14 +142,14 @@ public class ClientTest {
   }
 
   /**
-   * Test whether a file is uploaded correctly.
+   * Test whether a file is downloaded correctly.
    */
   @Test
   public void downloadFile() {
     String fileName = "testfile.txt";
     String fileName2 = "testfile.txt, testfile2.txt";
 
-    Client client = new Client("Oatman641!", "linux.cs.pdx.edu", "brambora");
+    Client client = new Client(password, hostName, userName);
     try {
       client.connect();
 
@@ -219,31 +218,32 @@ public class ClientTest {
     PrintStream stdout = System.out;
     String newLocalPath = "newLocalPath";
     File newDir = new File(newLocalPath);
-
     Client client = new Client(password, hostName, userName);
-    client.connect();
 
-    if (newDir.mkdir()) {          //create new directory path
-      System.setOut(new PrintStream(output));
-      output.reset();
-      client.printLocalWorkingDir();
-      assertThat(output.toString().contains(newLocalPath), equalTo(false)); //assert current path is not newDir
-      client.changeLocalWorkingDir(newLocalPath);       //change path to newDir
-      output.reset();
-      client.printLocalWorkingDir();
-      assertThat(output.toString(), containsString(newLocalPath));    //assert current path is newDir
-      client.changeLocalWorkingDir("..");       //reset path
-      System.setOut(stdout);    //reset output to standard System.out
-      if (!newDir.delete())
-        System.out.println("Error deleting testing directory");
-      else {
-        System.out.println("Path successfully changed to new dir. New dir has been deleted and path is reset.");
-        pass = true;
+    if (client.connect()) {
+      if (newDir.mkdir()) {          //create new directory path
+        System.setOut(new PrintStream(output));
+        output.reset();
+        client.printLocalWorkingDir();
+        assertThat(output.toString().contains(newLocalPath), equalTo(false)); //assert current path is not newDir
+        client.changeLocalWorkingDir(newLocalPath);       //change path to newDir
+        output.reset();
+        client.printLocalWorkingDir();
+        assertThat(output.toString(), containsString(newLocalPath));    //assert current path is newDir
+        client.changeLocalWorkingDir("..");       //reset path
+        System.setOut(stdout);    //reset output to standard System.out
+        if (!newDir.delete())
+          System.out.println("Error deleting testing directory");
+        else {
+          System.out.println("Path successfully changed to new dir. New dir has been deleted and path is reset.");
+          pass = true;
+        }
+      } else {
+        System.setOut(stdout);
+        System.out.println("Error in mkdir");
       }
-    } else {
-      System.setOut(stdout);
-      System.out.println("Error in mkdir");
     }
+
     assertThat(pass, equalTo(true));
   }
 
@@ -275,52 +275,6 @@ public class ClientTest {
 
       client.getcSftp().rmdir(newRemotePath);
       System.out.println("Path successfully changed to new dir. New dir has been deleted and path is reset.");
-      pass = true;
-    } else {
-      System.setOut(stdout);
-      System.out.println("Error in createRemoteDir");
-    }
-    assertThat(pass, equalTo(true));
-  }
-
-  /**
-   * Asserts whether a remote directory was changed
-   * Also inherently tests printRemoteWorkingDir()
-   */
-  @Test
-  public void disconnect_assertsSessionIsDisconnected() {
-    boolean pass = false;
-    Client client = new Client(password, hostName, userName);
-    if (client.connect()) {
-      System.out.println("Now disconnecting your session...");
-      client.disconnect();
-      assertThat(client.getSession().isConnected(), equalTo(false));
-      pass = true;
-    } else
-      System.out.println("Connection error.");
-    assertThat(pass, equalTo(true));
-  }
-
-  /**
-   * Asserts whether a directory's files are displayed
-   */
-  @Test
-  public void displayRemoteFiles_assertsFilesAndDirectoriesDisplay() throws SftpException {
-    ByteArrayOutputStream output = new ByteArrayOutputStream();
-    PrintStream stdout = System.out;
-    String dirName = "newDirectory";
-    boolean pass = false;
-
-    Client client = new Client(password, hostName, userName);
-    client.connect();
-
-    if (client.createRemoteDir(dirName)) {
-      System.setOut(new PrintStream(output));
-      client.displayRemoteFiles();
-      assertThat(output.toString(), containsString(dirName));
-      client.getcSftp().rmdir(dirName);        //clean up
-      System.setOut(stdout);
-      System.out.println("New remote file successfully displayed. New dir has been deleted.");
       pass = true;
     } else {
       System.setOut(stdout);
