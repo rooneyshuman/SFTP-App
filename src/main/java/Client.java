@@ -290,7 +290,6 @@ class Client {
       cSftp.cd(newDirPath);
       pass = true;
     } catch (SftpException e) {
-      e.printStackTrace();
       System.out.println("Error changing your directory");
     }
     return pass;
@@ -581,18 +580,19 @@ class Client {
           sb.append("\n");
         }
         output = sb.toString();
+        out.println("The files have been deleted from: " + pwd);
       } catch (Exception e) {
-        e.printStackTrace();
+        out.println("Error deleting remote files.");
       }
       out.println(output);
     } else {
       try {
         cSftp.rm(files);
         pwd = cSftp.pwd();
+        out.println("The file has been deleted from: " + pwd);
       } catch (Exception e) {
-        e.printStackTrace();
+        out.println("Error deleting remote files.");
       }
-      out.println("The file has been deleted from: " + pwd);
     }
   }
 }
