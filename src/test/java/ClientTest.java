@@ -221,7 +221,10 @@ public class ClientTest {
     File newDir = new File(newLocalPath);
 
     Client client = new Client(password, hostName, userName);
-    client.connect();
+    if(!client.connect()) {
+      System.out.println("Connection failed.");
+      assert(false);
+    }
 
     if(newDir.mkdir()) {          //create new directory path
       System.setOut(new PrintStream(output));
