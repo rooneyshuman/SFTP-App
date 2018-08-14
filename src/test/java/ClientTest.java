@@ -53,7 +53,7 @@ public class ClientTest {
   public void uploadFakeFile_expectsSftpException() throws SftpException {
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Unable to run test.");
+      System.out.println("Failed connection. Unable to run test.");
       assert(false);
     }
 
@@ -70,7 +70,7 @@ public class ClientTest {
 
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Unable to run test.");
+      System.out.println("Failed connection. Unable to run test.);
       assert(false);
     }
 
@@ -93,7 +93,7 @@ public class ClientTest {
 
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Unable to run test.");
+      System.out.println("Failed connection. Unable to run test.);
       assert(false);
     }
     client.uploadFile(fileName);
@@ -119,7 +119,7 @@ public class ClientTest {
 
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Connection failed.");
+      System.out.println("Failed connection. Unable to run test.);
       assert(false);
     }
 
@@ -137,7 +137,7 @@ public class ClientTest {
     Client client = new Client(password, hostName, userName);
     try {
       if(!client.connect()) {
-        System.out.println("Connection failed.");
+        System.out.println("Failed connection. Unable to run test.);
         assert(false);
       }
 
@@ -166,7 +166,7 @@ public class ClientTest {
     Client client = new Client(password, hostName, userName);
     try {
       if(!client.connect()) {
-        System.out.println("Connection failed.");
+        System.out.println("Failed connection. Unable to run test.);
         assert(false);
       }
 
@@ -201,7 +201,7 @@ public class ClientTest {
   public void createRemoteDir_assertsDirExists() throws SftpException {
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Connection failed.");
+      System.out.println("Failed connection. Unable to run test.);
       assert(false);
     }
 
@@ -218,7 +218,7 @@ public class ClientTest {
   public void createLocalDir_assertsDirExists() {
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Connection failed.");
+      System.out.println("Failed connection. Unable to run test.);
       assert(false);
     }
     String dirName = "newDirectory";
@@ -244,7 +244,7 @@ public class ClientTest {
 
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Connection failed.");
+      System.out.println("Failed connection. Unable to run test.);
       assert(false);
     }
 
@@ -285,7 +285,7 @@ public class ClientTest {
 
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Connection failed.");
+      System.out.println("Failed connection. Unable to run test.);
       assert(false);
     }
 
