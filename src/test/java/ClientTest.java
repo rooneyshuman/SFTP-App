@@ -52,7 +52,10 @@ public class ClientTest {
   @Test (expected = SftpException.class)
   public void uploadFakeFile_expectsSftpException() throws SftpException{
     Client client = new Client(password, hostName, userName);
-    client.connect();
+    if(!client.connect()) {
+      System.out.println("Connection failed.");
+      assert(false);
+    }
 
     //try uploading a non existent file.
     client.uploadFile("This is not a file");
@@ -66,7 +69,10 @@ public class ClientTest {
     String fileName = "MissingTextFile.txt";
 
     Client client = new Client(password, hostName, userName);
-    client.connect();
+    if(!client.connect()) {
+      System.out.println("Connection failed.");
+      assert(false);
+    }
 
     client.uploadFile(fileName);
   }
@@ -76,6 +82,12 @@ public class ClientTest {
    */
   @Test
   public void uploadFile_assertsFileExists() throws SftpException, IOException {
+    Client client = new Client(password, hostName, userName);
+    if(!client.connect()) {
+      System.out.println("Connection failed.");
+      assert(false);
+    }
+
     String fileName = "testfile.txt";
     File file = new File(fileName);
     if(file.createNewFile())
@@ -84,9 +96,6 @@ public class ClientTest {
       System.out.println("Could not add testfile.txt to local");
     boolean pass = false;
     SftpATTRS attrs;
-
-    Client client = new Client(password, hostName, userName);
-    client.connect();
 
     client.deleteRemoteFile(fileName);
     client.uploadFile(fileName);
@@ -111,7 +120,10 @@ public class ClientTest {
     SftpATTRS attrs = null;
 
     Client client = new Client(password, hostName, userName);
-    client.connect();
+    if(!client.connect()) {
+      System.out.println("Connection failed.");
+      assert(false);
+    }
 
     client.uploadFile(fileName);
     System.out.println("Now deleting the files you uploaded.");
@@ -124,9 +136,12 @@ public class ClientTest {
    */
   @Test
   public void downloadFakeFile() {
-    Client client = new Client("Oatman641!", "linux.cs.pdx.edu", "brambora");
+    Client client = new Client(password, hostName, userName);
     try {
-      client.connect();
+      if(!client.connect()) {
+        System.out.println("Connection failed.");
+        assert(false);
+      }
 
       //try downloading a non existent file.
       try {
@@ -150,9 +165,12 @@ public class ClientTest {
     String fileName = "testfile.txt";
     String fileName2 = "testfile.txt, testfile2.txt";
 
-    Client client = new Client("Oatman641!", "linux.cs.pdx.edu", "brambora");
+    Client client = new Client(password, hostName, userName);
     try {
-      client.connect();
+      if(!client.connect()) {
+        System.out.println("Connection failed.");
+        assert(false);
+      }
 
       //try downloading a file
       try {
@@ -184,7 +202,10 @@ public class ClientTest {
   @Test
   public void createRemoteDir_assertsDirExists() throws SftpException {
     Client client = new Client(password, hostName, userName);
-    client.connect();
+    if(!client.connect()) {
+      System.out.println("Connection failed.");
+      assert(false);
+    }
 
     String dirName = "newDirectory";
     assertThat(client.createRemoteDir(dirName), equalTo(true));
@@ -198,7 +219,10 @@ public class ClientTest {
   @Test
   public void createLocalDir_assertsDirExists() {
     Client client = new Client(password, hostName, userName);
-    client.connect();
+    if(!client.connect()) {
+      System.out.println("Connection failed.");
+      assert(false);
+    }
     String dirName = "newDirectory";
     String path = client.getcSftp().lpwd() + "/" + dirName;
     File newDir = new File(path);
@@ -263,7 +287,10 @@ public class ClientTest {
     String newRemotePath = "newRemotePath";
 
     Client client = new Client(password, hostName, userName);
-    client.connect();
+    if(!client.connect()) {
+      System.out.println("Connection failed.");
+      assert(false);
+    }
 
     if(client.createRemoteDir(newRemotePath)){
       System.setOut(new PrintStream(output));
