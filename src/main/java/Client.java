@@ -562,7 +562,7 @@ class Client {
    * @param files -- The string read in main containing the names of the files.
    */
   void deleteRemoteFile(String files) {
-    String pwd = "";
+    String pwd;
     if (files.contains(",")) {
       //multiple files are wanted.
       //take the string and separate out the files.
