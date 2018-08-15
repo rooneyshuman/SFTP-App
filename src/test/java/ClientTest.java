@@ -49,11 +49,11 @@ public class ClientTest {
   /**
    * Trying to upload a file should result in an error. Expects an SftpException.
    */
-  @Test (expected = SftpException.class)
-  public void uploadFakeFile_expectsSftpException() throws SftpException{
+  @Test(expected = SftpException.class)
+  public void uploadFakeFile_expectsSftpException() throws SftpException {
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Connection failed.");
+      System.out.println("Failed connection. Unable to run test.");
       assert(false);
     }
 
@@ -64,13 +64,13 @@ public class ClientTest {
   /**
    * Should throw exception when file not found when upload attempted
    */
-  @Test (expected = SftpException.class)
+  @Test(expected = SftpException.class)
   public void uploadFile_expectsSftpException_NoSuchFile() throws SftpException {
     String fileName = "MissingTextFile.txt";
 
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Connection failed.");
+      System.out.println("Failed connection. Unable to run test.");
       assert(false);
     }
 
@@ -82,22 +82,20 @@ public class ClientTest {
    */
   @Test
   public void uploadFile_assertsFileExists() throws SftpException, IOException {
-    Client client = new Client(password, hostName, userName);
-    if(!client.connect()) {
-      System.out.println("Connection failed.");
-      assert(false);
-    }
-
     String fileName = "testfile.txt";
     File file = new File(fileName);
-    if(file.createNewFile())
+    if (file.createNewFile())
       System.out.println("Added testfile.txt to local");
     else
       System.out.println("Could not add testfile.txt to local");
     boolean pass = false;
     SftpATTRS attrs;
 
-    client.deleteRemoteFile(fileName);
+    Client client = new Client(password, hostName, userName);
+    if(!client.connect()) {
+      System.out.println("Failed connection. Unable to run test.");
+      assert(false);
+    }
     client.uploadFile(fileName);
     attrs = client.getcSftp().stat(fileName);
     if (attrs != null)
@@ -105,7 +103,7 @@ public class ClientTest {
     System.out.println("Now deleting the files you uploaded.");
     client.deleteRemoteFile(fileName);
     assertThat(pass, equalTo(true));
-    if(file.delete())
+    if (file.delete())
       System.out.println("Deleted testfile.txt from local");
     else
       System.out.println("Could not delete testfile.txt from local");
@@ -114,14 +112,14 @@ public class ClientTest {
   /**
    * Asserts uploaded file was deleted. stat() throws exception if filename is not found.
    */
-  @Test (expected = SftpException.class)
+  @Test(expected = SftpException.class)
   public void deleteFile_expectsSftpException() throws SftpException {
     String fileName = "testfile.txt";
     SftpATTRS attrs = null;
 
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Connection failed.");
+      System.out.println("Failed connection. Unable to run test.");
       assert(false);
     }
 
@@ -139,7 +137,7 @@ public class ClientTest {
     Client client = new Client(password, hostName, userName);
     try {
       if(!client.connect()) {
-        System.out.println("Connection failed.");
+        System.out.println("Failed connection. Unable to run test.");
         assert(false);
       }
 
@@ -168,7 +166,7 @@ public class ClientTest {
     Client client = new Client(password, hostName, userName);
     try {
       if(!client.connect()) {
-        System.out.println("Connection failed.");
+        System.out.println("Failed connection. Unable to run test.");
         assert(false);
       }
 
@@ -203,7 +201,7 @@ public class ClientTest {
   public void createRemoteDir_assertsDirExists() throws SftpException {
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Connection failed.");
+      System.out.println("Failed connection. Unable to run test.");
       assert(false);
     }
 
@@ -220,7 +218,7 @@ public class ClientTest {
   public void createLocalDir_assertsDirExists() {
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Connection failed.");
+      System.out.println("Failed connection. Unable to run test.");
       assert(false);
     }
     String dirName = "newDirectory";
@@ -228,7 +226,7 @@ public class ClientTest {
     File newDir = new File(path);
     assertThat(client.createLocalDir(newDir), equalTo(true));
     System.out.println(dirName + " was created successfully");
-    if(newDir.delete())        //clean up
+    if (newDir.delete())        //clean up
       System.out.println(dirName + " was deleted");
   }
 
@@ -237,7 +235,7 @@ public class ClientTest {
    * Also inherently tests printLocalWorkingDir()
    */
   @Test
-  public void changeLocalDir_assertsDirChanged(){
+  public void changeLocalDir_assertsDirChanged() {
     boolean pass = false;
     ByteArrayOutputStream output = new ByteArrayOutputStream();
     PrintStream stdout = System.out;
@@ -246,7 +244,7 @@ public class ClientTest {
 
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Connection failed.");
+      System.out.println("Failed connection. Unable to run test.");
       assert(false);
     }
 
@@ -267,8 +265,7 @@ public class ClientTest {
         System.out.println("Path successfully changed to new dir. New dir has been deleted and path is reset.");
         pass = true;
       }
-    }
-    else {
+    } else {
       System.setOut(stdout);
       System.out.println("Error in mkdir");
     }
@@ -280,7 +277,7 @@ public class ClientTest {
    * Also inherently tests printRemoteWorkingDir()
    */
   @Test
-  public void changeRemoteDir_assertsDirChanged() throws SftpException{
+  public void changeRemoteDir_assertsDirChanged() throws SftpException {
     boolean pass = false;
     ByteArrayOutputStream output = new ByteArrayOutputStream();
     PrintStream stdout = System.out;
@@ -288,11 +285,11 @@ public class ClientTest {
 
     Client client = new Client(password, hostName, userName);
     if(!client.connect()) {
-      System.out.println("Connection failed.");
+      System.out.println("Failed connection. Unable to run test.");
       assert(false);
     }
 
-    if(client.createRemoteDir(newRemotePath)){
+    if (client.createRemoteDir(newRemotePath)) {
       System.setOut(new PrintStream(output));
       output.reset();
       client.printRemoteWorkingDir();
@@ -307,11 +304,59 @@ public class ClientTest {
       client.getcSftp().rmdir(newRemotePath);
       System.out.println("Path successfully changed to new dir. New dir has been deleted and path is reset.");
       pass = true;
-    }
-   else {
+    } else {
       System.setOut(stdout);
       System.out.println("Error in createRemoteDir");
     }
+    assertThat(pass, equalTo(true));
+  }
+
+  /**
+   * Asserts whether a remote directory was changed
+   * Also inherently tests printRemoteWorkingDir()
+   */
+  @Test
+  public void disconnect_assertsSessionIsDisconnected() {
+    boolean pass = false;
+    Client client = new Client(password, hostName, userName);
+    if (client.connect()) {
+      System.out.println("Now disconnecting your session...");
+      client.disconnect();
+      assertThat(client.getSession().isConnected(), equalTo(false));
+      pass = true;
+    } else {
+      System.out.println("Connection error.");
+    }
+    assertThat(pass, equalTo(true));
+  }
+
+  /**
+   * Asserts whether a directory's files are displayed
+   */
+  @Test
+  public void displayRemoteFiles_assertsFilesAndDirectoriesDisplay() throws SftpException {
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    PrintStream stdout = System.out;
+    String dirName = "newDirectory";
+    boolean pass = false;
+
+    Client client = new Client(password, hostName, userName);
+    if (!client.connect()) {
+      System.out.println("Failed connection. Unable to run test.");
+      assert(false);
+    }
+
+    if (client.createRemoteDir(dirName)) {
+      System.setOut(new PrintStream(output));   //Redirect printstream
+      client.displayRemoteFiles();
+      assertThat(output.toString(), containsString(dirName));   //Assert output contains new dir
+      client.getcSftp().rmdir(dirName);        //clean up
+      System.setOut(stdout);      //Reset printstream to System.out
+      System.out.println("New remote file successfully displayed. New dir has been deleted.");
+      pass = true;
+    } else
+      System.out.println("Error in createRemoteDir");
+
     assertThat(pass, equalTo(true));
   }
 }

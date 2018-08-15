@@ -98,6 +98,15 @@ class Client {
   }
 
   /**
+   * Simple getter for session for use in test suite.
+   *
+   * @return -- returns the Session object.
+   */
+  Session getSession() {
+    return session;
+  }
+
+  /**
    * Lists all directories and files on the user's local machine (from the current directory).
    */
   int displayLocalFiles() {
@@ -123,23 +132,30 @@ class Client {
   /**
    * Lists all directories and files on the user's remote machine.
    */
-  void displayRemoteFiles() throws SftpException {
+  boolean displayRemoteFiles() {
     logger.log("displayRemoteFiles called");
-    printRemoteWorkingDir();
-    Vector remoteDir = cSftp.ls(cSftp.pwd());
-    if (remoteDir != null) {
-      int count = 0;
-      for (int i = 0; i < remoteDir.size(); ++i) {
-        if (count == 5) {
-          count = 0;
-          out.println();
+
+    try {
+      printRemoteWorkingDir();
+      Vector remoteDir = cSftp.ls(cSftp.pwd());
+      if (remoteDir != null) {
+        int count = 0;
+        for (int i = 0; i < remoteDir.size(); ++i) {
+          if (count == 5) {
+            count = 0;
+            out.println();
+          }
+          Object dirEntry = remoteDir.elementAt(i);
+          if (dirEntry instanceof ChannelSftp.LsEntry)
+            out.print(((ChannelSftp.LsEntry) dirEntry).getFilename() + "    ");
+          ++count;
         }
-        Object dirEntry = remoteDir.elementAt(i);
-        if (dirEntry instanceof ChannelSftp.LsEntry)
-          out.print(((ChannelSftp.LsEntry) dirEntry).getFilename() + "    ");
-        ++count;
+        out.println("\n");
       }
-      out.println("\n");
+      return true;
+    } catch (SftpException e) {
+      System.out.println("Error displaying remote files");
+      return false;
     }
   }
 
@@ -274,7 +290,6 @@ class Client {
       cSftp.cd(newDirPath);
       pass = true;
     } catch (SftpException e) {
-      e.printStackTrace();
       System.out.println("Error changing your directory");
     }
     return pass;
@@ -547,7 +562,7 @@ class Client {
    * @param files -- The string read in main containing the names of the files.
    */
   void deleteRemoteFile(String files) {
-    String pwd = "";
+    String pwd;
     if (files.contains(",")) {
       //multiple files are wanted.
       //take the string and separate out the files.
@@ -565,18 +580,19 @@ class Client {
           sb.append("\n");
         }
         output = sb.toString();
+        out.println("The files have been deleted from: " + pwd);
       } catch (Exception e) {
-        e.printStackTrace();
+        out.println("Error deleting remote files.");
       }
       out.println(output);
     } else {
       try {
         cSftp.rm(files);
         pwd = cSftp.pwd();
+        out.println("The file has been deleted from: " + pwd);
       } catch (Exception e) {
-        e.printStackTrace();
+        out.println("Error deleting remote files.");
       }
-      out.println("The file has been deleted from: " + pwd);
     }
   }
 }

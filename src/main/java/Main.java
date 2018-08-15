@@ -20,84 +20,82 @@ public class Main {
         case 1:
           try {
             client.promptConnectionInfo();
-            client.connect();
+            if (client.connect()) {
 
-            do {
-              option = menu.workingMenu();
-              switch (option) {
-                case 1: //list directories: local and remote option
-                  listDirectories(client);
-                  break;
+              do {
+                option = menu.workingMenu();
+                switch (option) {
+                  case 1: //list directories: local and remote option
+                    listDirectories(client);
+                    break;
 
-                case 2: //download a file
-                  try {
-                    out.println("Listing remote directories and files...");
-                    client.displayRemoteFiles();
-                    out.println("Please enter the name of the file(s) you'd like to download. Example usage: file1.txt, file2.txt");
-                    String filename = scanner.nextLine();
-                    client.downloadFile(filename);
-                  } catch (SftpException e) {
-                    out.println("Error downloading file");
-                    e.printStackTrace();
-                  }
-                  break;
+                  case 2: //download a file
+                    try {
+                      out.println("Listing remote directories and files...");
+                      client.displayRemoteFiles();
+                      out.println("Please enter the name of the file(s) you'd like to download. Example usage: file1.txt, file2.txt");
+                      String filename = scanner.nextLine();
+                      client.downloadFile(filename);
+                    } catch (SftpException e) {
+                      out.println("Error downloading file");
+                    }
+                    break;
 
-                case 3: //upload a file
-                  try {
-                    out.println("Listing local directories and files...");
-                    client.displayLocalFiles();
-                    out.println("Please enter the name of the file(s) you'd like to download. Example usage: file1.txt, file2.txt");
-                    String filename = scanner.nextLine();
-                    client.uploadFile(filename);
-                  } catch (SftpException e) {
-                    out.println("Error uploading file");
-                    e.printStackTrace();
-                  }
+                  case 3: //upload a file
+                    try {
+                      out.println("Listing local directories and files...");
+                      client.displayLocalFiles();
+                      out.println("Please enter the name of the file(s) you'd like to download. Example usage: file1.txt, file2.txt");
+                      String filename = scanner.nextLine();
+                      client.uploadFile(filename);
+                    } catch (SftpException e) {
+                      out.println("Error uploading file");
+                    }
 
-                  break;
+                    break;
 
-                case 4: //create remote directory in current dir: name
-                  out.println("Creating directory...");
-                  createDirectory(client);
-                  break;
+                  case 4: //create remote directory in current dir: name
+                    out.println("Creating directory...");
+                    createDirectory(client);
+                    break;
 
-                case 5: //delete file/directory
-                  out.println("Deleting directories...");
-                  delete(client);
-                  break;
+                  case 5: //delete file/directory
+                    out.println("Deleting directories...");
+                    delete(client);
+                    break;
 
-                case 6: //change permissions
-                  out.println("Changing permissions...");
-                  changePermission(client);
-                  break;
+                  case 6: //change permissions
+                    out.println("Changing permissions...");
+                    changePermission(client);
+                    break;
 
-                case 7: //copy directory
-                  out.println("Copying directories...");
-                  break;
+                  case 7: //copy directory
+                    out.println("Copying directories...");
+                    break;
 
-                case 8: //rename file
-                  out.println("Renaming files...");
-                  rename(client);
-                  break;
+                  case 8: //rename file
+                    out.println("Renaming files...");
+                    rename(client);
+                    break;
 
-                case 9: //view log history
-                  out.println("Viewing log history...");
-                  client.displayLogHistory();
-                  break;
+                  case 9: //view log history
+                    out.println("Viewing log history...");
+                    client.displayLogHistory();
+                    break;
 
-                case 10: //exit
-                  out.println("Closing connection...");
-                  client.disconnect();
-                  break;
+                  case 10: //exit
+                    out.println("Closing connection...");
+                    client.disconnect();
+                    break;
 
-                default:
-                  System.err.println("You did not enter a valid option");
-                  break;
-              }
-            } while (option != 10);
+                  default:
+                    System.err.println("You did not enter a valid option");
+                    break;
+                }
+              } while (option != 10);
+            }
           } catch (Exception e) {
             System.err.println("Client error:" + e.getLocalizedMessage());
-            e.printStackTrace();
             System.exit(1);
           }
 
@@ -239,16 +237,11 @@ public class Main {
           break;
         case 6:
           System.out.println("Delete remote directory/file...");
-          try {
-            out.println("Listing local directories and files...");
-            client.displayRemoteFiles();
-            out.println("Please enter the name of the file(s) you'd like to delete. Example usage: file1.txt, file2.txt");
-            String filename = scanner.nextLine();
-            client.deleteRemoteFile(filename);
-          } catch (SftpException e) {
-            out.println("Error deleting file");
-            e.printStackTrace();
-          }
+          out.println("Listing local directories and files...");
+          client.displayRemoteFiles();
+          out.println("Please enter the name of the file(s) you'd like to delete. Example usage: file1.txt, file2.txt");
+          String filename = scanner.nextLine();
+          client.deleteRemoteFile(filename);
           break;
         case 7: //return to previous menu
           break;
@@ -335,12 +328,8 @@ public class Main {
           client.displayLocalFiles();
           break;
         case 6:
-          try {
-            out.println("Listing remote directories and files...");
-            client.displayRemoteFiles();
-          } catch (SftpException e) {
-            System.err.println("Error displaying remote files");
-          }
+          out.println("Listing remote directories and files...");
+          client.displayRemoteFiles();
           break;
         case 7: //return to previous menu
           break;
