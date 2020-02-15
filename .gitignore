@@ -1,11 +1,47 @@
-## gitignore file for IDE files
+### Intellij ###
+.idea/
+out/
+modules.xml
 
-# Ignore .idea files
+# Maven with auto-import
 *.iml
+*.ipr
 
-# Ignore local maven files
-*.lst
+### Java ###
+# Compiled class file
 *.class
-.idea/misc.xml
-.idea/workspace.xml
-.idea/codeStyles/codeStyleConfig.xml
+
+# Log file
+*.log
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+.flattened-pom.xml
+
