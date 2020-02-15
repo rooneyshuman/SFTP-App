@@ -71,7 +71,7 @@ mvn package
 Right-click Main.java -> Run 'Main.main()'
 ```
 
-### Usage
+## Usage
 The application will prompt the user to establish an SFTP connection or exit the program. To establish a connection, the program will prompt the user for the following information.
 
 ```
