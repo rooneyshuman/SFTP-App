@@ -1,6 +1,12 @@
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpATTRS;
+import com.jcraft.jsch.SftpException;
 
-import java.io.*;
+import java.io.File;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Vector;
