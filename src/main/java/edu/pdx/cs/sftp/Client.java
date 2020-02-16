@@ -1,3 +1,5 @@
+package edu.pdx.cs.sftp;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;

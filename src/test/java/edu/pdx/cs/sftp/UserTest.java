@@ -1,3 +1,5 @@
+package edu.pdx.cs.sftp;
+
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;

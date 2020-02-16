@@ -1,3 +1,5 @@
+package edu.pdx.cs.sftp;
+
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import org.junit.Test;

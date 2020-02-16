@@ -1,3 +1,5 @@
+package edu.pdx.cs.sftp;
+
 import java.util.Scanner;
 
 class Menu {
