@@ -1,3 +1,5 @@
+package edu.pdx.cs.sftp;
+
 import com.jcraft.jsch.SftpException;
 
 import java.util.Scanner;

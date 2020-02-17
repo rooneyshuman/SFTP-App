@@ -1,13 +1,25 @@
-import com.jcraft.jsch.*;
+package edu.pdx.cs.sftp;
 
-import java.io.*;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpATTRS;
+import com.jcraft.jsch.SftpException;
+
+import java.io.File;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Vector;
 
 import static java.lang.System.out;
 
-class Client {
+/**
+ * Represents the SSH File Transfer Protocol (SFTP) client. Supports the full security and
+ * authentication functionality of SSH.
+ */
+public class Client {
   private Scanner scanner = new Scanner(System.in);
   private static final int TIMEOUT = 10000;
   private User user;
@@ -16,9 +28,7 @@ class Client {
   private ChannelSftp cSftp;
   private Logger logger;
 
-  /**
-   * Class constructor
-   */
+  /** Class constructor */
   public Client() {
     user = new User();
     jsch = new JSch();
@@ -27,7 +37,8 @@ class Client {
   }
 
   /**
-   * A constructor taking username, password and hostname to facilitate creating a connection quickly.
+   * A constructor taking username, password and hostname to facilitate creating a connection
+   * quickly.
    *
    * @param password -- Your password
    * @param hostName -- Your host
@@ -40,18 +51,14 @@ class Client {
     cSftp = new ChannelSftp();
   }
 
-  /**
-   * Prompts for connection information
-   */
+  /** Prompts for connection information */
   void promptConnectionInfo() {
     user.getUsername();
     user.getPassword();
     user.getHostname();
   }
 
-  /**
-   * Initiates connection
-   */
+  /** Initiates connection */
   boolean connect() {
     logger = new Logger();
     try {
@@ -78,9 +85,7 @@ class Client {
     return true;
   }
 
-  /**
-   * Terminates connection
-   */
+  /** Terminates connection */
   void disconnect() {
     cSftp.exit();
     session.disconnect();
@@ -106,9 +111,7 @@ class Client {
     return session;
   }
 
-  /**
-   * Lists all directories and files on the user's local machine (from the current directory).
-   */
+  /** Lists all directories and files on the user's local machine (from the current directory). */
   int displayLocalFiles() {
     logger.log("displayLocalFiles called");
     File dir = new File(cSftp.lpwd());
@@ -129,9 +132,7 @@ class Client {
     return 1;
   }
 
-  /**
-   * Lists all directories and files on the user's remote machine.
-   */
+  /** Lists all directories and files on the user's remote machine. */
   boolean displayRemoteFiles() {
     logger.log("displayRemoteFiles called");
 
@@ -159,9 +160,7 @@ class Client {
     }
   }
 
-  /**
-   * Create a directory on the user's remote machine.
-   */
+  /** Create a directory on the user's remote machine. */
   void createRemoteDir() {
     logger.log("createRemoteDir called");
     boolean repeat = true;
@@ -177,23 +176,21 @@ class Client {
       } catch (Exception e) {
         out.println("A directory by this name doesn't exist, it will now be created.");
       }
-      if (attrs != null) {            //directory exists
+      if (attrs != null) { // directory exists
         out.println("A directory by this name exists. Overwrite? (yes/no)");
         answer = scanner.next();
-        attrs = null;               //reset attrs for loop
+        attrs = null; // reset attrs for loop
         if (answer.equalsIgnoreCase("yes")) {
           try {
             cSftp.rmdir(dirName);
-            if (createRemoteDir(dirName))
-              out.println(dirName + " has been overwritten");
+            if (createRemoteDir(dirName)) out.println(dirName + " has been overwritten");
             repeat = false;
           } catch (SftpException e) {
             out.println("Error overwriting directory");
           }
         }
       } else {
-        if (createRemoteDir(dirName))
-          out.println(dirName + " has been created");
+        if (createRemoteDir(dirName)) out.println(dirName + " has been created");
         repeat = false;
       }
     }
@@ -215,27 +212,21 @@ class Client {
     return attrs != null;
   }
 
-  /**
-   * Print current working local path
-   */
+  /** Print current working local path */
   void printLocalWorkingDir() {
     logger.log("printLocalWorkingDir called");
     String lpwd = cSftp.lpwd();
     out.println("This is your current local working directory: " + lpwd + "\n");
   }
 
-  /**
-   * Print current working remote path
-   */
+  /** Print current working remote path */
   void printRemoteWorkingDir() throws SftpException {
     logger.log("printRemoteWorkingDir called");
     String pwd = cSftp.pwd();
     out.println("This is your current remote working directory: " + pwd + "\n");
   }
 
-  /**
-   * Wrapper for changing current working local path
-   */
+  /** Wrapper for changing current working local path */
   void changeLocalWorkingDir() {
     logger.log("changeLocalWorkingDir called");
     String newDir;
@@ -266,16 +257,14 @@ class Client {
     return pass;
   }
 
-  /**
-   * Change current working remote path
-   */
+  /** Change current working remote path */
   void changeRemoteWorkingDir() throws SftpException {
     logger.log("changeRemoteWorkingDir called");
     String newDir;
     out.println("This is your current remote working directory: " + cSftp.pwd() + "\n");
     out.println("Enter the path of the directory you'd like to change to: ");
     newDir = scanner.next();
-    if(changeRemoteWorkingDir(newDir))
+    if (changeRemoteWorkingDir(newDir))
       out.println("This is your new current remote working directory: " + cSftp.pwd() + "\n");
   }
 
@@ -296,7 +285,8 @@ class Client {
   }
 
   /**
-   * Uploads file(s) to the current working remote directory from the current working local directory.
+   * Uploads file(s) to the current working remote directory from the current working local
+   * directory.
    *
    * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
    * @throws SftpException -- General errors/exceptions
@@ -304,9 +294,9 @@ class Client {
   void uploadFile(String filename) throws SftpException {
     logger.log("uploadFile called w/ argument '" + filename + "'");
     if (filename.contains(",")) {
-      //multiple files are wanted.
+      // multiple files are wanted.
 
-      //take the string and separate out the files.
+      // take the string and separate out the files.
       String removeWhitespace = filename.replaceAll("\\s", "");
       String[] arr = removeWhitespace.split(",");
       String pwd = cSftp.pwd();
@@ -328,7 +318,8 @@ class Client {
   }
 
   /**
-   * Downloads file(s) from the current working remote directory to the current working local directory.
+   * Downloads file(s) from the current working remote directory to the current working local
+   * directory.
    *
    * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
    * @throws SftpException -- General errors/exceptions
@@ -336,9 +327,9 @@ class Client {
   void downloadFile(String filename) throws SftpException {
     logger.log("downloadFile called w/ argument '" + filename + "'");
     if (filename.contains(",")) {
-      //multiple files are wanted.
+      // multiple files are wanted.
 
-      //take the string and separate out the files.
+      // take the string and separate out the files.
       String removeWhitespace = filename.replaceAll("\\s", "");
       String[] arr = removeWhitespace.split(",");
       String lpwd = cSftp.lpwd();
@@ -359,32 +350,30 @@ class Client {
     }
   }
 
-  /**
-   * Rename local files/directories
-   */
+  /** Rename local files/directories */
   void renameLocal() {
     boolean repeat = true;
     String input;
     while (repeat) {
-      //get original file name
+      // get original file name
       String oldFilename = "";
-      while(oldFilename.equals("")) {
+      while (oldFilename.equals("")) {
         out.println("Enter the original local file name (e.g., file.txt or directoryName): ");
         oldFilename = scanner.nextLine();
-        if(oldFilename.equals("")) //check for empty input
-          System.err.println("You did not enter a file name.");
+        if (oldFilename.equals("")) // check for empty input
+        System.err.println("You did not enter a file name.");
       }
       File originalFile = new File(cSftp.lpwd() + "/" + oldFilename);
-      //get the new file name
+      // get the new file name
       String newFilename = "";
-      while(newFilename.equals("")) {
+      while (newFilename.equals("")) {
         out.println("Enter the new local file name (e.g., file.txt or directoryName): ");
         newFilename = scanner.nextLine();
-        if(newFilename.equals("")) //check for empty input
-          System.err.println(("You did not enter a file name."));
+        if (newFilename.equals("")) // check for empty input
+        System.err.println(("You did not enter a file name."));
       }
       File renamedFile = new File(cSftp.lpwd() + "/" + newFilename);
-      //check for a duplicate file/directory name
+      // check for a duplicate file/directory name
       boolean rename = false;
       if (renamedFile.exists()) {
         out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
@@ -446,30 +435,28 @@ class Client {
   }
   */
 
-  /**
-   * Rename file/directory on remote server
-   */
+  /** Rename file/directory on remote server */
   void renameRemote() throws SftpException {
     boolean repeat = true;
     String input;
     SftpATTRS attrs = null;
     while (repeat) {
-      //get original file name
+      // get original file name
       String oldFilename = "";
-      while(oldFilename.equals("")) {
+      while (oldFilename.equals("")) {
         out.println("Enter the original remote file name (e.g., file.txt or directoryName): ");
         oldFilename = scanner.nextLine();
-        if(oldFilename.equals("")) //check for empty input
-          System.err.println("You did not enter a file name.");
+        if (oldFilename.equals("")) // check for empty input
+        System.err.println("You did not enter a file name.");
       }
       String oldFilePath = cSftp.pwd() + "/" + oldFilename;
-      //get the new file name
+      // get the new file name
       String newFilename = "";
-      while(newFilename.equals("")) {
+      while (newFilename.equals("")) {
         out.println("Enter the new remote file name (e.g., file.txt or directoryName): ");
         newFilename = scanner.nextLine();
-        if(newFilename.equals("")) //check for empty input
-          System.err.println(("You did not enter a file name."));
+        if (newFilename.equals("")) // check for empty input
+        System.err.println(("You did not enter a file name."));
       }
       String newFilePath = cSftp.pwd() + "/" + newFilename;
       try {
@@ -482,12 +469,11 @@ class Client {
         out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
         input = scanner.next();
         attrs = null;
-        if (input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y")))
-          rename = true;
+        if (input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y"))) rename = true;
       } else {
         rename = true;
       }
-      if(rename) {
+      if (rename) {
         try {
           cSftp.rename(oldFilePath, newFilePath);
           out.println(oldFilename + " has been renamed to: " + newFilename);
@@ -499,9 +485,7 @@ class Client {
     }
   }
 
-  /**
-   * Wrapper to create a directory on the user's local machine.
-   */
+  /** Wrapper to create a directory on the user's local machine. */
   void createLocalDir() {
     logger.log("createLocalDir called");
     boolean repeat = true;
@@ -513,19 +497,17 @@ class Client {
       dirName = scanner.next();
       String path = cSftp.lpwd() + "/" + dirName;
       File newDir = new File(path);
-      if (newDir.exists()) {          //directory exists
+      if (newDir.exists()) { // directory exists
         out.println("A directory by this name exists. Overwrite? (yes/no)");
         answer = scanner.next();
         if (answer.equalsIgnoreCase("yes")) {
           if (newDir.delete() && createLocalDir(newDir))
             out.println(dirName + " has been overwritten");
-          else
-            out.println("Error overwriting file");
+          else out.println("Error overwriting file");
           repeat = false;
         }
       } else {
-        if (!createLocalDir(newDir))
-          out.println("Error creating local directory.");
+        if (!createLocalDir(newDir)) out.println("Error creating local directory.");
         out.println(dirName + " has been created");
         repeat = false;
       }
@@ -548,24 +530,23 @@ class Client {
     return pass;
   }
 
-  /**
-   * Displays log history to user
-   */
+  /** Displays log history to user */
   void displayLogHistory() {
     logger.display();
     logger.log("displayLogHistory called");
   }
 
   /**
-   * Deletes a file from the remote server. Can take one or multiple files in the format "testfile.txt, testfile2.txt"
+   * Deletes a file from the remote server. Can take one or multiple files in the format
+   * "testfile.txt, testfile2.txt"
    *
    * @param files -- The string read in main containing the names of the files.
    */
   void deleteRemoteFile(String files) {
     String pwd;
     if (files.contains(",")) {
-      //multiple files are wanted.
-      //take the string and separate out the files.
+      // multiple files are wanted.
+      // take the string and separate out the files.
       String removeWhitespace = files.replaceAll("\\s", "");
       String[] arr = removeWhitespace.split(",");
       String output = "";
