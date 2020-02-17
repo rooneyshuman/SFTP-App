@@ -15,7 +15,11 @@ import java.util.Vector;
 
 import static java.lang.System.out;
 
-class Client {
+/**
+ * Represents the SSH File Transfer Protocol (SFTP) client.
+ * Supports the full security and authentication functionality of SSH.
+ */
+public class Client {
   private Scanner scanner = new Scanner(System.in);
   private static final int TIMEOUT = 10000;
   private User user;
