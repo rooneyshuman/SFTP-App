@@ -7,10 +7,10 @@ import java.util.regex.Pattern;
 /** User class for SFTP project. Used to gather information about a connection */
 class User {
 
-  /** Field for password string */
-  String password;
   /** Field for username string */
   String username;
+  /** Field for password string */
+  String password;
   /** Field for host name string */
   String hostname;
   /** Field for an IO scanner used for input */
@@ -18,15 +18,15 @@ class User {
 
   /** Default constructor initializes all fields to null */
   User() {
+    username = null;
     password = null;
     hostname = null;
-    username = null;
   }
 
-  User(String password, String hostname, String username) {
+  User(String username, String password, String hostname) {
+    this.username = username;
     this.password = password;
     this.hostname = hostname;
-    this.username = username;
   }
 
   /**
@@ -35,9 +35,9 @@ class User {
    * @param scannerArg String with args for testing
    */
   User(String scannerArg) {
+    username = null;
     password = null;
     hostname = null;
-    username = null;
     scanner = new Scanner(scannerArg);
   }
 
