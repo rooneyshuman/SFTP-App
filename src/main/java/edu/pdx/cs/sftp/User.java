@@ -4,25 +4,31 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** User class for SFTP project. Used to gather information about a connection */
+/** Gather information about a connection initiated by the user with the User class */
 class User {
 
-  /** Field for username string */
+  /** Store the username in this variable */
   String username;
-  /** Field for password string */
+  /** Store the password in this variable */
   String password;
-  /** Field for host name string */
+  /** Store the hostname in this variable */
   String hostname;
-  /** Field for an IO scanner used for input */
+  /** Store IO scanner in this variable */
   private Scanner scanner = new Scanner(System.in);
 
-  /** Default constructor initializes all fields to null */
+  /** Initialize all fields to null with the default constructor */
   User() {
     username = null;
     password = null;
     hostname = null;
   }
-
+  /**
+   * Set the User fields to the current input with this constructor
+   *
+   * @param username sets username to current username
+   * @param password sets password to current password
+   * @param hostname sets hostname to current hostname
+   */
   User(String username, String password, String hostname) {
     this.username = username;
     this.password = password;
@@ -30,9 +36,9 @@ class User {
   }
 
   /**
-   * Constructor sets scanner for testing purposes
+   * Set the scanner up for testing with this constructor
    *
-   * @param scannerArg String with args for testing
+   * @param scannerArg String with arguments used for testing
    */
   User(String scannerArg) {
     username = null;
@@ -42,7 +48,7 @@ class User {
   }
 
   /**
-   * Prompts the user for a valid password
+   * Prompt the user for a valid password
    *
    * @return The password input
    */
@@ -57,19 +63,19 @@ class User {
   }
 
   /**
-   * verifies a string does not contains spaces and is not empty
+   * Verify the string isn't empty and doesn't contain spaces
    *
    * @param password String to be assessed
-   * @return true if does not include space and is not empty else false
+   * @return true if the password isn't empty and does not include spaces Otherwise, return false
    */
   private boolean verifyPassword(String password) {
     return !password.isEmpty() && !password.contains(" ");
   }
 
   /**
-   * Prompts the user for a valid username. Usernames must be alpha numeric of size 8-20
+   * Prompt the user for a valid username (Usernames must be alpha numeric of size 8-20).
    *
-   * @return The username input
+   * @return username input
    */
   String getUsername() {
     System.out.println("Enter your username:");
@@ -84,7 +90,7 @@ class User {
   }
 
   /**
-   * Checks if a string is a valid username
+   * Check if the string is a valid username
    *
    * @param toVerify a string to be checked against a regular expression
    * @return <code>true</code> if the string is a valid username <code>false</code> otherwise
@@ -97,9 +103,9 @@ class User {
   }
 
   /**
-   * Prompts the user for a valid host name. Host names must be alpha numeric + ".". They cannot be
-   * longer than 255 characters. Each host name segment cannot exceed 63 characters. They must end
-   * and start with alpha numeric characters.
+   * Prompt the user for a valid host name which follows the following parameters: (1) Must be alpha
+   * numeric + "." (2) Can't be longer than 255 characters (3) Host name segments cannot exceed 63
+   * characters (4) Must end and start with alpha numeric characters
    *
    * @return The host name input
    */
@@ -117,9 +123,9 @@ class User {
   }
 
   /**
-   * Checks if a string is a valid host name
+   * Check if the string is a valid host name
    *
-   * @param toVerify a string to be checked against a regular expression
+   * @param toVerify is a string to be checked against a regular expression
    * @return <code>true</code> if the string is a valid host name <code>false</code> otherwise
    */
   boolean verifyHostName(String toVerify) {
