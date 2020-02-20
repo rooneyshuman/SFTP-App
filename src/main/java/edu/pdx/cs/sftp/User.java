@@ -23,10 +23,10 @@ class User {
     username = null;
   }
 
-  User(String pw, String hn, String un) {
-    password = pw;
-    hostname = hn;
-    username = un;
+  User(String password, String hostname, String username) {
+    this.password = password;
+    this.hostname = hostname;
+    this.username = username;
   }
 
   /**
