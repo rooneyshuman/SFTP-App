@@ -4,7 +4,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** Gather information about a connection initiated by the user with the User class */
+/** Gathers information about a connection initiated by the user with the User class */
 class User {
 
   /** Store the username in this variable */
