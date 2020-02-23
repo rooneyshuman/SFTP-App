@@ -28,7 +28,7 @@ public class Client {
   private ChannelSftp cSftp;
   private Logger logger;
 
-  /** Class constructor */
+  /** Class constructor. */
   public Client() {
     user = new User();
     jsch = new JSch();
@@ -37,12 +37,12 @@ public class Client {
   }
 
   /**
-   * A constructor taking username, password and hostname to facilitate creating a connection
-   * quickly.
+   * Class constructor specifying the username, password, and hostname required to create a
+   * connection to the server.
    *
-   * @param password -- Your password
-   * @param hostName -- Your host
-   * @param userName -- Your username
+   * @param username the input containing the user's login name
+   * @param password the input containing the user's password
+   * @param hostname the hostname specified by the user (e.g. linux.cs.pdx.edu)
    */
   public Client(String password, String hostName, String userName) {
     user = new User(password, hostName, userName);
@@ -51,7 +51,7 @@ public class Client {
     cSftp = new ChannelSftp();
   }
 
-  /** Prompts for connection information */
+  /** Prompts the user to enter connection information such as username, password, and hostname. */
   void promptConnectionInfo() {
     user.getUsername();
     user.getPassword();
