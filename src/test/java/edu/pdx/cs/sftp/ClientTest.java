@@ -17,9 +17,9 @@ public class ClientTest {
   /**
    * These need to be filled in before the tests will run properly.
    */
-  private String userName = "u";
+  private String username = "u";
   private String password = "p";
-  private String hostName = "h";
+  private String hostname = "h";
 
   // TODO
   @Test
@@ -35,7 +35,7 @@ public class ClientTest {
    */
   @Test
   public void connection_assertsSuccessfulConnection() {
-    Client client = new Client(password, hostName, userName);
+    Client client = new Client(username, password, hostname);
     assertThat(client.connect(), equalTo(true));
   }
 
@@ -44,7 +44,7 @@ public class ClientTest {
    */
   @Test
   public void connection_wrongCredentials_expectsSftpException() {
-    Client client = new Client("fakepw", "fakehn", "fakeun");
+    Client client = new Client("fakeUsername", "fakePassword", "fakeHostname");
     assertThat(client.connect(), equalTo(false));
   }
 
@@ -53,7 +53,7 @@ public class ClientTest {
    */
   @Test(expected = SftpException.class)
   public void uploadFakeFile_expectsSftpException() throws SftpException {
-    Client client = new Client(password, hostName, userName);
+    Client client = new Client("fakeUsername", "fakePassword", "fakeHostname");
     if(!client.connect()) {
       System.out.println("Failed connection. Unable to run test.");
       assert(false);
@@ -70,7 +70,7 @@ public class ClientTest {
   public void uploadFile_expectsSftpException_NoSuchFile() throws SftpException {
     String fileName = "MissingTextFile.txt";
 
-    Client client = new Client(password, hostName, userName);
+    Client client = new Client(username, password, hostname);
     if(!client.connect()) {
       System.out.println("Failed connection. Unable to run test.");
       assert(false);
@@ -93,7 +93,7 @@ public class ClientTest {
     boolean pass = false;
     SftpATTRS attrs;
 
-    Client client = new Client(password, hostName, userName);
+    Client client = new Client(username, password, hostname);
     if(!client.connect()) {
       System.out.println("Failed connection. Unable to run test.");
       assert(false);
@@ -119,7 +119,7 @@ public class ClientTest {
     String fileName = "testfile.txt";
     SftpATTRS attrs = null;
 
-    Client client = new Client(password, hostName, userName);
+    Client client = new Client(username, password, hostname);
     if(!client.connect()) {
       System.out.println("Failed connection. Unable to run test.");
       assert(false);
@@ -136,7 +136,7 @@ public class ClientTest {
    */
   @Test
   public void downloadFakeFile() {
-    Client client = new Client(password, hostName, userName);
+    Client client = new Client(username, password, hostname);
     try {
       if(!client.connect()) {
         System.out.println("Failed connection. Unable to run test.");
@@ -165,7 +165,7 @@ public class ClientTest {
     String fileName = "testfile.txt";
     String fileName2 = "testfile.txt, testfile2.txt";
 
-    Client client = new Client(password, hostName, userName);
+    Client client = new Client(username, password, hostname);
     try {
       if(!client.connect()) {
         System.out.println("Failed connection. Unable to run test.");
@@ -201,7 +201,7 @@ public class ClientTest {
    */
   @Test
   public void createRemoteDir_assertsDirExists() throws SftpException {
-    Client client = new Client(password, hostName, userName);
+    Client client = new Client(username, password, hostname);
     if(!client.connect()) {
       System.out.println("Failed connection. Unable to run test.");
       assert(false);
@@ -218,7 +218,7 @@ public class ClientTest {
    */
   @Test
   public void createLocalDir_assertsDirExists() {
-    Client client = new Client(password, hostName, userName);
+    Client client = new Client(username, password, hostname);
     if(!client.connect()) {
       System.out.println("Failed connection. Unable to run test.");
       assert(false);
@@ -244,7 +244,7 @@ public class ClientTest {
     String newLocalPath = "newLocalPath";
     File newDir = new File(newLocalPath);
 
-    Client client = new Client(password, hostName, userName);
+    Client client = new Client(username, password, hostname);
     if(!client.connect()) {
       System.out.println("Failed connection. Unable to run test.");
       assert(false);
@@ -285,7 +285,7 @@ public class ClientTest {
     PrintStream stdout = System.out;
     String newRemotePath = "newRemotePath";
 
-    Client client = new Client(password, hostName, userName);
+    Client client = new Client(username, password, hostname);
     if(!client.connect()) {
       System.out.println("Failed connection. Unable to run test.");
       assert(false);
@@ -320,7 +320,7 @@ public class ClientTest {
   @Test
   public void disconnect_assertsSessionIsDisconnected() {
     boolean pass = false;
-    Client client = new Client(password, hostName, userName);
+    Client client = new Client(username, password, hostname);
     if (client.connect()) {
       System.out.println("Now disconnecting your session...");
       client.disconnect();
@@ -342,7 +342,7 @@ public class ClientTest {
     String dirName = "newDirectory";
     boolean pass = false;
 
-    Client client = new Client(password, hostName, userName);
+    Client client = new Client(username, password, hostname);
     if (!client.connect()) {
       System.out.println("Failed connection. Unable to run test.");
       assert(false);
