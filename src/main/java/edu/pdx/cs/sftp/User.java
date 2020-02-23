@@ -123,7 +123,7 @@ class User {
   }
 
   /**
-   * Check if the string is a valid host name
+   * Checks if the string is a valid host name
    *
    * @param toVerify a string to be checked against a regular expression
    * @return <code>true</code> if the string is a valid host name <code>false</code> otherwise
