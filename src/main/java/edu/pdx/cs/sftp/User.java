@@ -23,7 +23,7 @@ class User {
     hostname = null;
   }
   /**
-   * Set the User fields to the current input with this constructor
+   * Sets the User fields to the current input with this constructor
    *
    * @param username sets username to current username
    * @param password sets password to current password
