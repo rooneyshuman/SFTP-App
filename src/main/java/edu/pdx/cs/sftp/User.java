@@ -103,7 +103,7 @@ class User {
   }
 
   /**
-   * Prompt the user for a valid host name which follows the following parameters: (1) Must be alpha
+   * Prompts the user for a valid host name which follows the following parameters: (1) Must be alpha
    * numeric + "." (2) Can't be longer than 255 characters (3) Host name segments cannot exceed 63
    * characters (4) Must end and start with alpha numeric characters
    *
