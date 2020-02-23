@@ -16,7 +16,7 @@ class User {
   /** Store IO scanner in this variable */
   private Scanner scanner = new Scanner(System.in);
 
-  /** Initialize all fields to null with the default constructor */
+  /** Initializes all fields to null with the default constructor */
   User() {
     username = null;
     password = null;
