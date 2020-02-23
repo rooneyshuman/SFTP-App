@@ -44,8 +44,8 @@ public class Client {
    * @param password the input containing the user's password
    * @param hostname the hostname specified by the user (e.g. linux.cs.pdx.edu)
    */
-  public Client(String password, String hostName, String userName) {
-    user = new User(password, hostName, userName);
+  public Client(String username, String password, String hostname) {
+    user = new User(username, password, hostname);
     jsch = new JSch();
     session = null;
     cSftp = new ChannelSftp();
