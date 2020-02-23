@@ -73,7 +73,7 @@ class User {
   }
 
   /**
-   * Prompt the user for a valid username (Usernames must be alpha numeric of size 8-20).
+   * Prompts the user for a valid username (usernames must be alphanumeric of size 8-20)
    *
    * @return username input
    */
