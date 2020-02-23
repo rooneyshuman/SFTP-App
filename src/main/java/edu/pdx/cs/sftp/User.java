@@ -90,7 +90,7 @@ class User {
   }
 
   /**
-   * Check if the string is a valid username
+   * Checks if the string is a valid username
    *
    * @param toVerify a string to be checked against a regular expression
    * @return <code>true</code> if the string is a valid username <code>false</code> otherwise
