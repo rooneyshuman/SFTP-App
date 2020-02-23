@@ -36,7 +36,7 @@ class User {
   }
 
   /**
-   * Set the scanner up for testing with this constructor
+   * Sets the scanner up for testing with this constructor
    *
    * @param scannerArg String with arguments used for testing
    */
