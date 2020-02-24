@@ -66,6 +66,7 @@ public class Client {
    *     otherwise.
    */
   public boolean connect() {
+    logger = new Logger();
     if (createSshConnection() && createSftpChannel()) {
       logger.log("Successfully connected to the SSH/SFTP server");
       out.println("Successfully connected to the SSH/SFTP server");
@@ -95,7 +96,7 @@ public class Client {
       session.setConfig(config);
       session.connect(TIMEOUT);
       logger.log(
-          String.format("Establishing a connection for %s @ %s...", user.username, user.hostname));
+          String.format("Establishing a connection for %s@%s...", user.username, user.hostname));
       out.println("Establishing a connection...");
     } catch (JSchException e) {
       out.println("Failed to connect to the server");
