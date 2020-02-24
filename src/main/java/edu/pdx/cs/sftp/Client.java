@@ -584,7 +584,7 @@ public class Client {
    * Deletes the specified file(s) from the remote server. Multiple file names can be included through a comma-separated
    * list.
    *
-   * @param filename The string containing the name(s) of the file(s) to be deleted.
+   * @param filename the string containing the name(s) of the file(s) to be deleted.
    */
   void deleteRemoteFile(String filename) {
     String workingDir;
