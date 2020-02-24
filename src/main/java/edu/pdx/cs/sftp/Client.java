@@ -35,6 +35,7 @@ public class Client {
     jsch = new JSch();
     session = null;
     channelSftp = new ChannelSftp();
+    logger = new Logger();
   }
 
   /**
@@ -50,6 +51,7 @@ public class Client {
     jsch = new JSch();
     session = null;
     channelSftp = new ChannelSftp();
+    logger = new Logger();
   }
 
   /** Prompts the user to enter connection information such as username, password, and hostname. */
