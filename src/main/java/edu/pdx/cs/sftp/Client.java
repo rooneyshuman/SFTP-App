@@ -66,7 +66,6 @@ public class Client {
    *     otherwise.
    */
   public boolean connect() {
-    logger = new Logger();
     if (createSshConnection() && createSftpChannel()) {
       logger.log("Successfully connected to the SSH/SFTP server");
       out.println("Successfully connected to the SSH/SFTP server");
