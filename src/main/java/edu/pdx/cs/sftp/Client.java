@@ -581,10 +581,10 @@ public class Client {
   }
 
   /**
-   * Deletes a file from the remote server. Can take one or multiple files in the format
-   * "testfile.txt, testfile2.txt"
+   * Deletes specified the file(s) from the remote server. Multiple file names can be included through a comma-separated
+   * list.
    *
-   * @param files -- The string read in main containing the names of the files.
+   * @param filename The string containing the name(s) of the file(s) to be deleted.
    */
   void deleteRemoteFile(String files) {
     String pwd;
@@ -611,6 +611,7 @@ public class Client {
       }
       out.println(output);
     } else {
+      // Only one file to delete.
       try {
         channelSftp.rm(files);
         pwd = channelSftp.pwd();
