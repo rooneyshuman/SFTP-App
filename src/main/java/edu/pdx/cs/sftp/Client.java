@@ -21,7 +21,9 @@ import static java.lang.System.out;
  */
 public class Client {
   private Scanner scanner = new Scanner(System.in);
-  private static final int TIMEOUT = 10000;
+  private static final int TIMEOUT =
+      60_000; // Set default timeout to 60 seconds to accommodate slow servers
+  // private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
   private User user;
   private JSch jsch;
   private Session session;
