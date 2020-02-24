@@ -99,7 +99,7 @@ public class ClientTest {
       assert(false);
     }
     client.uploadFile(fileName);
-    attrs = client.getcSftp().stat(fileName);
+    attrs = client.getChannelSftp().stat(fileName);
     if (attrs != null)
       pass = true;
     System.out.println("Now deleting the files you uploaded.");
@@ -128,7 +128,7 @@ public class ClientTest {
     client.uploadFile(fileName);
     System.out.println("Now deleting the files you uploaded.");
     client.deleteRemoteFile(fileName);
-    attrs = client.getcSftp().stat(fileName);
+    attrs = client.getChannelSftp().stat(fileName);
   }
 
   /**
@@ -177,7 +177,7 @@ public class ClientTest {
         client.downloadFile(fileName);
         client.downloadFile(fileName2);
         //verify that the file is in the local directory
-        File dir = new File(client.getcSftp().lpwd());
+        File dir = new File(client.getChannelSftp().lpwd());
         File[] files = dir.listFiles();
         for (File file : files) {
           if (file.getName().equals(fileName)) {
@@ -210,7 +210,7 @@ public class ClientTest {
     String dirName = "newDirectory";
     assertThat(client.createRemoteDir(dirName), equalTo(true));
     System.out.println(dirName + " was created successfully");
-    client.getcSftp().rmdir(dirName);        //clean up
+    client.getChannelSftp().rmdir(dirName);        //clean up
   }
 
   /**
@@ -224,7 +224,7 @@ public class ClientTest {
       assert(false);
     }
     String dirName = "newDirectory";
-    String path = client.getcSftp().lpwd() + "/" + dirName;
+    String path = client.getChannelSftp().lpwd() + "/" + dirName;
     File newDir = new File(path);
     assertThat(client.createLocalDir(newDir), equalTo(true));
     System.out.println(dirName + " was created successfully");
@@ -303,7 +303,7 @@ public class ClientTest {
       client.changeRemoteWorkingDir("..");       //reset path
       System.setOut(stdout);    //reset output to standard System.out
 
-      client.getcSftp().rmdir(newRemotePath);
+      client.getChannelSftp().rmdir(newRemotePath);
       System.out.println("Path successfully changed to new dir. New dir has been deleted and path is reset.");
       pass = true;
     } else {
@@ -352,7 +352,7 @@ public class ClientTest {
       System.setOut(new PrintStream(output));   //Redirect printstream
       client.displayRemoteFiles();
       assertThat(output.toString(), containsString(dirName));   //Assert output contains new dir
-      client.getcSftp().rmdir(dirName);        //clean up
+      client.getChannelSftp().rmdir(dirName);        //clean up
       System.setOut(stdout);      //Reset printstream to System.out
       System.out.println("New remote file successfully displayed. New dir has been deleted.");
       pass = true;

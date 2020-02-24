@@ -25,7 +25,7 @@ public class Client {
   private User user;
   private JSch jsch;
   private Session session;
-  private ChannelSftp cSftp;
+  private ChannelSftp channelSftp;
   private Logger logger;
 
   /** Class constructor. */
@@ -33,7 +33,7 @@ public class Client {
     user = new User();
     jsch = new JSch();
     session = null;
-    cSftp = new ChannelSftp();
+    channelSftp = new ChannelSftp();
   }
 
   /**
@@ -48,7 +48,7 @@ public class Client {
     user = new User(username, password, hostname);
     jsch = new JSch();
     session = null;
-    cSftp = new ChannelSftp();
+    channelSftp = new ChannelSftp();
   }
 
   /** Prompts the user to enter connection information such as username, password, and hostname. */
@@ -58,36 +58,77 @@ public class Client {
     user.getHostname();
   }
 
-  /** Initiates connection */
-  boolean connect() {
-    logger = new Logger();
+  /**
+   * Establishes a connection to an SSH server containing a channel connected to an SFTP server.
+   *
+   * @return <code>true</code> on successful connection to the SSH/SFTP server; <code>false</code>
+   *     otherwise.
+   */
+  public boolean connect() {
+    if (createSshConnection() && createSftpChannel()) {
+      logger.log("Successfully connected to the SSH/SFTP server");
+      out.println("Successfully connected to the SSH/SFTP server");
+      return true;
+    } else {
+      out.println("Failed to connect to the server");
+      logger.log("Error occurred when attempting to connect to the SSH/SFTP server");
+      return false;
+    }
+  }
+
+  /**
+   * Creates a session, which represents a connection to an SSH server.
+   *
+   * <p>One session can contain multiple channels of various types.
+   *
+   * @return <code>true</code> on successful creation of session object representing a connection to
+   *     an SSH server; <code>false</code> otherwise.
+   */
+  protected boolean createSshConnection() {
     try {
       session = jsch.getSession(user.username, user.hostname, 22);
       session.setPassword(user.password);
       Properties config = new Properties();
+      // Do not verify public key of the SSH/SFTP server; connecting within a trusted network
       config.put("StrictHostKeyChecking", "no");
       session.setConfig(config);
-      logger.log("Establishing connection for " + user.username + "@" + user.hostname + "...");
-      out.println("Establishing Connection...");
       session.connect(TIMEOUT);
+      logger.log(
+          String.format("Establishing a connection for %s @ %s...", user.username, user.hostname));
+      out.println("Establishing a connection...");
+    } catch (JSchException e) {
+      out.println("Failed to connect to the server");
+      logger.log("Exception occurred when attempting to connect to the SSH server");
+      return false;
+    }
+    return true;
+  }
 
+  /**
+   * Creates a channel connected to an SFTP server (as a subsystem of the SSH server), which
+   * supports the client side of the SFTP protocol.
+   *
+   * @return <code>true</code> on creating a channel connected to an SFTP server; <code>false</code>
+   *     otherwise.
+   */
+  protected boolean createSftpChannel() {
+    try {
       Channel channel = session.openChannel("sftp");
       channel.setInputStream(null);
       channel.connect(TIMEOUT);
-      cSftp = (ChannelSftp) channel;
+      channelSftp = (ChannelSftp) channel;
+      logger.log("Establishing a connection to the SFTP server");
     } catch (JSchException e) {
-      out.println("Connection failed.");
+      out.println("Failed to establish the SFTP connection");
+      logger.log("Exception occurred when attempting to connect to the SFTP server");
       return false;
     }
-
-    logger.log("Successful SFTP connection made");
-    out.println("Successful SFTP connection");
     return true;
   }
 
   /** Terminates connection */
   void disconnect() {
-    cSftp.exit();
+    channelSftp.exit();
     session.disconnect();
     logger.log("SFTP connection closed");
     logger.save(user.username + "@" + user.hostname);
@@ -98,8 +139,8 @@ public class Client {
    *
    * @return -- returns the cSftp object.
    */
-  ChannelSftp getcSftp() {
-    return cSftp;
+  ChannelSftp getChannelSftp() {
+    return channelSftp;
   }
 
   /**
@@ -114,7 +155,7 @@ public class Client {
   /** Lists all directories and files on the user's local machine (from the current directory). */
   int displayLocalFiles() {
     logger.log("displayLocalFiles called");
-    File dir = new File(cSftp.lpwd());
+    File dir = new File(channelSftp.lpwd());
     printLocalWorkingDir();
     File[] files = dir.listFiles();
     if (files != null) {
@@ -138,7 +179,7 @@ public class Client {
 
     try {
       printRemoteWorkingDir();
-      Vector remoteDir = cSftp.ls(cSftp.pwd());
+      Vector remoteDir = channelSftp.ls(channelSftp.pwd());
       if (remoteDir != null) {
         int count = 0;
         for (int i = 0; i < remoteDir.size(); ++i) {
@@ -172,7 +213,7 @@ public class Client {
       out.println("Enter the name of the new directory: ");
       dirName = scanner.next();
       try {
-        attrs = cSftp.stat(dirName);
+        attrs = channelSftp.stat(dirName);
       } catch (Exception e) {
         out.println("A directory by this name doesn't exist, it will now be created.");
       }
@@ -182,7 +223,7 @@ public class Client {
         attrs = null; // reset attrs for loop
         if (answer.equalsIgnoreCase("yes")) {
           try {
-            cSftp.rmdir(dirName);
+            channelSftp.rmdir(dirName);
             if (createRemoteDir(dirName)) out.println(dirName + " has been overwritten");
             repeat = false;
           } catch (SftpException e) {
@@ -204,8 +245,8 @@ public class Client {
   boolean createRemoteDir(String dirName) {
     SftpATTRS attrs = null;
     try {
-      cSftp.mkdir(dirName);
-      attrs = cSftp.stat(dirName);
+      channelSftp.mkdir(dirName);
+      attrs = channelSftp.stat(dirName);
     } catch (Exception e) {
       out.println("Error creating directory.");
     }
@@ -215,14 +256,14 @@ public class Client {
   /** Print current working local path */
   void printLocalWorkingDir() {
     logger.log("printLocalWorkingDir called");
-    String lpwd = cSftp.lpwd();
+    String lpwd = channelSftp.lpwd();
     out.println("This is your current local working directory: " + lpwd + "\n");
   }
 
   /** Print current working remote path */
   void printRemoteWorkingDir() throws SftpException {
     logger.log("printRemoteWorkingDir called");
-    String pwd = cSftp.pwd();
+    String pwd = channelSftp.pwd();
     out.println("This is your current remote working directory: " + pwd + "\n");
   }
 
@@ -230,12 +271,12 @@ public class Client {
   void changeLocalWorkingDir() {
     logger.log("changeLocalWorkingDir called");
     String newDir;
-    String lpwd = cSftp.lpwd();
+    String lpwd = channelSftp.lpwd();
     out.println("This is your current local working directory: " + lpwd + "\n");
     out.println("Enter the path of the directory you'd like to change to: ");
     newDir = scanner.next();
     if (changeLocalWorkingDir(newDir)) {
-      lpwd = cSftp.lpwd();
+      lpwd = channelSftp.lpwd();
       out.println("This is your new current local working directory: " + lpwd + "\n");
     }
   }
@@ -249,7 +290,7 @@ public class Client {
   boolean changeLocalWorkingDir(String newDir) {
     boolean pass = false;
     try {
-      cSftp.lcd(newDir);
+      channelSftp.lcd(newDir);
       pass = true;
     } catch (SftpException e) {
       out.println("Error changing your directory");
@@ -261,11 +302,11 @@ public class Client {
   void changeRemoteWorkingDir() throws SftpException {
     logger.log("changeRemoteWorkingDir called");
     String newDir;
-    out.println("This is your current remote working directory: " + cSftp.pwd() + "\n");
+    out.println("This is your current remote working directory: " + channelSftp.pwd() + "\n");
     out.println("Enter the path of the directory you'd like to change to: ");
     newDir = scanner.next();
     if (changeRemoteWorkingDir(newDir))
-      out.println("This is your new current remote working directory: " + cSftp.pwd() + "\n");
+      out.println("This is your new current remote working directory: " + channelSftp.pwd() + "\n");
   }
 
   /**
@@ -276,7 +317,7 @@ public class Client {
   boolean changeRemoteWorkingDir(String newDirPath) {
     boolean pass = false;
     try {
-      cSftp.cd(newDirPath);
+      channelSftp.cd(newDirPath);
       pass = true;
     } catch (SftpException e) {
       System.out.println("Error changing your directory");
@@ -299,10 +340,10 @@ public class Client {
       // take the string and separate out the files.
       String removeWhitespace = filename.replaceAll("\\s", "");
       String[] arr = removeWhitespace.split(",");
-      String pwd = cSftp.pwd();
+      String pwd = channelSftp.pwd();
       StringBuilder sb = new StringBuilder();
       for (String file : arr) {
-        cSftp.put(file, file);
+        channelSftp.put(file, file);
         sb.append(file);
         sb.append(" has been uploaded to: ");
         sb.append(pwd);
@@ -311,8 +352,8 @@ public class Client {
       String output = sb.toString();
       out.println(output);
     } else {
-      cSftp.put(filename, filename);
-      String pwd = cSftp.pwd();
+      channelSftp.put(filename, filename);
+      String pwd = channelSftp.pwd();
       out.println(filename + " has been uploaded to: " + pwd);
     }
   }
@@ -332,10 +373,10 @@ public class Client {
       // take the string and separate out the files.
       String removeWhitespace = filename.replaceAll("\\s", "");
       String[] arr = removeWhitespace.split(",");
-      String lpwd = cSftp.lpwd();
+      String lpwd = channelSftp.lpwd();
       StringBuilder sb = new StringBuilder();
       for (String file : arr) {
-        cSftp.get(file, file);
+        channelSftp.get(file, file);
         sb.append(file);
         sb.append(" has been downloaded to: ");
         sb.append(lpwd);
@@ -344,8 +385,8 @@ public class Client {
       String output = sb.toString();
       out.println(output);
     } else {
-      cSftp.get(filename, filename);
-      String lpwd = cSftp.lpwd();
+      channelSftp.get(filename, filename);
+      String lpwd = channelSftp.lpwd();
       out.println("The file has been downloaded to: " + lpwd);
     }
   }
@@ -363,7 +404,7 @@ public class Client {
         if (oldFilename.equals("")) // check for empty input
         System.err.println("You did not enter a file name.");
       }
-      File originalFile = new File(cSftp.lpwd() + "/" + oldFilename);
+      File originalFile = new File(channelSftp.lpwd() + "/" + oldFilename);
       // get the new file name
       String newFilename = "";
       while (newFilename.equals("")) {
@@ -372,7 +413,7 @@ public class Client {
         if (newFilename.equals("")) // check for empty input
         System.err.println(("You did not enter a file name."));
       }
-      File renamedFile = new File(cSftp.lpwd() + "/" + newFilename);
+      File renamedFile = new File(channelSftp.lpwd() + "/" + newFilename);
       // check for a duplicate file/directory name
       boolean rename = false;
       if (renamedFile.exists()) {
@@ -449,7 +490,7 @@ public class Client {
         if (oldFilename.equals("")) // check for empty input
         System.err.println("You did not enter a file name.");
       }
-      String oldFilePath = cSftp.pwd() + "/" + oldFilename;
+      String oldFilePath = channelSftp.pwd() + "/" + oldFilename;
       // get the new file name
       String newFilename = "";
       while (newFilename.equals("")) {
@@ -458,9 +499,9 @@ public class Client {
         if (newFilename.equals("")) // check for empty input
         System.err.println(("You did not enter a file name."));
       }
-      String newFilePath = cSftp.pwd() + "/" + newFilename;
+      String newFilePath = channelSftp.pwd() + "/" + newFilename;
       try {
-        attrs = cSftp.stat(newFilePath);
+        attrs = channelSftp.stat(newFilePath);
       } catch (Exception e) {
         out.println();
       }
@@ -475,7 +516,7 @@ public class Client {
       }
       if (rename) {
         try {
-          cSftp.rename(oldFilePath, newFilePath);
+          channelSftp.rename(oldFilePath, newFilePath);
           out.println(oldFilename + " has been renamed to: " + newFilename);
         } catch (SftpException e) {
           out.println("Error: rename unsuccessful.");
@@ -495,7 +536,7 @@ public class Client {
     while (repeat) {
       out.println("Enter the name of the new directory: ");
       dirName = scanner.next();
-      String path = cSftp.lpwd() + "/" + dirName;
+      String path = channelSftp.lpwd() + "/" + dirName;
       File newDir = new File(path);
       if (newDir.exists()) { // directory exists
         out.println("A directory by this name exists. Overwrite? (yes/no)");
@@ -551,10 +592,10 @@ public class Client {
       String[] arr = removeWhitespace.split(",");
       String output = "";
       try {
-        pwd = cSftp.pwd();
+        pwd = channelSftp.pwd();
         StringBuilder sb = new StringBuilder();
         for (String file : arr) {
-          cSftp.rm(file);
+          channelSftp.rm(file);
           sb.append(file);
           sb.append(" has been deleted from:");
           sb.append(pwd);
@@ -568,8 +609,8 @@ public class Client {
       out.println(output);
     } else {
       try {
-        cSftp.rm(files);
-        pwd = cSftp.pwd();
+        channelSftp.rm(files);
+        pwd = channelSftp.pwd();
         out.println("The file has been deleted from: " + pwd);
       } catch (Exception e) {
         out.println("Error deleting remote files.");
