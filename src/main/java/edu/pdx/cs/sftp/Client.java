@@ -35,6 +35,7 @@ public class Client {
     jsch = new JSch();
     session = null;
     channelSftp = new ChannelSftp();
+    logger = new Logger();
   }
 
   /**
@@ -50,6 +51,7 @@ public class Client {
     jsch = new JSch();
     session = null;
     channelSftp = new ChannelSftp();
+    logger = new Logger();
   }
 
   /** Prompts the user to enter connection information such as username, password, and hostname. */
@@ -579,40 +581,33 @@ public class Client {
   }
 
   /**
-   * Deletes a file from the remote server. Can take one or multiple files in the format
-   * "testfile.txt, testfile2.txt"
+   * Deletes the specified file(s) from the remote server. Multiple file names can be included through a comma-separated
+   * list.
    *
-   * @param files -- The string read in main containing the names of the files.
+   * @param filename the string containing the name(s) of the file(s) to be deleted.
    */
-  void deleteRemoteFile(String files) {
-    String pwd;
-    if (files.contains(",")) {
-      // multiple files are wanted.
-      // take the string and separate out the files.
-      String removeWhitespace = files.replaceAll("\\s", "");
-      String[] arr = removeWhitespace.split(",");
-      String output = "";
+  void deleteRemoteFile(String filename) {
+    String workingDir;
+    if (filename.contains(",")) {
+      // Delete multiple files. Parse list of file names into string array and trim whitespace.
+      String [] filesToDelete = filename.replaceAll("\\s", "").split(",");
+
       try {
-        pwd = channelSftp.pwd();
-        StringBuilder sb = new StringBuilder();
-        for (String file : arr) {
+        workingDir = channelSftp.pwd();
+        for (String file : filesToDelete) {
           channelSftp.rm(file);
-          sb.append(file);
-          sb.append(" has been deleted from:");
-          sb.append(pwd);
-          sb.append("\n");
+          out.println(file + " has been deleted from: " + workingDir);
         }
-        output = sb.toString();
-        out.println("The files have been deleted from: " + pwd);
       } catch (Exception e) {
         out.println("Error deleting remote files.");
       }
-      out.println(output);
+
     } else {
+      // Only one file to delete.
       try {
-        channelSftp.rm(files);
-        pwd = channelSftp.pwd();
-        out.println("The file has been deleted from: " + pwd);
+        channelSftp.rm(filename);
+        workingDir = channelSftp.pwd();
+        out.println(filename + " has been deleted from: " + workingDir);
       } catch (Exception e) {
         out.println("Error deleting remote files.");
       }
