@@ -78,7 +78,7 @@ class User {
     // username = ""; //for testing
     if (username == null || username.isEmpty() || !verifyUsername(username)) {
       System.err.println(
-          "That was not a valid username.  Please enter 8-20 alpha numeric " + "characters.");
+          "That was not a valid username.  Please enter 8-20 alphanumeric " + "characters.");
       username = scanner.next(); // comment out for testing
     }
     return username;
@@ -98,9 +98,9 @@ class User {
   }
 
   /**
-   * Prompts the user for a valid host name which follows the following parameters: (1) Must be alpha
-   * numeric + "." (2) Can't be longer than 255 characters (3) Host name segments cannot exceed 63
-   * characters (4) Must end and start with alpha numeric characters
+   * Prompts the user for a valid host name which follows the following parameters: (1) Must be
+   * alphanumeric + "." (2) Can't be longer than 255 characters (3) Host name segments cannot exceed 63
+   * characters (4) Must end and start with alphanumeric characters
    *
    * @return The host name input
    */
@@ -110,7 +110,7 @@ class User {
     while (hostname == null || hostname.isEmpty() || !verifyHostName(hostname)) {
       System.out.println("That was not a valid Host Name.");
       System.out.println(
-          "Valid host names are no longer than 255 alpha numeric characters and \n"
+          "Valid host names are no longer than 255 alphanumeric characters and \n"
               + "dashes. Each segment of the host name cannot be longer than 63 characters.");
       hostname = scanner.next();
     }
