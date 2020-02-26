@@ -17,6 +17,7 @@ class User {
     password = null;
     hostname = null;
   }
+  
   /**
    * Class constructor setting all fields to the current input
    *
