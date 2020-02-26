@@ -6,14 +6,9 @@ import java.util.regex.Pattern;
 
 /** Gathers information about a connection initiated by the user with the User class */
 class User {
-
-  /** Store the username in this variable */
   String username;
-  /** Store the password in this variable */
   String password;
-  /** Store the hostname in this variable */
   String hostname;
-  /** Store IO scanner in this variable */
   private Scanner scanner = new Scanner(System.in);
 
   /** Initializes all fields to null with the default constructor */
