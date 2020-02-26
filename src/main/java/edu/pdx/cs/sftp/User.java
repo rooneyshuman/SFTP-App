@@ -11,14 +11,14 @@ class User {
   String hostname;
   private Scanner scanner = new Scanner(System.in);
 
-  /** Initializes all fields to null with the default constructor */
+  /** Class constructor initializing all fields to null */
   User() {
     username = null;
     password = null;
     hostname = null;
   }
   /**
-   * Sets the User fields to the current input with this constructor
+   * Class constructor setting all fields to the current input
    *
    * @param username sets username to current username
    * @param password sets password to current password
@@ -31,7 +31,7 @@ class User {
   }
 
   /**
-   * Sets the scanner up for testing with this constructor
+   * Class constructor setting scanner up for testing
    *
    * @param scannerArg String with arguments used for testing
    */
