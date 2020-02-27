@@ -532,28 +532,30 @@ public class Client {
   /** Wrapper to create a directory on the user's local machine. */
   void createLocalDir() {
     logger.log("createLocalDir called");
-    boolean repeat = true;
-    String dirName;
-    String answer;
+    File newDir = new File(channelSftp.lpwd() + "/" + dirName);
 
-    while (repeat) {
-      out.println("Enter the name of the new directory: ");
-      dirName = scanner.next();
-      String path = channelSftp.lpwd() + "/" + dirName;
-      File newDir = new File(path);
-      if (newDir.exists()) { // directory exists
-        out.println("A directory by this name exists. Overwrite? (yes/no)");
-        answer = scanner.next();
-        if (answer.equalsIgnoreCase("yes")) {
-          if (newDir.delete() && createLocalDir(newDir))
+    if (newDir.exists()) {
+      out.println("A directory by this name exists. Overwrite? (yes/no)");
+      if (scanner.next().equalsIgnoreCase("yes")) {
+        // Overwrite existing directory by deleting and then recreating it
+        if (newDir.delete())
+          try {
+            newDir.mkdir();
             out.println(dirName + " has been overwritten");
-          else out.println("Error overwriting file");
-          repeat = false;
-        }
-      } else {
-        if (!createLocalDir(newDir)) out.println("Error creating local directory.");
+          } catch (Exception e) {
+            out.println("Error creating directory");
+          }
+        else
+          out.println("Error overwriting directory");
+      }
+    }
+
+    else {
+      try {
+        newDir.mkdir();
         out.println(dirName + " has been created");
-        repeat = false;
+      } catch (Exception e) {
+        out.println("Error creating directory.");
       }
     }
   }
