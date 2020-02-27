@@ -260,6 +260,7 @@ public class Main {
    * @throws SftpException from JSCH
    */
   private static void createDirectory(Client client) throws SftpException {
+    Scanner scanner = new Scanner(System.in);
     var menu = new Menu();
     int opt;
     do {
@@ -283,7 +284,9 @@ public class Main {
           break;
         case 5:
           System.out.println("Create local directory...");
-          client.createLocalDir();
+          out.println("Enter the name of the new directory: ");
+          String dirName = scanner.nextLine();
+          client.createLocalDir(dirName);
           break;
         case 6:
           client.createRemoteDir();
