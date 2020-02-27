@@ -558,22 +558,6 @@ public class Client {
     }
   }
 
-  /**
-   * Called by createLocalDir() to make a new local directory in current local path
-   *
-   * @param newDir -- File to create in current local path
-   * @return true if file was successfully created
-   */
-  boolean createLocalDir(File newDir) {
-    boolean pass = false;
-    try {
-      pass = newDir.mkdir();
-    } catch (Exception e) {
-      out.println("Error creating directory.");
-    }
-    return pass;
-  }
-
   /** Displays log history to user and logs being invoked */
   void displayLogHistory() {
     logger.display();
