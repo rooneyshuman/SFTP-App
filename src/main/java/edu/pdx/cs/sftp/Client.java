@@ -529,8 +529,13 @@ public class Client {
     }
   }
 
-  /** Wrapper to create a directory on the user's local machine. */
-  void createLocalDir() {
+  /**
+   * Creates a directory in the user's current path. If a directory with the same name already
+   * exists, the user is prompted to determine whether or not to overwrite it.
+   *
+   * @param dirName the string containing the name of the directory to be created.
+   */
+  void createLocalDir(String dirName) {
     logger.log("createLocalDir called");
     File newDir = new File(channelSftp.lpwd() + "/" + dirName);
 
