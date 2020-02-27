@@ -574,7 +574,7 @@ public class Client {
     return pass;
   }
 
-  /** Displays log history to user */
+  /** Displays log history to user and logs being invoked */
   void displayLogHistory() {
     logger.display();
     logger.log("displayLogHistory called");
@@ -587,6 +587,8 @@ public class Client {
    * @param filename the string containing the name(s) of the file(s) to be deleted.
    */
   void deleteRemoteFile(String filename) {
+    logger.log("deleteRemoteFile called");
+
     String workingDir;
     if (filename.contains(",")) {
       // Delete multiple files. Parse list of file names into string array and trim whitespace.
