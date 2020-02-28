@@ -198,9 +198,9 @@ public class ClientTest {
       assert (false);
     }
     String dirName = "newDirectory";
-    String path = client.getChannelSftp().lpwd() + "/" + dirName;
-    File newDir = new File(path);
-    assertThat(client.createLocalDir(newDir), equalTo(true));
+    File newDir = new File(client.getChannelSftp().lpwd() + "/" + dirName);
+    client.createLocalDir(dirName);
+    assertThat(newDir.exists(), equalTo(true));
     System.out.println(dirName + " was created successfully");
     if (newDir.delete()) // clean up
     System.out.println(dirName + " was deleted");

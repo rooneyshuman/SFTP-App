@@ -529,52 +529,43 @@ public class Client {
     }
   }
 
-  /** Wrapper to create a directory on the user's local machine. */
-  void createLocalDir() {
+  /**
+   * Creates a directory in the user's current path. If a directory with the same name already
+   * exists, the user is prompted to determine whether or not to overwrite it.
+   *
+   * @param dirName the string containing the name of the directory to be created.
+   */
+  void createLocalDir(String dirName) {
     logger.log("createLocalDir called");
-    boolean repeat = true;
-    String dirName;
-    String answer;
+    File newDir = new File(channelSftp.lpwd() + "/" + dirName);
 
-    while (repeat) {
-      out.println("Enter the name of the new directory: ");
-      dirName = scanner.next();
-      String path = channelSftp.lpwd() + "/" + dirName;
-      File newDir = new File(path);
-      if (newDir.exists()) { // directory exists
-        out.println("A directory by this name exists. Overwrite? (yes/no)");
-        answer = scanner.next();
-        if (answer.equalsIgnoreCase("yes")) {
-          if (newDir.delete() && createLocalDir(newDir))
+    if (newDir.exists()) {
+      out.println("A directory by this name exists. Overwrite? (yes/no)");
+      if (scanner.next().equalsIgnoreCase("yes")) {
+        // Overwrite existing directory by deleting and then recreating it
+        if (newDir.delete())
+          try {
+            newDir.mkdir();
             out.println(dirName + " has been overwritten");
-          else out.println("Error overwriting file");
-          repeat = false;
-        }
-      } else {
-        if (!createLocalDir(newDir)) out.println("Error creating local directory.");
+          } catch (Exception e) {
+            out.println("Error creating directory");
+          }
+        else
+          out.println("Error overwriting directory");
+      }
+    }
+
+    else {
+      try {
+        newDir.mkdir();
         out.println(dirName + " has been created");
-        repeat = false;
+      } catch (Exception e) {
+        out.println("Error creating directory.");
       }
     }
   }
 
-  /**
-   * Called by createLocalDir() to make a new local directory in current local path
-   *
-   * @param newDir -- File to create in current local path
-   * @return true if file was successfully created
-   */
-  boolean createLocalDir(File newDir) {
-    boolean pass = false;
-    try {
-      pass = newDir.mkdir();
-    } catch (Exception e) {
-      out.println("Error creating directory.");
-    }
-    return pass;
-  }
-
-  /** Displays log history to user */
+  /** Displays log history to user and logs being invoked */
   void displayLogHistory() {
     logger.display();
     logger.log("displayLogHistory called");
@@ -587,6 +578,8 @@ public class Client {
    * @param filename the string containing the name(s) of the file(s) to be deleted.
    */
   void deleteRemoteFile(String filename) {
+    logger.log("deleteRemoteFile called");
+
     String workingDir;
     if (filename.contains(",")) {
       // Delete multiple files. Parse list of file names into string array and trim whitespace.
