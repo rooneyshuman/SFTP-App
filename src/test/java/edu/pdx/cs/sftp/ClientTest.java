@@ -30,21 +30,15 @@ public class ClientTest {
     // assertThat(expected, equalTo(actual));
   }
 
-  /**
-   * Asserts that the connect method returns true
-   */
   @Test
-  public void connection_assertsSuccessfulConnection() {
+  public void connect_SuccessfulConnection_ReturnsTrue() {
     Client client = new Client(username, password, hostname);
     assertThat(client.connect(), equalTo(true));
   }
 
-  /**
-   * Test connection with fake credentials. Asserts connect() returns false.
-   */
   @Test
-  public void connection_wrongCredentials_expectsSftpException() {
-    Client client = new Client("fakeUsername", "fakePassword", "fakeHostname");
+  public void connect_InvalidCredentials_ReturnsFalse() {
+    Client client = new Client("invalidUsername", "invalidPassword", "invalidHostname");
     assertThat(client.connect(), equalTo(false));
   }
 
