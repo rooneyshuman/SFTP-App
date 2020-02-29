@@ -290,7 +290,7 @@ public class ClientTest {
   }
 
   @Test
-  public void disconnect_SuccessfullyDisconnectSession_ReturnsTrue() throws InterruptedException {
+  public void disconnect_SuccessfulDisconnect_VerifiesConnectionClosed() {
     Client client = new Client(username, password, hostname);
     await()
         .until(
