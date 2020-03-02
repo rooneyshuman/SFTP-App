@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -288,22 +289,19 @@ public class ClientTest {
     assertThat(pass, equalTo(true));
   }
 
-  /**
-   * Asserts whether a remote directory was changed Also inherently tests printRemoteWorkingDir()
-   */
   @Test
-  public void disconnect_assertsSessionIsDisconnected() {
-    boolean pass = false;
+  public void disconnect_SuccessfulDisconnect_VerifiesConnectionClosed() {
     Client client = new Client(username, password, hostname);
-    if (client.connect()) {
-      System.out.println("Now disconnecting your session...");
-      client.disconnect();
-      assertThat(client.getSession().isConnected(), equalTo(false));
-      pass = true;
-    } else {
-      System.out.println("Connection error.");
-    }
-    assertThat(pass, equalTo(true));
+    await()
+        .until(
+            () -> {
+              return client.connect();
+            });
+    assertThat(client.getSession().isConnected(), equalTo(true));
+
+    client.disconnect();
+
+    assertThat(client.getSession().isConnected(), equalTo(false));
   }
 
   /** Asserts whether a directory's files are displayed */

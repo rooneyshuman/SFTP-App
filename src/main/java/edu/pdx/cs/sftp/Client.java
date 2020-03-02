@@ -129,12 +129,19 @@ public class Client {
     return true;
   }
 
-  /** Terminates connection */
+  /**
+   * Terminates the connection to the SSH/SFTP server by first exiting the SFTP channel, then
+   * closing the session maintaining the connection to the server.
+   */
   void disconnect() {
     channelSftp.exit();
     session.disconnect();
+
     logger.log("SFTP connection closed");
     logger.save(user.username + "@" + user.hostname);
+
+    out.println("SFTP connection closed");
+    out.println("A log file has been saved to your local Downloads directory");
   }
 
   /**
@@ -550,12 +557,9 @@ public class Client {
           } catch (Exception e) {
             out.println("Error creating directory");
           }
-        else
-          out.println("Error overwriting directory");
+        else out.println("Error overwriting directory");
       }
-    }
-
-    else {
+    } else {
       try {
         newDir.mkdir();
         out.println(dirName + " has been created");
@@ -572,8 +576,8 @@ public class Client {
   }
 
   /**
-   * Deletes the specified file(s) from the remote server. Multiple file names can be included through a comma-separated
-   * list.
+   * Deletes the specified file(s) from the remote server. Multiple file names can be included
+   * through a comma-separated list.
    *
    * @param filename the string containing the name(s) of the file(s) to be deleted.
    */
@@ -583,7 +587,7 @@ public class Client {
     String workingDir;
     if (filename.contains(",")) {
       // Delete multiple files. Parse list of file names into string array and trim whitespace.
-      String [] filesToDelete = filename.replaceAll("\\s", "").split(",");
+      String[] filesToDelete = filename.replaceAll("\\s", "").split(",");
 
       try {
         workingDir = channelSftp.pwd();
