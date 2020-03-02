@@ -145,18 +145,14 @@ public class Client {
   }
 
   /**
-   * Simple getter for cSftp for use in test suite.
-   *
-   * @return -- returns the cSftp object.
+   * @return returns a Channel object connected to an SFTP server.
    */
   ChannelSftp getChannelSftp() {
     return channelSftp;
   }
 
   /**
-   * Simple getter for session for use in test suite.
-   *
-   * @return -- returns the Session object.
+   * @return returns a Session object representing a connection to an SSH server.
    */
   Session getSession() {
     return session;
