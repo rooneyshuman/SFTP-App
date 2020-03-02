@@ -144,12 +144,12 @@ public class Client {
     out.println("A log file has been saved to your local Downloads directory");
   }
 
-  /** @return returns a Channel object connected to an SFTP server. */
+  /** @return a Channel object connected to an SFTP server. */
   ChannelSftp getChannelSftp() {
     return channelSftp;
   }
 
-  /** @return returns a Session object representing a connection to an SSH server. */
+  /** @return a Session object representing a connection to an SSH server. */
   Session getSession() {
     return session;
   }
