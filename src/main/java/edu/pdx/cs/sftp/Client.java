@@ -9,10 +9,12 @@ import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Vector;
 
+import static java.lang.System.err;
 import static java.lang.System.out;
 
 /**
@@ -154,28 +156,40 @@ public class Client {
     return session;
   }
 
-  /** Lists all directories and files on the user's local machine (from the current directory). */
-  int displayLocalFiles() {
+  /**
+   * Lists all directories and files in the user's current local directory.
+   *
+   * @return <code>true</code> if directories and/or files in the user's current local directory are
+   *     listed; otherwise, return <code>false</code> to indicate the user's current local directory
+   *     is empty.
+   */
+  boolean displayLocalFiles() {
     logger.log("displayLocalFiles called");
-    File dir = new File(channelSftp.lpwd());
     printLocalWorkingDir();
+
+    File dir = new File(channelSftp.lpwd());
     File[] files = dir.listFiles();
+
     if (files != null) {
-      int count = 0;
+      Arrays.sort(files);
       for (File file : files) {
-        if (count == 5) {
-          count = 0;
-          out.println();
-        }
-        out.print(file.getName() + "    ");
-        ++count;
+        out.println(file.getName());
       }
-      out.println("\n");
+      out.println();
+      return true;
+    } else {
+      out.println("Your current directory is empty.");
+      return false;
     }
-    return 1;
   }
 
-  /** Lists all directories and files on the user's remote machine. */
+  /**
+   * Lists all directories and files in the user's current remote directory.
+   *
+   * @return <code>true</code> if directories and/or files in the user's current remote directory
+   *     are listed; otherwise, return <code>false</code> to indicate the user's current remote
+   *     directory is empty.
+   */
   boolean displayRemoteFiles() {
     logger.log("displayRemoteFiles called");
 
@@ -183,24 +197,20 @@ public class Client {
       printRemoteWorkingDir();
       Vector remoteDir = channelSftp.ls(channelSftp.pwd());
       if (remoteDir != null) {
-        int count = 0;
         for (int i = 0; i < remoteDir.size(); ++i) {
-          if (count == 5) {
-            count = 0;
-            out.println();
-          }
           Object dirEntry = remoteDir.elementAt(i);
           if (dirEntry instanceof ChannelSftp.LsEntry)
-            out.print(((ChannelSftp.LsEntry) dirEntry).getFilename() + "    ");
-          ++count;
+            out.println(((ChannelSftp.LsEntry) dirEntry).getFilename());
         }
-        out.println("\n");
+        out.println();
+        return true;
+      } else {
+        out.println("Your current directory is empty.");
       }
-      return true;
     } catch (SftpException e) {
-      System.out.println("Error displaying remote files");
-      return false;
+      err.println("Error displaying remote files");
     }
+    return false;
   }
 
   /** Create a directory on the user's remote machine. */
