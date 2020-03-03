@@ -9,8 +9,10 @@ import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
 import java.io.File;
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Properties;
+import java.util.Scanner;
+import java.util.Vector;
 
 import static java.lang.System.err;
 import static java.lang.System.out;
