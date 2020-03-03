@@ -9,6 +9,7 @@ import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Vector;
@@ -162,25 +163,31 @@ public class Client {
     return session;
   }
 
-  /** Lists all directories and files on the user's local machine (from the current directory). */
-  int displayLocalFiles() {
+  /**
+   * Lists all directories and files in the user's current local directory.
+   *
+   * @return <code>true</code> if directories and/or files in the user's current local directory are
+   *     listed; otherwise, return <code>false</code> to indicate the user's current local directory
+   *     is empty.
+   */
+  boolean displayLocalFiles() {
     logger.log("displayLocalFiles called");
-    File dir = new File(channelSftp.lpwd());
     printLocalWorkingDir();
+
+    File dir = new File(channelSftp.lpwd());
     File[] files = dir.listFiles();
+
     if (files != null) {
-      int count = 0;
+      Arrays.sort(files);
       for (File file : files) {
-        if (count == 5) {
-          count = 0;
-          out.println();
-        }
-        out.print(file.getName() + "    ");
-        ++count;
+        out.println(file.getName());
       }
-      out.println("\n");
+      out.println();
+      return true;
+    } else {
+      out.println("Your current directory is empty.");
+      return false;
     }
-    return 1;
   }
 
   /** Lists all directories and files on the user's remote machine. */
