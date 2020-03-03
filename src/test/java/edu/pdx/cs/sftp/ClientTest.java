@@ -292,11 +292,7 @@ public class ClientTest {
   @Test
   public void disconnect_SuccessfulDisconnect_VerifiesConnectionClosed() {
     Client client = new Client(username, password, hostname);
-    await()
-        .until(
-            () -> {
-              return client.connect();
-            });
+    await().until(() -> client.connect());
     assertThat(client.getSession().isConnected(), equalTo(true));
 
     client.disconnect();
