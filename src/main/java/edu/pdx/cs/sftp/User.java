@@ -70,11 +70,11 @@ class User {
   /**
    * Verify the password isn't empty and doesn't contain spaces.
    *
-   * @param password is the string to be assessed.
+   * @param passwordToVerify is the string to be assessed.
    * @return <code>true</code> if the string is a valid password <code>false</code> otherwise.
    */
-  private boolean verifyPassword(String password) {
-    return !password.isEmpty() && !password.contains(" ");
+  private boolean verifyPassword(String passwordToVerify) {
+    return !passwordToVerify.isEmpty() && !passwordToVerify.contains(" ");
   }
 
   /**
@@ -97,13 +97,13 @@ class User {
   /**
    * Verify the username is 8-20 alphanumeric characters.
    *
-   * @param toVerify is the string to be checked against a regular expression.
+   * @param usernameToVerify is the string to be checked against a regular expression.
    * @return <code>true</code> if the string is a valid username <code>false</code> otherwise.
    */
-  boolean verifyUsername(String toVerify) {
+  boolean verifyUsername(String usernameToVerify) {
     String userNamePattern = "^(?=.{2,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
     Pattern pattern = Pattern.compile(userNamePattern);
-    Matcher matcher = pattern.matcher(toVerify);
+    Matcher matcher = pattern.matcher(usernameToVerify);
     return matcher.matches();
   }
 
@@ -132,16 +132,16 @@ class User {
    * Verify the host name is alphanumeric, shorter than 255 characters, with name segments not
    * exceeding 63 characters, and starts and ends with alphanumeric characters.
    *
-   * @param toVerify is a string to be checked against a regular expression.
+   * @param hostnameToVerify is a string to be checked against a regular expression.
    * @return <code>true</code> if the string is a valid host name <code>false</code> otherwise.
    */
-  boolean verifyHostName(String toVerify) {
-    if (toVerify.length() > 255) return false;
+  boolean verifyHostName(String hostnameToVerify) {
+    if (hostnameToVerify.length() > 255) return false;
     String userNamePattern =
         "^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])(\\."
             + "([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9]))*$";
     Pattern pattern = Pattern.compile(userNamePattern);
-    Matcher matcher = pattern.matcher(toVerify);
+    Matcher matcher = pattern.matcher(hostnameToVerify);
     return matcher.matches();
   }
 }
