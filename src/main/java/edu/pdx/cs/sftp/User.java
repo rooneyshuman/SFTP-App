@@ -120,7 +120,7 @@ class User {
     out.println("Enter your hostname:");
     hostname = scanner.next();
     while (hostname == null || hostname.isEmpty() || !verifyHostName(hostname)) {
-      out.println("The host name is invalid.\n"
+      err.println("The host name is invalid.\n"
                 + "Valid host names are no longer than 255 alphanumeric characters and dashes.\n"
                 + "Each segment of the host name cannot be longer than 63 characters.");
       hostname = scanner.next();
