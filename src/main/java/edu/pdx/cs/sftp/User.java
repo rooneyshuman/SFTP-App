@@ -59,7 +59,8 @@ class User {
     out.println("Enter your password:");
     password = scanner.next();
     while (password == null || password.isEmpty() || !verifyPassword(password)) {
-      err.println("You did not enter a password. Enter your password:");
+      err.println("You did not enter a password.\n"
+                + "Please, enter your password:");
       password = scanner.next();
     }
     return password;
@@ -85,8 +86,8 @@ class User {
     username = scanner.next();
     // username = ""; //for testing
     if (username == null || username.isEmpty() || !verifyUsername(username)) {
-      err.println(
-          "That was not a valid username.  Please enter 8-20 alphanumeric " + "characters.");
+      err.println( "The username is invalid.\n"
+                 + "Please enter 8-20 alphanumeric characters.");
       username = scanner.next(); // comment out for testing
     }
     return username;
@@ -116,10 +117,9 @@ class User {
     out.println("Enter your hostname:");
     hostname = scanner.next();
     while (hostname == null || hostname.isEmpty() || !verifyHostName(hostname)) {
-      out.println("That was not a valid Host Name.");
-      out.println(
-          "Valid host names are no longer than 255 alphanumeric characters and \n"
-              + "dashes. Each segment of the host name cannot be longer than 63 characters.");
+      out.println("The host name is invalid.\n"
+                + "Valid host names are no longer than 255 alphanumeric characters and dashes.\n"
+                + "Each segment of the host name cannot be longer than 63 characters.");
       hostname = scanner.next();
     }
     return hostname;
