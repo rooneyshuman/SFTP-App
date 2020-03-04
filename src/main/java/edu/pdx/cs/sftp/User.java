@@ -101,8 +101,8 @@ class User {
    * @return <code>true</code> if the string is a valid username <code>false</code> otherwise.
    */
   boolean verifyUsername(String usernameToVerify) {
-    String userNamePattern = "^(?=.{2,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
-    Pattern pattern = Pattern.compile(userNamePattern);
+    String usernamePattern = "^(?=.{2,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
+    Pattern pattern = Pattern.compile(usernamePattern);
     Matcher matcher = pattern.matcher(usernameToVerify);
     return matcher.matches();
   }
@@ -137,10 +137,10 @@ class User {
    */
   boolean verifyHostName(String hostnameToVerify) {
     if (hostnameToVerify.length() > 255) return false;
-    String userNamePattern =
+    String hostnamePattern =
         "^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])(\\."
             + "([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9]))*$";
-    Pattern pattern = Pattern.compile(userNamePattern);
+    Pattern pattern = Pattern.compile(hostnamePattern);
     Matcher matcher = pattern.matcher(hostnameToVerify);
     return matcher.matches();
   }
