@@ -18,7 +18,7 @@ class User {
   String hostname;
   private Scanner scanner = new Scanner(in);
 
-  /** Class constructor initializing all fields to null */
+  /** Class constructor initializing all fields to null. */
   User() {
     username = null;
     password = null;
@@ -26,11 +26,11 @@ class User {
   }
   
   /**
-   * Class constructor setting all fields to the current input
+   * Class constructor setting all fields to the current input.
    *
-   * @param username sets username to current username
-   * @param password sets password to current password
-   * @param hostname sets hostname to current hostname
+   * @param username sets username to current username.
+   * @param password sets password to current password.
+   * @param hostname sets hostname to current hostname.
    */
   User(String username, String password, String hostname) {
     this.username = username;
@@ -39,9 +39,9 @@ class User {
   }
 
   /**
-   * Class constructor setting scanner up for testing
+   * Class constructor setting scanner up for testing.
    *
-   * @param scannerArg String with arguments used for testing
+   * @param scannerArg String with arguments used for testing.
    */
   User(String scannerArg) {
     username = null;
@@ -51,9 +51,10 @@ class User {
   }
 
   /**
-   * Prompt the user for a valid password
+   * Prompt the user for a valid password.
+   * Password must not be empty or include spaces.
    *
-   * @return The password input
+   * @return password input.
    */
   String getPassword() {
     out.println("Enter your password:");
@@ -67,19 +68,20 @@ class User {
   }
 
   /**
-   * Verify the string isn't empty and doesn't contain spaces
+   * Verify the password isn't empty and doesn't contain spaces.
    *
-   * @param password String to be assessed
-   * @return true if the password isn't empty and does not include spaces Otherwise, return false
+   * @param password is the string to be assessed.
+   * @return <code>true</code> if the string is a valid password <code>false</code> otherwise.
    */
   private boolean verifyPassword(String password) {
     return !password.isEmpty() && !password.contains(" ");
   }
 
   /**
-   * Prompts the user for a valid username (usernames must be alphanumeric of size 8-20)
+   * Prompt the user for a valid username.
+   * Username must be alphanumeric of size 8-20.
    *
-   * @return username input
+   * @return username input.
    */
   String getUsername() {
     out.println("Enter your username:");
@@ -93,10 +95,10 @@ class User {
   }
 
   /**
-   * Checks if the string is a valid username
+   * Verify the username is 8-20 alphanumeric characters.
    *
-   * @param toVerify a string to be checked against a regular expression
-   * @return <code>true</code> if the string is a valid username <code>false</code> otherwise
+   * @param toVerify is the string to be checked against a regular expression.
+   * @return <code>true</code> if the string is a valid username <code>false</code> otherwise.
    */
   boolean verifyUsername(String toVerify) {
     String userNamePattern = "^(?=.{2,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
@@ -106,11 +108,13 @@ class User {
   }
 
   /**
-   * Prompts the user for a valid host name which follows the following parameters: (1) Must be
-   * alphanumeric + "." (2) Can't be longer than 255 characters (3) Host name segments cannot exceed 63
-   * characters (4) Must end and start with alphanumeric characters
+   * Prompt the user for a valid host name, which follows the below parameters:
+   * (1) Must be alphanumeric
+   * (2) Can't be longer than 255 characters
+   * (3) Host name segments cannot exceed 63 characters
+   * (4) Must end and start with alphanumeric characters
    *
-   * @return The host name input
+   * @return host name input.
    */
   String getHostname() {
     out.println("Enter your hostname:");
@@ -125,10 +129,11 @@ class User {
   }
 
   /**
-   * Checks if the string is a valid host name
+   * Verify the host name is alphanumeric, shorter than 255 characters, with name segments not
+   * exceeding 63 characters, and starts and ends with alphanumeric characters.
    *
-   * @param toVerify a string to be checked against a regular expression
-   * @return <code>true</code> if the string is a valid host name <code>false</code> otherwise
+   * @param toVerify is a string to be checked against a regular expression.
+   * @return <code>true</code> if the string is a valid host name <code>false</code> otherwise.
    */
   boolean verifyHostName(String toVerify) {
     if (toVerify.length() > 255) return false;
