@@ -17,37 +17,37 @@ public class UserTest {
 
   @Test
   public void verifyHostNameDoesntAllowAt() {
-    boolean valid = user.verifyHostName("@linux.cs.pdx.edu");
+    boolean valid = user.verifyHostname("@linux.cs.pdx.edu");
     assertThat(valid, equalTo(false));
   }
 
   @Test
   public void verifyHostNameDoesntAllowLeadingOrEndingPeriod() {
-    boolean valid = user.verifyHostName(".linux.cs.pdx.edu");
+    boolean valid = user.verifyHostname(".linux.cs.pdx.edu");
     assertThat(valid, equalTo(false));
   }
 
   @Test
   public void verifyHostNameCatchesLongSegment() {
-    boolean valid = user.verifyHostName("01234567890123456789012345678901234567890123456789012345678901234");
+    boolean valid = user.verifyHostname("01234567890123456789012345678901234567890123456789012345678901234");
     assertThat(valid, equalTo(false));
   }
 
   @Test
   public void verifyHostNameCatchesUnderscore() {
-    boolean valid = user.verifyHostName("linux_cs.pdx.edu");
+    boolean valid = user.verifyHostname("linux_cs.pdx.edu");
     assertThat(valid, equalTo(false));
   }
 
   @Test
   public void verifyHostNameAllowsValid() {
-    boolean valid = user.verifyHostName("linux.cs.pdx.edu");
+    boolean valid = user.verifyHostname("linux.cs.pdx.edu");
     assertThat(valid, equalTo(true));
   }
 
   @Test
   public void verifyHostNameCatchesTooLong() {
-    boolean valid = user.verifyHostName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    boolean valid = user.verifyHostname("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     assertThat(valid, equalTo(false));
   }
 
