@@ -4,6 +4,10 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.System.err;
+import static java.lang.System.out;
+import static java.lang.System.in;
+
 /**
  * Gathers information about a connection attempt initiated by a user, verifies
  * user input against a set of input rules, and returns valid credentials.
@@ -12,7 +16,7 @@ class User {
   String username;
   String password;
   String hostname;
-  private Scanner scanner = new Scanner(System.in);
+  private Scanner scanner = new Scanner(in);
 
   /** Class constructor initializing all fields to null */
   User() {
@@ -52,10 +56,10 @@ class User {
    * @return The password input
    */
   String getPassword() {
-    System.out.println("Enter your password:");
+    out.println("Enter your password:");
     password = scanner.next();
     while (password == null || password.isEmpty() || !verifyPassword(password)) {
-      System.err.println("You did not enter a password. Enter your password:");
+      err.println("You did not enter a password. Enter your password:");
       password = scanner.next();
     }
     return password;
@@ -77,11 +81,11 @@ class User {
    * @return username input
    */
   String getUsername() {
-    System.out.println("Enter your username:");
+    out.println("Enter your username:");
     username = scanner.next();
     // username = ""; //for testing
     if (username == null || username.isEmpty() || !verifyUsername(username)) {
-      System.err.println(
+      err.println(
           "That was not a valid username.  Please enter 8-20 alphanumeric " + "characters.");
       username = scanner.next(); // comment out for testing
     }
@@ -109,11 +113,11 @@ class User {
    * @return The host name input
    */
   String getHostname() {
-    System.out.println("Enter your hostname:");
+    out.println("Enter your hostname:");
     hostname = scanner.next();
     while (hostname == null || hostname.isEmpty() || !verifyHostName(hostname)) {
-      System.out.println("That was not a valid Host Name.");
-      System.out.println(
+      out.println("That was not a valid Host Name.");
+      out.println(
           "Valid host names are no longer than 255 alphanumeric characters and \n"
               + "dashes. Each segment of the host name cannot be longer than 63 characters.");
       hostname = scanner.next();
