@@ -75,7 +75,6 @@ public class Client {
       out.println("Successfully connected to the SSH/SFTP server");
       return true;
     } else {
-      out.println("Failed to connect to the server");
       logger.log("Error occurred when attempting to connect to the SSH/SFTP server");
       return false;
     }
