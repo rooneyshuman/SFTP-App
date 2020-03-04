@@ -84,11 +84,10 @@ class User {
   String getUsername() {
     out.println("Enter your username:");
     username = scanner.next();
-    // username = ""; //for testing
     if (username == null || username.isEmpty() || !verifyUsername(username)) {
       err.println( "The username is invalid.\n"
                  + "Please enter 8-20 alphanumeric characters.");
-      username = scanner.next(); // comment out for testing
+      username = scanner.next();
     }
     return username;
   }
