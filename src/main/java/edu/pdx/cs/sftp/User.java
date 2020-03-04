@@ -4,7 +4,10 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** Gathers information about a connection initiated by the user with the User class */
+/**
+ * Gathers information about a connection attempt initiated by a user, verifies
+ * user input against a set of input rules, and returns valid credentials.
+ */
 class User {
   String username;
   String password;
