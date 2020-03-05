@@ -51,31 +51,6 @@ class User {
   }
 
   /**
-   * Prompts the user for a valid password. Password must not be empty or include spaces.
-   *
-   * @return validated password.
-   */
-  String getPassword() {
-    out.println("Enter your password:");
-    password = scanner.nextLine();
-    while (!verifyPassword(password)) {
-      err.println("You did not enter a password.\n" + "Please, enter your password:");
-      password = scanner.nextLine();
-    }
-    return password;
-  }
-
-  /**
-   * Verifies the password isn't empty and doesn't contain spaces.
-   *
-   * @param passwordToVerify is the string to be assessed.
-   * @return <code>true</code> if the password entered is valid; <code>false</code> otherwise.
-   */
-  private boolean verifyPassword(String passwordToVerify) {
-    return !passwordToVerify.isEmpty() && !passwordToVerify.contains(" ");
-  }
-
-  /**
    * Prompts the user for a valid username. Username must be alphanumeric of size 2-20.
    *
    * @return validated username.
@@ -101,6 +76,31 @@ class User {
     Pattern pattern = Pattern.compile(usernamePattern);
     Matcher matcher = pattern.matcher(usernameToVerify);
     return matcher.matches();
+  }
+
+  /**
+   * Prompts the user for a valid password. Password must not be empty or include spaces.
+   *
+   * @return validated password.
+   */
+  String getPassword() {
+    out.println("Enter your password:");
+    password = scanner.nextLine();
+    while (!verifyPassword(password)) {
+      err.println("You did not enter a password.\n" + "Please, enter your password:");
+      password = scanner.nextLine();
+    }
+    return password;
+  }
+
+  /**
+   * Verifies the password isn't empty and doesn't contain spaces.
+   *
+   * @param passwordToVerify is the string to be assessed.
+   * @return <code>true</code> if the password entered is valid; <code>false</code> otherwise.
+   */
+  private boolean verifyPassword(String passwordToVerify) {
+    return !passwordToVerify.isEmpty() && !passwordToVerify.contains(" ");
   }
 
   /**
