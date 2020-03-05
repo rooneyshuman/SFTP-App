@@ -447,46 +447,6 @@ public class Client {
     }
   }
 
-  /*
-  /**
-   * Executes a command on the remote server.
-   *
-   * @param command -- The text command that you'd like to execute. (Ex: "ls -a" or "cd mydirectory")
-   */
-  /*
-  void remoteExec(String command) {
-    logger.log("remoteExec called w/ argument '" + command + "'");
-    try {
-      Channel channel = session.openChannel("Exec");
-      ((ChannelExec) channel).setCommand(command);
-      channel.setInputStream(null);
-      ((ChannelExec) channel).setErrStream(System.err);
-
-
-      channel.connect();
-      InputStream input = channel.getInputStream();
-      try {
-        InputStreamReader inputReader = new InputStreamReader(input);
-        BufferedReader bufferedReader = new BufferedReader(inputReader);
-        String line;
-
-        while ((line = bufferedReader.readLine()) != null) {
-          System.out.println(line);
-        }
-        bufferedReader.close();
-        inputReader.close();
-      } catch (IOException ex) {
-        ex.printStackTrace();
-      }
-
-      channel.disconnect();
-      session.disconnect();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
-  */
-
   /** Rename file/directory on remote server */
   void renameRemote() throws SftpException {
     boolean repeat = true;
