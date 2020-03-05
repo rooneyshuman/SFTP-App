@@ -58,7 +58,7 @@ class User {
   String getPassword() {
     out.println("Enter your password:");
     password = scanner.nextLine();
-    while (password == null || password.isEmpty() || !verifyPassword(password)) {
+    while (!verifyPassword(password)) {
       err.println("You did not enter a password.\n" + "Please, enter your password:");
       password = scanner.nextLine();
     }
@@ -83,7 +83,7 @@ class User {
   String getUsername() {
     out.println("Enter your username:");
     username = scanner.nextLine();
-    while (username == null || username.isEmpty() || !verifyUsername(username)) {
+    while (!verifyUsername(username)) {
       err.println("The username is invalid.\n" + "Please enter 2-20 alphanumeric characters:");
       username = scanner.nextLine();
     }
@@ -113,7 +113,7 @@ class User {
   String getHostname() {
     out.println("Enter your hostname:");
     hostname = scanner.nextLine();
-    while (hostname == null || hostname.isEmpty() || !verifyHostname(hostname)) {
+    while (!verifyHostname(hostname)) {
       err.println(
           "The hostname is invalid.\n"
               + "Valid hostnames are no longer than 255 alphanumeric characters and dashes.\n"
