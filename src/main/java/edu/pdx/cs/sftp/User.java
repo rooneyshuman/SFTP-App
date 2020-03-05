@@ -76,7 +76,7 @@ class User {
   }
 
   /**
-   * Prompts the user for a valid username. Username must be alphanumeric of size 8-20.
+   * Prompts the user for a valid username. Username must be alphanumeric of size 2-20.
    *
    * @return validated username.
    */
@@ -84,14 +84,14 @@ class User {
     out.println("Enter your username:");
     username = scanner.nextLine();
     while (username == null || username.isEmpty() || !verifyUsername(username)) {
-      err.println("The username is invalid.\n" + "Please enter 8-20 alphanumeric characters:");
+      err.println("The username is invalid.\n" + "Please enter 2-20 alphanumeric characters:");
       username = scanner.nextLine();
     }
     return username;
   }
 
   /**
-   * Verifies the username is 8-20 alphanumeric characters.
+   * Verifies the username is 2-20 alphanumeric characters.
    *
    * @param usernameToVerify is the string to be checked against a regular expression.
    * @return <code>true</code> if the username entered is valid; <code>false</code> otherwise.
