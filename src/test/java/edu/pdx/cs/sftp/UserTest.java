@@ -29,7 +29,8 @@ public class UserTest {
 
   @Test
   public void verifyHostNameCatchesLongSegment() {
-    boolean valid = user.verifyHostname("01234567890123456789012345678901234567890123456789012345678901234");
+    boolean valid =
+        user.verifyHostname("01234567890123456789012345678901234567890123456789012345678901234");
     assertThat(valid, equalTo(false));
   }
 
@@ -47,7 +48,9 @@ public class UserTest {
 
   @Test
   public void verifyHostNameCatchesTooLong() {
-    boolean valid = user.verifyHostname("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    boolean valid =
+        user.verifyHostname(
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     assertThat(valid, equalTo(false));
   }
 
@@ -170,7 +173,7 @@ public class UserTest {
     String validPass = "dafa";
     String validUser = "thisGuy";
     String validHost = "linux.cs.pdx.edu";
-    var user = new User(validUser, validPass,validHost);
+    var user = new User(validUser, validPass, validHost);
     assertThat(user.password, equalTo(validPass));
     assertThat(user.hostname, equalTo(validHost));
     assertThat(user.username, equalTo(validUser));
