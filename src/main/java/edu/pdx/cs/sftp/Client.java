@@ -465,9 +465,9 @@ public class Client {
    * Rename file/directory on remote server
    */
   void renameRemote() throws SftpException {
-    boolean repeat = true;
     String input;
     SftpATTRS attrs = null;
+
     // get original file name
     String oldFilename = "";
     while (oldFilename.equals("")) {
@@ -495,7 +495,6 @@ public class Client {
     if (attrs != null) {
       out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
       input = scanner.next();
-      attrs = null;
       if (input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y"))) rename = true;
     } else {
       rename = true;
