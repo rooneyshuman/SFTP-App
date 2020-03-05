@@ -154,7 +154,7 @@ public class UserTest {
     String password = "test this\nBrent";
     var user = new User(password);
     String result = user.getPassword();
-    assertThat(result, equalTo("test"));
+    assertThat(result, equalTo("Brent"));
   }
 
   @Test
@@ -170,7 +170,7 @@ public class UserTest {
     String validPass = "dafa";
     String validUser = "thisGuy";
     String validHost = "linux.cs.pdx.edu";
-    var user = new User(validPass,validHost,validUser);
+    var user = new User(validUser, validPass,validHost);
     assertThat(user.password, equalTo(validPass));
     assertThat(user.hostname, equalTo(validHost));
     assertThat(user.username, equalTo(validUser));
