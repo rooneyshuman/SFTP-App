@@ -292,11 +292,7 @@ public class ClientTest {
   @Test
   public void disconnect_SuccessfulDisconnect_VerifiesConnectionClosed() {
     Client client = new Client(username, password, hostname);
-    await()
-        .until(
-            () -> {
-              return client.connect();
-            });
+    await().until(() -> client.connect());
     assertThat(client.getSession().isConnected(), equalTo(true));
 
     client.disconnect();
@@ -304,30 +300,22 @@ public class ClientTest {
     assertThat(client.getSession().isConnected(), equalTo(false));
   }
 
-  /** Asserts whether a directory's files are displayed */
   @Test
-  public void displayRemoteFiles_assertsFilesAndDirectoriesDisplay() throws SftpException {
-    ByteArrayOutputStream output = new ByteArrayOutputStream();
-    PrintStream stdout = System.out;
-    String dirName = "newDirectory";
-    boolean pass = false;
-
+  public void displayRemoteFiles_Success_VerifiesDirectoryDisplayed() throws SftpException {
+    // Redirect output stream
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(byteArrayOutputStream));
+    // Connect to SSH/SFTP server
     Client client = new Client(username, password, hostname);
-    if (!client.connect()) {
-      System.out.println("Failed connection. Unable to run test.");
-      assert (false);
-    }
+    await().until(() -> client.connect());
+    // Create new directory to verify
+    client.createRemoteDir("dirToTest");
 
-    if (client.createRemoteDir(dirName)) {
-      System.setOut(new PrintStream(output)); // Redirect printstream
-      client.displayRemoteFiles();
-      assertThat(output.toString(), containsString(dirName)); // Assert output contains new dir
-      client.getChannelSftp().rmdir(dirName); // clean up
-      System.setOut(stdout); // Reset printstream to System.out
-      System.out.println("New remote file successfully displayed. New dir has been deleted.");
-      pass = true;
-    } else System.out.println("Error in createRemoteDir");
+    client.displayRemoteFiles();
 
-    assertThat(pass, equalTo(true));
+    assertThat(byteArrayOutputStream.toString(), containsString("dirToTest"));
+    // Clean up
+    client.getChannelSftp().rmdir("dirToTest");
+    System.setOut(System.out);
   }
 }
