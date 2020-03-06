@@ -270,7 +270,7 @@ public class Client {
   void printLocalWorkingDir() {
     logger.log("printLocalWorkingDir called");
     String localWorkingDir = channelSftp.lpwd();
-    out.println(String.format("This is your current local working directory: %s \n", localWorkingDir);
+    out.println(String.format("This is your current local working directory: %s \n", localWorkingDir));
   }
 
   /**
@@ -281,7 +281,7 @@ public class Client {
   void printRemoteWorkingDir() throws SftpException {
     logger.log("printRemoteWorkingDir called");
     String remoteWorkingDir = channelSftp.pwd();
-    out.println(String.format("This is your current remote working directory: %s \n", remoteWorkingDir);
+    out.println(String.format("This is your current remote working directory: %s \n", remoteWorkingDir));
   }
 
   /** Wrapper for changing current working local path */
