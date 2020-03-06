@@ -264,24 +264,24 @@ public class Client {
     return attrs != null;
   }
 
-  /**
-   * Prints the current local directory in absolute form.
-   */
+  /** Prints the current local directory in absolute form. */
   void printLocalWorkingDir() {
     logger.log("printLocalWorkingDir called");
     String localWorkingDir = channelSftp.lpwd();
-    out.println(String.format("This is your current local working directory: %s \n", localWorkingDir));
+    out.println(
+        String.format("This is your current local working directory: %s \n", localWorkingDir));
   }
 
   /**
    * Prints the current remote directory in absolute form.
    *
-   * @throws SftpException
+   * @throws SftpException If an SFTP protocol exception occurred
    */
   void printRemoteWorkingDir() throws SftpException {
     logger.log("printRemoteWorkingDir called");
     String remoteWorkingDir = channelSftp.pwd();
-    out.println(String.format("This is your current remote working directory: %s \n", remoteWorkingDir));
+    out.println(
+        String.format("This is your current remote working directory: %s \n", remoteWorkingDir));
   }
 
   /** Wrapper for changing current working local path */
