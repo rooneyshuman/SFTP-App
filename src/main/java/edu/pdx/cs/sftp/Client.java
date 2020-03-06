@@ -16,6 +16,7 @@ import java.util.Vector;
 
 import static java.lang.System.err;
 import static java.lang.System.out;
+import static java.lang.System.err;
 
 /**
  * Represents the SSH File Transfer Protocol (SFTP) client. Supports the full security and
@@ -212,54 +213,67 @@ public class Client {
     return false;
   }
 
-  /** Create a directory on the user's remote machine. */
+  /**
+   * Creates a new remote directory. If the directory does not exist, it is created. If the
+   * directory already exists, it asks the user whether they wish to overwrite the directory.
+   */
   void createRemoteDir() {
     logger.log("createRemoteDir called");
-    boolean repeat = true;
+    boolean dirNotCreated = true;
+    SftpATTRS attrs = null;
     String answer;
     String dirName;
-    SftpATTRS attrs = null;
 
-    while (repeat) {
+    while (dirNotCreated) {
       out.println("Enter the name of the new directory: ");
       dirName = scanner.next();
       try {
+        // Retrieve attributes of the directory
         attrs = channelSftp.stat(dirName);
       } catch (Exception e) {
-        out.println("A directory by this name doesn't exist, it will now be created.");
+        out.println("A directory by this name doesn't exist; it will now be created");
       }
-      if (attrs != null) { // directory exists
-        out.println("A directory by this name exists. Overwrite? (yes/no)");
+      // Directory does not exist
+      if (attrs == null) {
+        if (createRemoteDir(dirName)) {
+          out.println(dirName + " has been created");
+        }
+        dirNotCreated = false;
+      } else {
+        // Directory already exists
+        out.println("A directory by this name already exists. Overwrite? (yes/no)");
         answer = scanner.next();
-        attrs = null; // reset attrs for loop
+        // Reset attributes of the remote file manipulated by SFTP
+        attrs = null;
         if (answer.equalsIgnoreCase("yes")) {
           try {
             channelSftp.rmdir(dirName);
-            if (createRemoteDir(dirName)) out.println(dirName + " has been overwritten");
-            repeat = false;
+            if (createRemoteDir(dirName)) {
+              out.println(dirName + " has been overwritten");
+            }
+            dirNotCreated = false;
           } catch (SftpException e) {
-            out.println("Error overwriting directory");
+            err.println("Error overwriting directory");
           }
         }
-      } else {
-        if (createRemoteDir(dirName)) out.println(dirName + " has been created");
-        repeat = false;
       }
     }
   }
 
   /**
-   * Called by createRemoteDir() to make a new remote directory in current remote path
+   * Creates a new remote directory in the user's current path.
    *
-   * @return true if file was successfully created
+   * @param dirName the name of the new directory to be created
+   * @return <code>true</code> if the file was successfully created; <code>false</code> otherwise.
    */
   boolean createRemoteDir(String dirName) {
     SftpATTRS attrs = null;
     try {
       channelSftp.mkdir(dirName);
+      // Retrieve attributes of the directory
       attrs = channelSftp.stat(dirName);
     } catch (Exception e) {
-      out.println("Error creating directory.");
+      err.println("Error creating directory");
     }
     return attrs != null;
   }
