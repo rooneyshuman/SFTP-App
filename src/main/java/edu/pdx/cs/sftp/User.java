@@ -124,7 +124,7 @@ class User {
   }
 
   /**
-   * Verifies the host name is alphanumeric, shorter than 255 characters, with name segments not
+   * Verifies the hostname is alphanumeric, shorter than 255 characters, with name segments not
    * exceeding 63 characters, and starts and ends with alphanumeric characters.
    *
    * @param hostnameToVerify is a string to be checked against a regular expression.
