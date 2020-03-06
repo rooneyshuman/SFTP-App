@@ -421,22 +421,22 @@ public class Client {
     boolean repeat = true;
     String input;
     while (repeat) {
-      // get original file name
+      // get original filename
       String oldFilename = "";
       while (oldFilename.equals("")) {
-        out.println("Enter the original local file name (e.g., file.txt or directoryName): ");
+        out.println("Enter the original local filename (e.g., file.txt or directoryName): ");
         oldFilename = scanner.nextLine();
         if (oldFilename.equals("")) // check for empty input
-          System.err.println("You did not enter a file name.");
+          System.err.println("You did not enter a filename.");
       }
       File originalFile = new File(channelSftp.lpwd() + "/" + oldFilename);
-      // get the new file name
+      // get the new filename
       String newFilename = "";
       while (newFilename.equals("")) {
-        out.println("Enter the new local file name (e.g., file.txt or directoryName): ");
+        out.println("Enter the new local filename (e.g., file.txt or directoryName): ");
         newFilename = scanner.nextLine();
         if (newFilename.equals("")) // check for empty input
-          System.err.println(("You did not enter a file name."));
+          System.err.println(("You did not enter a filename."));
       }
       File renamedFile = new File(channelSftp.lpwd() + "/" + newFilename);
       // check for a duplicate file/directory name
