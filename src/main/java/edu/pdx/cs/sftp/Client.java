@@ -522,23 +522,17 @@ public class Client {
     if (newDir.exists()) {
       out.println("A directory by this name exists. Overwrite? (yes/no)");
       if (scanner.next().equalsIgnoreCase("yes")) {
-        // Overwrite existing directory by deleting and then recreating it
-        if (newDir.delete())
-          try {
-            newDir.mkdir();
-            out.println(dirName + " has been overwritten");
-          } catch (Exception e) {
-            out.println("Error creating directory");
-          }
-        else out.println("Error overwriting directory");
-      }
+        if (newDir.delete() && newDir.mkdir())
+          out.println(dirName + " has been overwritten.");
+        else
+          out.println("Error overwriting directory.");
+      } else
+        out.println("The directory will not be overwritten.");
     } else {
-      try {
-        newDir.mkdir();
-        out.println(dirName + " has been created");
-      } catch (Exception e) {
+      if (newDir.mkdir())
+        out.println(dirName + " has been created.");
+      else
         out.println("Error creating directory.");
-      }
     }
   }
 
@@ -551,7 +545,7 @@ public class Client {
   }
 
   /**
-   * Deletes the specified file(s) from the remote server. Multiple file names can be included
+   * Deletes the specified file(s) from the remote server. Multiple filenames can be included
    * through a comma-separated list.
    *
    * @param filename the string containing the name(s) of the file(s) to be deleted.
@@ -561,7 +555,7 @@ public class Client {
 
     String workingDir;
     if (filename.contains(",")) {
-      // Delete multiple files. Parse list of file names into string array and trim whitespace.
+      // Delete multiple files. Parse list of filenames into string array and trim whitespace.
       String[] filesToDelete = filename.replaceAll("\\s", "").split(",");
 
       try {
