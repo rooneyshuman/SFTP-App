@@ -14,6 +14,7 @@ import java.util.Scanner;
 import java.util.Vector;
 
 import static java.lang.System.out;
+import static java.lang.System.err;
 
 /**
  * Represents the SSH File Transfer Protocol (SFTP) client. Supports the full security and
@@ -229,7 +230,7 @@ public class Client {
         // Retrieve attributes of the directory
         attrs = channelSftp.stat(dirName);
       } catch (Exception e) {
-        out.println("A directory by this name doesn't exist, it will now be created.");
+        out.println("A directory by this name doesn't exist; it will now be created");
       }
       // Directory does not exist
       if (attrs == null) {
@@ -239,7 +240,7 @@ public class Client {
         dirNotCreated = false;
       } else {
         // Directory already exists
-        out.println("A directory by this name exists. Overwrite? (yes/no)");
+        out.println("A directory by this name already exists. Overwrite? (yes/no)");
         answer = scanner.next();
         // Reset attributes of the remote file manipulated by SFTP
         attrs = null;
@@ -251,7 +252,7 @@ public class Client {
             }
             dirNotCreated = false;
           } catch (SftpException e) {
-            out.println("Error overwriting directory");
+            err.println("Error overwriting directory");
           }
         }
       }
@@ -271,7 +272,7 @@ public class Client {
       // Retrieve attributes of the directory
       attrs = channelSftp.stat(dirName);
     } catch (Exception e) {
-      out.println("Error creating directory.");
+      err.println("Error creating directory");
     }
     return attrs != null;
   }
