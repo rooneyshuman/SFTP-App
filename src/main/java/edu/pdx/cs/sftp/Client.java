@@ -1,6 +1,12 @@
 package edu.pdx.cs.sftp;
 
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpATTRS;
+import com.jcraft.jsch.SftpException;
 
 import java.io.File;
 import java.util.Arrays;
@@ -10,15 +16,16 @@ import java.util.Vector;
 
 import static java.lang.System.err;
 import static java.lang.System.out;
+import static java.lang.System.err;
 
 /**
  * Represents the SSH File Transfer Protocol (SFTP) client. Supports the full security and
  * authentication functionality of SSH.
  */
 public class Client {
-  private static final int TIMEOUT =
-    60_000; // Set default timeout to 60 seconds to accommodate slow servers
   private Scanner scanner = new Scanner(System.in);
+  private static final int TIMEOUT =
+      60_000; // Set default timeout to 60 seconds to accommodate slow servers
   private User user;
   private JSch jsch;
   private Session session;
@@ -215,108 +222,110 @@ public class Client {
   }
 
   /**
-   * Create a directory on the user's remote machine.
+   * Creates a new remote directory. If the directory does not exist, it is created. If the
+   * directory already exists, it asks the user whether they wish to overwrite the directory.
    */
   void createRemoteDir() {
     logger.log("createRemoteDir called");
-    boolean repeat = true;
+    boolean dirNotCreated = true;
+    SftpATTRS attrs = null;
     String answer;
     String dirName;
-    SftpATTRS attrs = null;
 
-    while (repeat) {
+    while (dirNotCreated) {
       out.println("Enter the name of the new directory: ");
       dirName = scanner.next();
       try {
+        // Retrieve attributes of the directory
         attrs = channelSftp.stat(dirName);
       } catch (Exception e) {
-        out.println("A directory by this name doesn't exist, it will now be created.");
+        out.println("A directory by this name doesn't exist; it will now be created");
       }
-      if (attrs != null) { // directory exists
-        out.println("A directory by this name exists. Overwrite? (yes/no)");
+      // Directory does not exist
+      if (attrs == null) {
+        if (createRemoteDir(dirName)) {
+          out.println(dirName + " has been created");
+        }
+        dirNotCreated = false;
+      } else {
+        // Directory already exists
+        out.println("A directory by this name already exists. Overwrite? (yes/no)");
         answer = scanner.next();
-        attrs = null; // reset attrs for loop
+        // Reset attributes of the remote file manipulated by SFTP
+        attrs = null;
         if (answer.equalsIgnoreCase("yes")) {
           try {
             channelSftp.rmdir(dirName);
-            if (createRemoteDir(dirName)) out.println(dirName + " has been overwritten");
-            repeat = false;
+            if (createRemoteDir(dirName)) {
+              out.println(dirName + " has been overwritten");
+            }
+            dirNotCreated = false;
           } catch (SftpException e) {
-            out.println("Error overwriting directory");
+            err.println("Error overwriting directory");
           }
         }
-      } else {
-        if (createRemoteDir(dirName)) out.println(dirName + " has been created");
-        repeat = false;
       }
     }
   }
 
   /**
-   * Called by createRemoteDir() to make a new remote directory in current remote path
+   * Creates a new remote directory in the user's current path.
    *
-   * @return true if file was successfully created
+   * @param dirName the name of the new directory to be created
+   * @return <code>true</code> if the file was successfully created; <code>false</code> otherwise.
    */
   boolean createRemoteDir(String dirName) {
     SftpATTRS attrs = null;
     try {
       channelSftp.mkdir(dirName);
+      // Retrieve attributes of the directory
       attrs = channelSftp.stat(dirName);
     } catch (Exception e) {
-      out.println("Error creating directory.");
+      err.println("Error creating directory");
     }
     return attrs != null;
   }
 
-  /**
-   * Print current working local path
-   */
+  /** Prints the current local directory in absolute form. */
   void printLocalWorkingDir() {
     logger.log("printLocalWorkingDir called");
-    String lpwd = channelSftp.lpwd();
-    out.println("This is your current local working directory: " + lpwd + "\n");
+    String localWorkingDir = channelSftp.lpwd();
+    out.println(
+        String.format("This is your current local working directory: %s \n", localWorkingDir));
   }
 
   /**
-   * Print current working remote path
+   * Prints the current remote directory in absolute form.
+   *
+   * @throws SftpException If an SFTP protocol exception occurred
    */
   void printRemoteWorkingDir() throws SftpException {
     logger.log("printRemoteWorkingDir called");
-    String pwd = channelSftp.pwd();
-    out.println("This is your current remote working directory: " + pwd + "\n");
+    String remoteWorkingDir = channelSftp.pwd();
+    out.println(
+        String.format("This is your current remote working directory: %s \n", remoteWorkingDir));
   }
 
   /**
-   * Wrapper for changing current working local path
-   */
-  void changeLocalWorkingDir() {
-    logger.log("changeLocalWorkingDir called");
-    String newDir;
-    String lpwd = channelSftp.lpwd();
-    out.println("This is your current local working directory: " + lpwd + "\n");
-    out.println("Enter the path of the directory you'd like to change to: ");
-    newDir = scanner.next();
-    if (changeLocalWorkingDir(newDir)) {
-      lpwd = channelSftp.lpwd();
-      out.println("This is your new current local working directory: " + lpwd + "\n");
-    }
-  }
-
-  /**
-   * Called by changeLocalWorkingDir() to change current working local path
+   * Changes the current local directory to the new directory specified by the user.
    *
-   * @param newDir -- String of the new path name
-   * @return true if successful
+   * @return <code>true</code> if the local directory is changed successfully; <code>false</code>
+   *     otherwise.
    */
-  boolean changeLocalWorkingDir(String newDir) {
-    boolean pass = false;
+  boolean changeLocalWorkingDir() {
+    logger.log("changeLocalWorkingDir called");
+    String changeDirTo;
+    printLocalWorkingDir();
+    out.println("Enter the path of the directory you'd like to change to: ");
+    changeDirTo = scanner.next();
     try {
-      channelSftp.lcd(newDir);
-      pass = true;
+      channelSftp.lcd(changeDirTo);
+      printLocalWorkingDir();
+      return true;
     } catch (SftpException e) {
-      out.println("Error changing your directory");
+      err.println("Error changing the local directory");
     }
-    return pass;
+    return false;
   }
 
   /**

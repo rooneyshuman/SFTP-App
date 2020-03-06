@@ -222,49 +222,6 @@ public class ClientTest {
   }
 
   /**
-   * Asserts whether a local directory was changed Also inherently tests printLocalWorkingDir()
-   */
-  @Test
-  public void changeLocalDir_assertsDirChanged() {
-    boolean pass = false;
-    ByteArrayOutputStream output = new ByteArrayOutputStream();
-    PrintStream stdout = System.out;
-    String newLocalPath = "newLocalPath";
-    File newDir = new File(newLocalPath);
-
-    Client client = new Client(username, password, hostname);
-    if (!client.connect()) {
-      System.out.println("Failed connection. Unable to run test.");
-      assert (false);
-    }
-
-    if (newDir.mkdir()) { // create new directory path
-      System.setOut(new PrintStream(output));
-      output.reset();
-      client.printLocalWorkingDir();
-      assertThat(
-        output.toString().contains(newLocalPath),
-        equalTo(false)); // assert current path is not newDir
-      client.changeLocalWorkingDir(newLocalPath); // change path to newDir
-      output.reset();
-      client.printLocalWorkingDir();
-      assertThat(output.toString(), containsString(newLocalPath)); // assert current path is newDir
-      client.changeLocalWorkingDir(".."); // reset path
-      System.setOut(stdout); // reset output to standard System.out
-      if (!newDir.delete()) System.out.println("Error deleting testing directory");
-      else {
-        System.out.println(
-          "Path successfully changed to new dir. New dir has been deleted and path is reset.");
-        pass = true;
-      }
-    } else {
-      System.setOut(stdout);
-      System.out.println("Error in mkdir");
-    }
-    assertThat(pass, equalTo(true));
-  }
-
-  /**
    * Asserts whether a remote directory was changed Also inherently tests printRemoteWorkingDir()
    */
   @Test
