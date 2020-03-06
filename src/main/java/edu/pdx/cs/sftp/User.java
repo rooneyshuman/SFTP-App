@@ -87,7 +87,7 @@ class User {
     out.println("Enter your password:");
     password = scanner.nextLine();
     while (!verifyPassword(password)) {
-      err.println("You did not enter a password.\n" + "Please, enter your password:");
+      err.println("You did not enter a valid password.\n" + "Please, enter your password:");
       password = scanner.nextLine();
     }
     return password;
