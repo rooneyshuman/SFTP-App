@@ -104,8 +104,9 @@ class User {
   }
 
   /**
-   * Prompts the user for a valid hostname, which follows the below parameters: is alphanumeric, shorter than 255 characters, with name segments not exceeding 63 characters, and starts and ends with alphanumeric characters.
-   * characters (4) Must start and end with alphanumeric characters
+   * Prompts the user for a valid hostname, which follows the following parameters: is alphanumeric,
+   * shorter than 255 characters, with name segments not exceeding 63 characters, and starts and
+   * ends with alphanumeric characters.
    *
    * @return validated hostname.
    */
