@@ -418,7 +418,11 @@ public class Client {
   }
 
   /**
-   * Rename local files/directories
+   * Renames the specified file on the local directory to the provided new name. If a file by the
+   * same new name exists, the user is prompted to determine whether or not to overwrite it.
+   *
+   * @param oldFilename the name of the file to be renamed.
+   * @param newFilename the new name of the file to be renamed.
    */
   void renameLocalFile(String oldFilename, String newFilename) {
     logger.log("renameLocalFile called");
