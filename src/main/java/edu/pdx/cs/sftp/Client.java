@@ -423,45 +423,22 @@ public class Client {
   void renameLocalFile(String oldFilename, String newFilename) {
     logger.log("renameLocalFile called");
 
-    boolean repeat = true;
-    String input;
-    while (repeat) {
-      // get original filename
-      String oldFilename = "";
-      while (oldFilename.equals("")) {
-        out.println("Enter the original local filename (e.g., file.txt or directoryName): ");
-        oldFilename = scanner.nextLine();
-        if (oldFilename.equals("")) // check for empty input
-          System.err.println("You did not enter a filename.");
-      }
-      File originalFile = new File(channelSftp.lpwd() + "/" + oldFilename);
-      // get the new filename
-      String newFilename = "";
-      while (newFilename.equals("")) {
-        out.println("Enter the new local filename (e.g., file.txt or directoryName): ");
-        newFilename = scanner.nextLine();
-        if (newFilename.equals("")) // check for empty input
-          System.err.println(("You did not enter a filename."));
-      }
-      File renamedFile = new File(channelSftp.lpwd() + "/" + newFilename);
-      // check for a duplicate file/directory name
-      boolean rename = false;
-      if (renamedFile.exists()) {
-        out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
-        input = scanner.next();
-        if ((input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y")))) {
-          rename = true;
-        }
+    File oldFilepath = new File(channelSftp.lpwd() + "/" + oldFilename);
+    File newFilepath = new File(channelSftp.lpwd() + "/" + newFilename);
+    boolean rename = false;
+
+    if (newFilepath.exists()) {
+      out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
+      if (scanner.next().equalsIgnoreCase("yes")) rename = true;
+    } else {
+      rename = true;
+    }
+
+    if (rename) {
+      if (oldFilepath.renameTo(newFilepath)) {
+        out.println(oldFilename + " has been renamed to: " + newFilename + "\n");
       } else {
-        rename = true;
-      }
-      if (rename) {
-        if (originalFile.renameTo(renamedFile)) {
-          out.println(oldFilename + " has been renamed to: " + newFilename + "\n");
-        } else {
-          out.println("Error: rename unsuccessful.\n");
-        }
-        repeat = false;
+        out.println("Error: rename unsuccessful.\n");
       }
     }
   }
