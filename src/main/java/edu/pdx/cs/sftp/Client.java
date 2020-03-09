@@ -385,11 +385,11 @@ public class Client {
   }
 
   /**
-   * Downloads file(s) from the current working remote directory to the current working local
-   * directory.
+   * Downloads the specified file(s) from the current working remote directory to the current working local
+   * directory. Multiple filenames can be included through a comma-separated list.
    *
-   * @param filename -- The string containing the name(s) of the file(s) you wish to work with.
-   * @throws SftpException -- General errors/exceptions
+   * @param filename the name(s) of the file(s) to be downloaded
+   * @throws SftpException If an SFTP protocol exception occurred
    */
   void downloadFile(String filename) throws SftpException {
     logger.log("downloadFile called w/ argument '" + filename + "'");
