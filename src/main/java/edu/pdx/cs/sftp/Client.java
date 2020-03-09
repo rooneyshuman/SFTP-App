@@ -420,7 +420,7 @@ public class Client {
   /**
    * Rename local files/directories
    */
-  void renameLocal() {
+  void renameLocalFile(String oldFilename, String newFilename) {
     boolean repeat = true;
     String input;
     while (repeat) {
