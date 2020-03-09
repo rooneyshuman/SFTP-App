@@ -10,7 +10,6 @@ import java.util.Vector;
 
 import static java.lang.System.err;
 import static java.lang.System.out;
-import static java.lang.System.err;
 
 /**
  * Represents the SSH File Transfer Protocol (SFTP) client. Supports the full security and
@@ -19,8 +18,6 @@ import static java.lang.System.err;
 public class Client {
   private static final int TIMEOUT = 60_000; // Set default timeout to 60 seconds to accommodate slow servers
   private Scanner scanner = new Scanner(System.in);
-  private static final int TIMEOUT =
-      60_000; // Set default timeout to 60 seconds to accommodate slow servers
   private User user;
   private JSch jsch;
   private Session session;
@@ -473,44 +470,29 @@ public class Client {
   void renameRemoteFile(String filename) throws SftpException {
     logger.log("renameRemoteFile called");
 
-    String input;
-    SftpATTRS attrs = null;
-
-    // get original file name
-    String oldFilename = "";
-    while (oldFilename.equals("")) {
-      out.println("Enter the original remote file name (e.g., file.txt or directoryName): ");
-      oldFilename = scanner.nextLine();
-      if (oldFilename.equals("")) // check for empty input
-        System.err.println("You did not enter a file name.");
-    }
     String oldFilePath = channelSftp.pwd() + "/" + oldFilename;
-    // get the new file name
-    String newFilename = "";
-    while (newFilename.equals("")) {
-      out.println("Enter the new remote file name (e.g., file.txt or directoryName): ");
-      newFilename = scanner.nextLine();
-      if (newFilename.equals("")) // check for empty input
-        System.err.println(("You did not enter a file name."));
-    }
     String newFilePath = channelSftp.pwd() + "/" + newFilename;
-    try {
-      attrs = channelSftp.stat(newFilePath);
-    } catch (Exception e) {
-      out.println();
-    }
     boolean rename = false;
-    if (attrs != null) {
+
+    SftpATTRS fileAttributes = null;
+
+    try {
+      fileAttributes = channelSftp.stat(newFilePath);
+    } catch (Exception e) {
+      out.println("Error retrieving file attributes.");
+    }
+
+    if (fileAttributes != null) {
       out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
-      input = scanner.next();
-      if (input.equalsIgnoreCase("yes")) rename = true;
+      if (scanner.next().equalsIgnoreCase("yes")) rename = true;
     } else {
       rename = true;
     }
+
     if (rename) {
       try {
         channelSftp.rename(oldFilePath, newFilePath);
-        out.println(oldFilename + " has been renamed to: " + newFilename);
+        out.println(oldFilename + " has been renamed: " + newFilename);
       } catch (SftpException e) {
         out.println("Error: rename unsuccessful.");
       }
