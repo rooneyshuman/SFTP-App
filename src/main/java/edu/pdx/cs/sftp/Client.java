@@ -17,6 +17,7 @@ import static java.lang.System.err;
  * authentication functionality of SSH.
  */
 public class Client {
+  private static final int TIMEOUT = 60_000; // Set default timeout to 60 seconds to accommodate slow servers
   private Scanner scanner = new Scanner(System.in);
   private static final int TIMEOUT =
       60_000; // Set default timeout to 60 seconds to accommodate slow servers
@@ -280,12 +281,14 @@ public class Client {
     return attrs != null;
   }
 
-  /** Prints the current local directory in absolute form. */
+  /**
+   * Prints the current local directory in absolute form.
+   */
   void printLocalWorkingDir() {
     logger.log("printLocalWorkingDir called");
     String localWorkingDir = channelSftp.lpwd();
     out.println(
-        String.format("This is your current local working directory: %s \n", localWorkingDir));
+      String.format("This is your current local working directory: %s \n", localWorkingDir));
   }
 
   /**
@@ -297,14 +300,14 @@ public class Client {
     logger.log("printRemoteWorkingDir called");
     String remoteWorkingDir = channelSftp.pwd();
     out.println(
-        String.format("This is your current remote working directory: %s \n", remoteWorkingDir));
+      String.format("This is your current remote working directory: %s \n", remoteWorkingDir));
   }
 
   /**
    * Changes the current local directory to the new directory specified by the user.
    *
    * @return <code>true</code> if the local directory is changed successfully; <code>false</code>
-   *     otherwise.
+   * otherwise.
    */
   boolean changeLocalWorkingDir() {
     logger.log("changeLocalWorkingDir called");
