@@ -323,32 +323,26 @@ public class Client {
   }
 
   /**
-   * Change current working remote path
-   */
-  void changeRemoteWorkingDir() throws SftpException {
-    logger.log("changeRemoteWorkingDir called");
-    String newDir;
-    out.println("This is your current remote working directory: " + channelSftp.pwd() + "\n");
-    out.println("Enter the path of the directory you'd like to change to: ");
-    newDir = scanner.next();
-    if (changeRemoteWorkingDir(newDir))
-      out.println("This is your new current remote working directory: " + channelSftp.pwd() + "\n");
-  }
-
-  /**
-   * Called by changeRemoteWorkingDir() to change current working remote path
+   * Changes the current remote directory to the new directory specified by the user.
    *
-   * @param newDirPath -- String of new path name
+   * @return <code>true</code> if the local directory is changed successfully; <code>false</code>
+   * otherwise.
    */
-  boolean changeRemoteWorkingDir(String newDirPath) {
-    boolean pass = false;
+  boolean changeRemoteWorkingDir() throws SftpException {
+    logger.log("changeRemoteWorkingDir called");
+
+    String changeDirTo;
+    printRemoteWorkingDir();
+    out.println("Enter the path of the directory you'd like to change to: ");
+    changeDirTo = scanner.next();
     try {
-      channelSftp.cd(newDirPath);
-      pass = true;
+      channelSftp.cd(changeDirTo);
+      printLocalWorkingDir();
+      return true;
     } catch (SftpException e) {
-      System.out.println("Error changing your directory");
+      err.println("Error changing the remote directory");
     }
-    return pass;
+    return false;
   }
 
   /**
