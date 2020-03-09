@@ -352,7 +352,8 @@ public class Client {
   }
 
   /**
-   * Uploads the specified file(s) from the current working local directory to the current working remote directory
+   * Uploads the specified file(s) from the current working local directory to the current working remote directory.
+   * Multiple filenames can be included through a comma-separated list.
    *
    * @param filename the name(s) of the file(s) to upload
    * @throws SftpException If an SFTP protocol exception occurred
