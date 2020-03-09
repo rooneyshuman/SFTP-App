@@ -465,9 +465,14 @@ public class Client {
   }
 
   /**
-   * Rename file/directory on remote server
+   * Renames the specified file on the remote server to the provided new name. If a file by the
+   * same new name exists, the user is prompted to determine whether or not to overwrite it.
+   *
+   * @param oldFilename the name of the file to be renamed.
+   * @param newFilename the new name of the file to be renamed.
+   * @throws SftpException If an SFTP protocol exception occurred
    */
-  void renameRemoteFile(String filename) throws SftpException {
+  void renameRemoteFile(String oldFilename, String newFilename) throws SftpException {
     logger.log("renameRemoteFile called");
 
     String oldFilePath = channelSftp.pwd() + "/" + oldFilename;
