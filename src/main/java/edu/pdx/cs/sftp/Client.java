@@ -421,6 +421,8 @@ public class Client {
    * Rename local files/directories
    */
   void renameLocalFile(String oldFilename, String newFilename) {
+    logger.log("renameLocalFile called");
+
     boolean repeat = true;
     String input;
     while (repeat) {
