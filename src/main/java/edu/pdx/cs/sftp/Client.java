@@ -392,28 +392,21 @@ public class Client {
    * @throws SftpException If an SFTP protocol exception occurred
    */
   void downloadFile(String filename) throws SftpException {
-    logger.log("downloadFile called w/ argument '" + filename + "'");
-    if (filename.contains(",")) {
-      // multiple files are wanted.
+    logger.log("downloadFile called with argument '" + filename + "'");
 
-      // take the string and separate out the files.
-      String removeWhitespace = filename.replaceAll("\\s", "");
-      String[] arr = removeWhitespace.split(",");
-      String lpwd = channelSftp.lpwd();
-      StringBuilder sb = new StringBuilder();
-      for (String file : arr) {
+    String workingDir = channelSftp.lpwd();
+
+    if (filename.contains(",")) {
+      // Download multiple files. Parse list of filenames into string array and trim whitespace.
+      String[] filesToDownload = filename.replaceAll("\\s", "").split(",");
+
+      for (String file : filesToDownload) {
         channelSftp.get(file, file);
-        sb.append(file);
-        sb.append(" has been downloaded to: ");
-        sb.append(lpwd);
-        sb.append("\n");
+        out.println(file + " has been downloaded to: " + workingDir);
       }
-      String output = sb.toString();
-      out.println(output);
     } else {
       channelSftp.get(filename, filename);
-      String lpwd = channelSftp.lpwd();
-      out.println("The file has been downloaded to: " + lpwd);
+      out.println(filename + " has been downloaded to: " + workingDir);
     }
   }
 
