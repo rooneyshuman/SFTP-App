@@ -473,7 +473,7 @@ public class Client {
   /**
    * Rename file/directory on remote server
    */
-  void renameRemote() throws SftpException {
+  void renameRemoteFile(String filename) throws SftpException {
     String input;
     SftpATTRS attrs = null;
 
