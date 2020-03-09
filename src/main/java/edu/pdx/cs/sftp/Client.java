@@ -474,6 +474,8 @@ public class Client {
    * Rename file/directory on remote server
    */
   void renameRemoteFile(String filename) throws SftpException {
+    logger.log("renameRemoteFile called");
+
     String input;
     SftpATTRS attrs = null;
 
