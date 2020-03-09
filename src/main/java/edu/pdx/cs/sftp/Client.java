@@ -1,12 +1,6 @@
 package edu.pdx.cs.sftp;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpATTRS;
-import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.*;
 
 import java.io.File;
 import java.util.Arrays;
@@ -16,23 +10,23 @@ import java.util.Vector;
 
 import static java.lang.System.err;
 import static java.lang.System.out;
-import static java.lang.System.err;
 
 /**
  * Represents the SSH File Transfer Protocol (SFTP) client. Supports the full security and
  * authentication functionality of SSH.
  */
 public class Client {
+  private static final int TIMEOUT = 60_000; // Set default timeout to 60 seconds to accommodate slow servers
   private Scanner scanner = new Scanner(System.in);
-  private static final int TIMEOUT =
-      60_000; // Set default timeout to 60 seconds to accommodate slow servers
   private User user;
   private JSch jsch;
   private Session session;
   private ChannelSftp channelSftp;
   private Logger logger;
 
-  /** Class constructor. */
+  /**
+   * Class constructor.
+   */
   public Client() {
     user = new User();
     jsch = new JSch();
@@ -57,7 +51,9 @@ public class Client {
     logger = new Logger();
   }
 
-  /** Prompts the user to enter connection information such as username, password, and hostname. */
+  /**
+   * Prompts the user to enter connection information such as username, password, and hostname.
+   */
   void promptConnectionInfo() {
     user.getUsername();
     user.getPassword();
@@ -68,7 +64,7 @@ public class Client {
    * Establishes a connection to an SSH server containing a channel connected to an SFTP server.
    *
    * @return <code>true</code> on successful connection to the SSH/SFTP server; <code>false</code>
-   *     otherwise.
+   * otherwise.
    */
   public boolean connect() {
     if (createSshConnection() && createSftpChannel()) {
@@ -87,7 +83,7 @@ public class Client {
    * <p>One session can contain multiple channels of various types.
    *
    * @return <code>true</code> on successful creation of session object representing a connection to
-   *     an SSH server; <code>false</code> otherwise.
+   * an SSH server; <code>false</code> otherwise.
    */
   protected boolean createSshConnection() {
     try {
@@ -99,7 +95,7 @@ public class Client {
       session.setConfig(config);
       session.connect(TIMEOUT);
       logger.log(
-          String.format("Establishing a connection for %s@%s...", user.username, user.hostname));
+        String.format("Establishing a connection for %s@%s...", user.username, user.hostname));
       out.println("Establishing a connection...");
     } catch (JSchException e) {
       out.println("Failed to connect to the server");
@@ -114,7 +110,7 @@ public class Client {
    * supports the client side of the SFTP protocol.
    *
    * @return <code>true</code> on creating a channel connected to an SFTP server; <code>false</code>
-   *     otherwise.
+   * otherwise.
    */
   protected boolean createSftpChannel() {
     try {
@@ -146,12 +142,16 @@ public class Client {
     out.println("A log file has been saved to your local Downloads directory");
   }
 
-  /** @return a Channel object connected to an SFTP server. */
+  /**
+   * @return a Channel object connected to an SFTP server.
+   */
   ChannelSftp getChannelSftp() {
     return channelSftp;
   }
 
-  /** @return a Session object representing a connection to an SSH server. */
+  /**
+   * @return a Session object representing a connection to an SSH server.
+   */
   Session getSession() {
     return session;
   }
@@ -160,8 +160,8 @@ public class Client {
    * Lists all directories and files in the user's current local directory.
    *
    * @return <code>true</code> if directories and/or files in the user's current local directory are
-   *     listed; otherwise, return <code>false</code> to indicate the user's current local directory
-   *     is empty.
+   * listed; otherwise, return <code>false</code> to indicate the user's current local directory
+   * is empty.
    */
   boolean displayLocalFiles() {
     logger.log("displayLocalFiles called");
@@ -187,8 +187,8 @@ public class Client {
    * Lists all directories and files in the user's current remote directory.
    *
    * @return <code>true</code> if directories and/or files in the user's current remote directory
-   *     are listed; otherwise, return <code>false</code> to indicate the user's current remote
-   *     directory is empty.
+   * are listed; otherwise, return <code>false</code> to indicate the user's current remote
+   * directory is empty.
    */
   boolean displayRemoteFiles() {
     logger.log("displayRemoteFiles called");
@@ -278,12 +278,14 @@ public class Client {
     return attrs != null;
   }
 
-  /** Prints the current local directory in absolute form. */
+  /**
+   * Prints the current local directory in absolute form.
+   */
   void printLocalWorkingDir() {
     logger.log("printLocalWorkingDir called");
     String localWorkingDir = channelSftp.lpwd();
     out.println(
-        String.format("This is your current local working directory: %s \n", localWorkingDir));
+      String.format("This is your current local working directory: %s \n", localWorkingDir));
   }
 
   /**
@@ -295,14 +297,14 @@ public class Client {
     logger.log("printRemoteWorkingDir called");
     String remoteWorkingDir = channelSftp.pwd();
     out.println(
-        String.format("This is your current remote working directory: %s \n", remoteWorkingDir));
+      String.format("This is your current remote working directory: %s \n", remoteWorkingDir));
   }
 
   /**
    * Changes the current local directory to the new directory specified by the user.
    *
    * @return <code>true</code> if the local directory is changed successfully; <code>false</code>
-   *     otherwise.
+   * otherwise.
    */
   boolean changeLocalWorkingDir() {
     logger.log("changeLocalWorkingDir called");
@@ -320,7 +322,9 @@ public class Client {
     return false;
   }
 
-  /** Change current working remote path */
+  /**
+   * Change current working remote path
+   */
   void changeRemoteWorkingDir() throws SftpException {
     logger.log("changeRemoteWorkingDir called");
     String newDir;
@@ -413,27 +417,29 @@ public class Client {
     }
   }
 
-  /** Rename local files/directories */
+  /**
+   * Rename local files/directories
+   */
   void renameLocal() {
     boolean repeat = true;
     String input;
     while (repeat) {
-      // get original file name
+      // get original filename
       String oldFilename = "";
       while (oldFilename.equals("")) {
-        out.println("Enter the original local file name (e.g., file.txt or directoryName): ");
+        out.println("Enter the original local filename (e.g., file.txt or directoryName): ");
         oldFilename = scanner.nextLine();
         if (oldFilename.equals("")) // check for empty input
-        System.err.println("You did not enter a file name.");
+          System.err.println("You did not enter a filename.");
       }
       File originalFile = new File(channelSftp.lpwd() + "/" + oldFilename);
-      // get the new file name
+      // get the new filename
       String newFilename = "";
       while (newFilename.equals("")) {
-        out.println("Enter the new local file name (e.g., file.txt or directoryName): ");
+        out.println("Enter the new local filename (e.g., file.txt or directoryName): ");
         newFilename = scanner.nextLine();
         if (newFilename.equals("")) // check for empty input
-        System.err.println(("You did not enter a file name."));
+          System.err.println(("You did not enter a filename."));
       }
       File renamedFile = new File(channelSftp.lpwd() + "/" + newFilename);
       // check for a duplicate file/directory name
@@ -458,92 +464,42 @@ public class Client {
     }
   }
 
-  /*
   /**
-   * Executes a command on the remote server.
+   * Renames the specified file on the remote server to the provided new name. If a file by the
+   * same new name exists, the user is prompted to determine whether or not to overwrite it.
    *
-   * @param command -- The text command that you'd like to execute. (Ex: "ls -a" or "cd mydirectory")
+   * @param oldFilename the name of the file to be renamed.
+   * @param newFilename the new name of the file to be renamed.
+   * @throws SftpException If an SFTP protocol exception occurred
    */
-  /*
-  void remoteExec(String command) {
-    logger.log("remoteExec called w/ argument '" + command + "'");
+  void renameRemoteFile(String oldFilename, String newFilename) throws SftpException {
+    logger.log("renameRemoteFile called");
+
+    String oldFilePath = channelSftp.pwd() + "/" + oldFilename;
+    String newFilePath = channelSftp.pwd() + "/" + newFilename;
+    boolean rename = false;
+
+    SftpATTRS fileAttributes = null;
+
     try {
-      Channel channel = session.openChannel("Exec");
-      ((ChannelExec) channel).setCommand(command);
-      channel.setInputStream(null);
-      ((ChannelExec) channel).setErrStream(System.err);
-
-
-      channel.connect();
-      InputStream input = channel.getInputStream();
-      try {
-        InputStreamReader inputReader = new InputStreamReader(input);
-        BufferedReader bufferedReader = new BufferedReader(inputReader);
-        String line;
-
-        while ((line = bufferedReader.readLine()) != null) {
-          System.out.println(line);
-        }
-        bufferedReader.close();
-        inputReader.close();
-      } catch (IOException ex) {
-        ex.printStackTrace();
-      }
-
-      channel.disconnect();
-      session.disconnect();
-    } catch (Exception ex) {
-      ex.printStackTrace();
+      fileAttributes = channelSftp.stat(newFilePath);
+    } catch (Exception e) {
+      out.println("Error retrieving file attributes.");
     }
-  }
-  */
 
-  /** Rename file/directory on remote server */
-  void renameRemote() throws SftpException {
-    boolean repeat = true;
-    String input;
-    SftpATTRS attrs = null;
-    while (repeat) {
-      // get original file name
-      String oldFilename = "";
-      while (oldFilename.equals("")) {
-        out.println("Enter the original remote file name (e.g., file.txt or directoryName): ");
-        oldFilename = scanner.nextLine();
-        if (oldFilename.equals("")) // check for empty input
-        System.err.println("You did not enter a file name.");
-      }
-      String oldFilePath = channelSftp.pwd() + "/" + oldFilename;
-      // get the new file name
-      String newFilename = "";
-      while (newFilename.equals("")) {
-        out.println("Enter the new remote file name (e.g., file.txt or directoryName): ");
-        newFilename = scanner.nextLine();
-        if (newFilename.equals("")) // check for empty input
-        System.err.println(("You did not enter a file name."));
-      }
-      String newFilePath = channelSftp.pwd() + "/" + newFilename;
+    if (fileAttributes != null) {
+      out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
+      if (scanner.next().equalsIgnoreCase("yes")) rename = true;
+    } else {
+      rename = true;
+    }
+
+    if (rename) {
       try {
-        attrs = channelSftp.stat(newFilePath);
-      } catch (Exception e) {
-        out.println();
-      }
-      boolean rename = false;
-      if (attrs != null) {
-        out.println("A file or directory by this name already exists. Overwrite? (yes/no)");
-        input = scanner.next();
-        attrs = null;
-        if (input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y"))) rename = true;
-      } else {
-        rename = true;
-      }
-      if (rename) {
-        try {
-          channelSftp.rename(oldFilePath, newFilePath);
-          out.println(oldFilename + " has been renamed to: " + newFilename);
-        } catch (SftpException e) {
-          out.println("Error: rename unsuccessful.");
-        }
-        repeat = false;
+        channelSftp.rename(oldFilePath, newFilePath);
+        out.println(oldFilename + " has been renamed: " + newFilename);
+      } catch (SftpException e) {
+        out.println("Error: rename unsuccessful.");
       }
     }
   }
@@ -561,34 +517,30 @@ public class Client {
     if (newDir.exists()) {
       out.println("A directory by this name exists. Overwrite? (yes/no)");
       if (scanner.next().equalsIgnoreCase("yes")) {
-        // Overwrite existing directory by deleting and then recreating it
-        if (newDir.delete())
-          try {
-            newDir.mkdir();
-            out.println(dirName + " has been overwritten");
-          } catch (Exception e) {
-            out.println("Error creating directory");
-          }
-        else out.println("Error overwriting directory");
-      }
+        if (newDir.delete() && newDir.mkdir())
+          out.println(dirName + " has been overwritten.");
+        else
+          out.println("Error overwriting directory.");
+      } else
+        out.println("The directory will not be overwritten.");
     } else {
-      try {
-        newDir.mkdir();
-        out.println(dirName + " has been created");
-      } catch (Exception e) {
+      if (newDir.mkdir())
+        out.println(dirName + " has been created.");
+      else
         out.println("Error creating directory.");
-      }
     }
   }
 
-  /** Displays log history to user and logs being invoked */
+  /**
+   * Displays log history to user and logs being invoked
+   */
   void displayLogHistory() {
     logger.display();
     logger.log("displayLogHistory called");
   }
 
   /**
-   * Deletes the specified file(s) from the remote server. Multiple file names can be included
+   * Deletes the specified file(s) from the remote server. Multiple filenames can be included
    * through a comma-separated list.
    *
    * @param filename the string containing the name(s) of the file(s) to be deleted.
@@ -598,7 +550,7 @@ public class Client {
 
     String workingDir;
     if (filename.contains(",")) {
-      // Delete multiple files. Parse list of file names into string array and trim whitespace.
+      // Delete multiple files. Parse list of filenames into string array and trim whitespace.
       String[] filesToDelete = filename.replaceAll("\\s", "").split(",");
 
       try {

@@ -118,6 +118,7 @@ public class Main {
    * @throws SftpException from JSCH
    */
   private static void rename(Client client) throws SftpException {
+    Scanner scanner = new Scanner(System.in);
     var menu = new Menu();
     int opt;
 
@@ -149,7 +150,11 @@ public class Main {
           System.out.println("Rename remote directory/file...");
           client.displayRemoteFiles();
           try {
-            client.renameRemote();
+            out.println("Please enter the original name of the file to rename.");
+            String oldFilename = scanner.nextLine();
+            out.println("Please enter the new name of the file to rename.");
+            String newFilename = scanner.nextLine();
+            client.renameRemoteFile(oldFilename, newFilename);
           } catch (SftpException e) {
             out.println("Error renaming file");
           }
